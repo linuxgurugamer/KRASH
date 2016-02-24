@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8C5539DD-396B-4084-892E-8F1901E51584}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>KRASH</RootNamespace>
+    <AssemblyName>KRASH</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="buildrelease.bat" externalConsole="True" pauseExternalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SceneModules\EditorModule.cs" />
+    <Compile Include="SceneModules\FlightModule.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="View\OrbitEditor.cs" />
+    <Compile Include="View\Core.cs" />
+    <Compile Include="View\View.cs" />
+    <Compile Include="View\SiSuffix.cs" />
+    <Compile Include="View\Lander.cs" />
+    <Compile Include="LaunchGUI.cs" />
+    <Compile Include="KRASHShelter.cs" />
+    <Compile Include="KRASH.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Folder Include="View\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GPL V3.txt" />
+    <None Include="..\LICENSE.md">
+      <Link>LICENSE.md</Link>
+    </None>
+    <None Include="..\README.md">
+      <Link>README.md</Link>
+    </None>
+    <None Include="buildrelease.bat" />
+    <None Include="krash.version" />
+  </ItemGroup>
+</Project>
