@@ -1,8 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="buildrelease.bat">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="krash.version">
     <Files>
-      <File FileName="LaunchGUI.cs" Line="554" Column="21" />
+      <File FileName="LaunchGUI.cs" Line="515" Column="42" />
       <File FileName="SceneModules\FlightModule.cs" Line="1" Column="1" />
       <File FileName="View\OrbitEditor.cs" Line="1" Column="1" />
       <File FileName="View\Lander.cs" Line="1" Column="1" />
@@ -13,9 +13,13 @@
       <File FileName="Log.cs" Line="1" Column="1" />
       <File FileName="..\..\FingerboxLib\Source\KSPPluginFramework\MonoBehaviourWindow.cs" Line="1" Column="1" />
       <File FileName="..\..\FingerboxLib\Source\KSPPluginFramework\MonoBehaviourWindowPlus.cs" Line="1" Column="1" />
-      <File FileName="krash.version" Line="17" Column="2" />
-      <File FileName="buildrelease.bat" Line="47" Column="34" />
-      <File FileName="..\README.md" Line="1" Column="1" />
+      <File FileName="krash.version" Line="7" Column="12" />
+      <File FileName="buildrelease.bat" Line="1" Column="1" />
+      <File FileName="..\README.md" Line="35" Column="19" />
+      <File FileName="APIManager.cs" Line="8" Column="10" />
+      <File FileName="KRASHWrapper.cs" Line="12" Column="10" />
+      <File FileName="TODO.txt" Line="71" Column="21" />
+      <File FileName="Configuration.cs" Line="4" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -20,6 +20,13 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +38,8 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
+        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
         <Command type="AfterBuild" command="buildrelease.bat" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
@@ -62,6 +71,9 @@
     <Compile Include="LaunchGUI.cs" />
     <Compile Include="KRASHShelter.cs" />
     <Compile Include="KRASH.cs" />
+    <Compile Include="APIManager.cs" />
+    <Compile Include="KRASHWrapper.cs" />
+    <Compile Include="Configuration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -84,5 +96,6 @@
     </None>
     <None Include="buildrelease.bat" />
     <None Include="krash.version" />
+    <None Include="TODO.txt" />
   </ItemGroup>
 </Project>

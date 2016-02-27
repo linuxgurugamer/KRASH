@@ -649,14 +649,50 @@ namespace KRASH
 				break;
 		#endif
 			}
+			GUILayout.Space (20);
+			GUIStyle fontColor = GUI.skin.label;
+			fontColor.normal.textColor = Color.yellow;
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Part count:");
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label (EditorLogic.fetch.ship.parts.Count.ToString ());
+			GUILayout.EndHorizontal ();
+
+			float dryMass, fuelMass;
+			EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Dry Mass:");
+			GUILayout.FlexibleSpace ();
+
+			GUILayout.Label(dryMass.ToString(), fontColor);
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Fuel Mass:");
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label(fuelMass.ToString(), fontColor);
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Total Mass:");
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label((dryMass + fuelMass).ToString(), fontColor);
+			GUILayout.EndHorizontal ();
+
 			GUILayout.FlexibleSpace ();
 			GUILayout.BeginHorizontal ();
 			var bstyle = new GUIStyle (GUI.skin.button);
 			bstyle.normal.textColor = Color.yellow;
+			GUI.backgroundColor = Color.red;
+
 			if (GUILayout.Button ("Cancel", bstyle, GUILayout.Width (170.0f), GUILayout.Height (30.0f))) {
+				GUI.backgroundColor = oldColor;
 				GUIToggle ();
 				return;
 			}
+			GUI.backgroundColor = oldColor;
 			GUILayout.EndHorizontal ();
 			//GUILayout.FlexibleSpace ();
 			GUILayout.EndVertical ();
