@@ -38,6 +38,7 @@ namespace KRASH.Hyperedit
 				return;
 			altitude = defaultAlt;
 		}
+
 		private static void SetOrbit(OrbitDriver currentlyEditing, Orbit orbit)
 		{
 			Log.Info ("Setorbit");

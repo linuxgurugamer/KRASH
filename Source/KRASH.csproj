@@ -17,23 +17,22 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;KRASH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
-        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
+        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" />
         <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
+        <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;KRASH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
@@ -97,5 +96,8 @@
     <None Include="buildrelease.bat" />
     <None Include="krash.version" />
     <None Include="TODO.txt" />
+    <None Include="KRASH.cfg" />
+    <None Include="README4Modders.txt" />
+    <None Include="ChangeLog.txt" />
   </ItemGroup>
 </Project>

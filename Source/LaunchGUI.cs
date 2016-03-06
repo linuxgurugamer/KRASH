@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace KRASH
 {
@@ -16,7 +17,8 @@ namespace KRASH
 		private ApplicationLauncherButton button = null;
 		private int INITORBIT = 10000;
 
-		public static LaunchGUI Instance;
+		bool limitMaxCosts = false;
+		public static LaunchGUI LaunchGuiInstance;
 
 		const string texPathDefault = "KRASH/Textures/KRASH";
 		//const string texPathOn = "KRASH/Textures/AppLauncherIcon-On";
@@ -45,9 +47,9 @@ namespace KRASH
 
 		private void Awake ()
 		{
-			if (LaunchGUI.Instance == null) {
+			if (LaunchGUI.LaunchGuiInstance == null) {
 				GameEvents.onGUIApplicationLauncherReady.Add (this.OnGuiAppLauncherReady);
-				Instance = this;
+				LaunchGuiInstance = this;
 			}
 		}
 
@@ -131,12 +133,31 @@ namespace KRASH
 			this.visible = visible;
 		}
 
+		//bool isEditorLocked = false;
+		private void EditorLock(bool state)
+		{
+			if (state)
+			{
+				InputLockManager.SetControlLock(ControlTypes.All, "KRASHEditorLock");
+				EditorLogic.fetch.Lock (true, true, true, "KRASH_Editor");
+				//isEditorLocked = true;
+			}
+			else
+			{
+				InputLockManager.SetControlLock(ControlTypes.None, "KRASHEditorLock");
+				EditorLogic.fetch.Unlock ("KRASH_Editor");
+				//isEditorLocked = false;
+			}
+		}
+
 		public void GUIToggle ()
 		{
-	//		if (EditorLogic.fetch.ship.Count > 0) {
-				SetVisible (!visible);
-	//		}
+			EditorLock (false);
+			SetVisible (!visible);
+			if (visible)
+				APIManager.ApiInstance.SimMenuEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
 		}
+
 		//		Rect windowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
 		//Rect windowRect = new Rect (((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 425, 580);
 		// ASH 28102014 - Needs to be bigger for filter
@@ -286,10 +307,8 @@ namespace KRASH
 
 		public void drawSelector ()
 		{
-			
 			if (!inited) {
 //				orbitSelection = false;
-				selectType = SelectionType.launchsites;
 				selectType = SelectionType.launchsites;
 				simType = SimType.LAUNCHPAD;;
 
@@ -306,7 +325,6 @@ namespace KRASH
 
 				sites.Add (runway);
 				sites.Add (launchpad);
-
 			}
 
 			if (sites.Count == 0) {
@@ -324,9 +342,9 @@ namespace KRASH
 			}
 
 			if (windowRect.Contains (Event.current.mousePosition)) {
-				InputLockManager.SetControlLock (ControlTypes.EDITOR_LOCK, "KRASHEditorLock");
+				EditorLock (true);
 			} else {
-				InputLockManager.RemoveControlLock ("KRASHEditorLock");
+				EditorLock (false);
 			}
 		}
 
@@ -387,8 +405,10 @@ namespace KRASH
 
 		public void drawSelectorWindow (int id)
 		{
-			string smessage = "";
-			ScreenMessageStyle smsStyle = (ScreenMessageStyle)2;
+			GUI.skin = HighLogic.Skin;
+			//string smessage = "";
+			//ScreenMessageStyle smsStyle = ScreenMessageStyle.UPPER_RIGHT;
+
 			// ASH 28102014 Category filter handling added.
 			// ASH 07112014 Disabling of restricted categories added.
 			//GUILayout.BeginArea (new Rect (10, 25, 415, 550));
@@ -476,8 +496,8 @@ namespace KRASH
 						// panel on the right
 //					if (!isCareerGame())
 						{
-							smessage = "Launchsite set to " + site.name;
-							ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
+							//smessage = "Launchsite set to " + site.name;
+							//ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
 							if (selectedSite.GetSiteType() == SiteType.VAB)
 								simType = SimType.LAUNCHPAD;
 							else
@@ -513,17 +533,22 @@ namespace KRASH
 
 				foreach (CelestialBody body in bodiesList) {
 					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
-					if (!isCareerGame () || tree.IsReached || body.isHomeWorld) {
+					bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
+
+					if (!isCareerGame () || scienceOrbit || body.isHomeWorld ) {
+						if (simType != SimType.LANDED || body.isHomeWorld || tree.landing.IsComplete) {
 //						Log.Info ("body: " + body.name + "  is reached: " + tree.IsReached);
-						GUI.enabled = !(selectedBody == body);
-						if (GUILayout.Button (body.name, GUILayout.Height (30))) {
-							selectedBody = body;
-							setOrbit (selectedBody);
+							GUI.enabled = !(selectedBody == body);
+							if (GUILayout.Button (body.name, GUILayout.Height (30))) {
+								selectedBody = body;
 
-							//						LaunchSiteManager.setLaunchSite(site);
-							smessage = "Reference body set to " + body.name;
-							ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
+								setOrbit (selectedBody);
 
+								//						LaunchSiteManager.setLaunchSite(site);
+								//smessage = "Reference body set to " + body.name;
+								//ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
+
+							}
 						}
 					}
 				}
@@ -542,37 +567,48 @@ namespace KRASH
 		{
 			//string smessage = "";
 			//ScreenMessageStyle smsStyle = (ScreenMessageStyle)2;
+			//GUI.skin = HighLogic.Skin;
 
+			GUI.skin.label.padding = new RectOffset (0, 0, 0, 0);
 			GUILayout.BeginArea (new Rect (385, 25, 180, 545));
 			GUILayout.BeginVertical ();
 			GUILayout.BeginHorizontal ();
 			var oldColor = GUI.backgroundColor;
 			GUI.backgroundColor = Color.green;
+			var bstyle = new GUIStyle (GUI.skin.button);
+			bstyle.normal.textColor = Color.yellow;
+			//bstyle.normal.background = new Texture2D(2,2);
 
-			if (GUILayout.Button ("Start simulation", GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
+			if (GUILayout.Button ("Start simulation", bstyle, GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
 				GUI.backgroundColor = oldColor;
-				InputLockManager.RemoveControlLock ("KRASHEditorLock");
+				EditorLock (false);
 				//				Log.Info ("Active vessel: " + FlightGlobals.fetch.activeVessel.orbitDriver.ToString () + "   SelectedBody: " + selectedBody.ToString ());
 				LaunchSim ();
 				SetVisible (false);
+
 				return;
 			}
 			GUI.backgroundColor = oldColor;
 			GUILayout.EndHorizontal ();
-			GUILayout.Space (10);
+			GUILayout.Space (15);
 			GUILayout.BeginHorizontal ();
-			var style = new GUIStyle();
-			style.normal.textColor = Color.green;
-			GUILayout.Label ("Simulation Settings", style);
+			//var style = new GUIStyle();
+			//style.normal.textColor = Color.green;
+
+			GUIStyle fontColorCyan = new GUIStyle(GUI.skin.label);
+			fontColorCyan.normal.textColor = Color.cyan;
+
+			GUILayout.Label ("Simulation Settings", fontColorCyan);
 			GUILayout.EndHorizontal ();
-			GUILayout.Space (10);
 
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Start location:");
+			GUILayout.EndHorizontal ();
+			GUILayout.BeginHorizontal ();
 			switch (type) {
 			case SelectionType.launchsites:
-
-				GUILayout.Box (FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ().name);
+				
+				GUILayout.Box (FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ().name, GUILayout.Height(21));
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
 				switch (simType) {
@@ -592,8 +628,8 @@ namespace KRASH
 
 					GUILayout.BeginHorizontal ();
 					GUILayout.Label ("Altitude:");
-
-					altitude = GUILayout.TextField (altitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F));
+					GUILayout.FlexibleSpace ();
+					altitude = GUILayout.TextField (altitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height(18));
 					try {
 						newAltitude = Convert.ToDouble (altitude);
 					} catch (Exception) {
@@ -610,7 +646,8 @@ namespace KRASH
 					if (simType == SimType.LANDED) {
 						GUILayout.BeginHorizontal ();
 						GUILayout.Label ("Latitude:");
-						latitude = GUILayout.TextField (latitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F));
+						GUILayout.FlexibleSpace ();
+						latitude = GUILayout.TextField (latitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height(18));
 						try {
 							newLatitude = Convert.ToDouble (latitude);
 						} catch (Exception) {
@@ -621,7 +658,8 @@ namespace KRASH
 
 						GUILayout.BeginHorizontal ();
 						GUILayout.Label ("Longitude:");
-						longitude = GUILayout.TextField (longitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F));
+						GUILayout.FlexibleSpace ();
+						longitude = GUILayout.TextField (longitude, GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height(18));
 						try {
 							newLongitude = Convert.ToDouble (longitude);
 						} catch (Exception) {
@@ -649,14 +687,17 @@ namespace KRASH
 				break;
 		#endif
 			}
-			GUILayout.Space (20);
-			GUIStyle fontColor = GUI.skin.label;
-			fontColor.normal.textColor = Color.yellow;
+			GUILayout.Space (10);
+			GUIStyle fontColorYellow =new GUIStyle(GUI.skin.label);
+			fontColorYellow.normal.textColor = Color.yellow;
+			GUIStyle fontColorStd = new GUIStyle(GUI.skin.label);
+			//GUIStyle fontColorCyan = new GUIStyle(GUI.skin.label);
+			//fontColorCyan.normal.textColor = Color.cyan;
 
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Part count:");
 			GUILayout.FlexibleSpace ();
-			GUILayout.Label (EditorLogic.fetch.ship.parts.Count.ToString ());
+			GUILayout.Label (EditorLogic.fetch.ship.parts.Count.ToString (), fontColorYellow);
 			GUILayout.EndHorizontal ();
 
 			float dryMass, fuelMass;
@@ -666,25 +707,93 @@ namespace KRASH
 			GUILayout.Label ("Dry Mass:");
 			GUILayout.FlexibleSpace ();
 
-			GUILayout.Label(dryMass.ToString(), fontColor);
+			GUILayout.Label(dryMass.ToString(), fontColorYellow);
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Fuel Mass:");
 			GUILayout.FlexibleSpace ();
-			GUILayout.Label(fuelMass.ToString(), fontColor);
+			GUILayout.Label(fuelMass.ToString(), fontColorYellow);
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Total Mass:");
 			GUILayout.FlexibleSpace ();
-			GUILayout.Label((dryMass + fuelMass).ToString(), fontColor);
+			GUILayout.Label((dryMass + fuelMass).ToString(), fontColorYellow);
 			GUILayout.EndHorizontal ();
+			GUILayout.Space (10);
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Simulation Costs:", fontColorCyan);
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Sim setup cost:");
+			GUILayout.FlexibleSpace ();
+			double simSetupCost = Math.Floor(KRASH.cfg.flatSetupCost +
+			                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartSetupCost +
+								(dryMass + fuelMass) * KRASH.cfg.perTonSetupCost);
+			
+			GUILayout.Label(simSetupCost.ToString(), fontColorYellow);
+			GUILayout.EndHorizontal ();
+
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Est. Sim/min cost:");
+			GUILayout.FlexibleSpace ();
+
+			float estSimPerMin = KRASH.cfg.flatPerMinCost +
+			                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartPerMinCost +
+			                     (dryMass + fuelMass) * KRASH.cfg.perTonPerMinCost;
+			
+			GUILayout.Label(estSimPerMin.ToString(), fontColorYellow);
+			GUILayout.EndHorizontal ();
+			float m = KRASH.cfg.AtmoMultipler;
+			float estSimAtmoPerMin = estSimPerMin;
+				
+			if (m < 1.0F)
+				m = 1.0F;
+			if (m > 1.0) {
+				estSimAtmoPerMin = (float)Math.Floor(estSimPerMin * m + 1.0);
+				GUILayout.BeginHorizontal (GUILayout.Height(18));
+				GUILayout.Label ("Est. Atmo Sim/min cost:");
+				GUILayout.FlexibleSpace ();
+
+				GUILayout.Label(estSimAtmoPerMin.ToString(), fontColorYellow);
+				GUILayout.EndHorizontal ();
+			}
+
+
+			GUILayout.BeginHorizontal ();
+			limitMaxCosts = GUILayout.Toggle (limitMaxCosts, "Limit max costs");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+			if (limitMaxCosts) {
+				if (KRASHShelter.LimitSimCost == 0) {
+					KRASHShelter.LimitSimCost = Math.Floor(simSetupCost + KRASH.cfg.DefaultSimTime * estSimAtmoPerMin);
+				}
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label ("Limit: ");
+				GUILayout.FlexibleSpace ();
+				double f;
+				string s = GUILayout.TextField (KRASHShelter.LimitSimCost.ToString(), GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height(18));
+				try {
+					f = Convert.ToDouble (s);
+				} catch (Exception) {
+					f = KRASHShelter.LimitSimCost;
+				} finally {
+				}
+				if (f < simSetupCost)
+					f = simSetupCost;
+				KRASHShelter.LimitSimCost = f;
+				GUILayout.EndHorizontal ();
+			}
 
 			GUILayout.FlexibleSpace ();
 			GUILayout.BeginHorizontal ();
-			var bstyle = new GUIStyle (GUI.skin.button);
+			bstyle = new GUIStyle (GUI.skin.button);
 			bstyle.normal.textColor = Color.yellow;
+			//bstyle.normal.background = new Texture2D(2,2);
 			GUI.backgroundColor = Color.red;
 
 			if (GUILayout.Button ("Cancel", bstyle, GUILayout.Width (170.0f), GUILayout.Height (30.0f))) {
@@ -706,6 +815,26 @@ namespace KRASH
 			Log.Info ("setLaunchSite");
 			Log.Info ("simType: " + simType.ToString ());
 			Log.Info ("site.name: " + site.name);
+			KRASHShelter.bodiesListAtSimStart = getAllowableBodies ("ALL");
+
+			KRASHShelter.preSimStatus = new List<PreSimStatus> ();
+			foreach (CelestialBody body in KRASHShelter.bodiesListAtSimStart) {
+				PreSimStatus s = new PreSimStatus();
+				s.flightsGlobalIndex = body.flightGlobalsIndex;
+				KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
+				s.isReached = tree.IsReached;;
+				s.landed = tree.landing.IsComplete;
+
+				bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();
+				s.scienceFromAtmo = scienceFlying;
+
+				bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
+				s.scienceFromOrbit = scienceOrbit; 
+
+				KRASHShelter.preSimStatus.Add (s);
+				s = null;
+			}
+
 			// Debug.Log("KK: EditorLogic.fetch.launchSiteName set to " + site.name);
 			//Trick KSP to think that you launched from Runway or LaunchPad
 			//I'm sure Squad will break this in the future

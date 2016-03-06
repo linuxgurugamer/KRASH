@@ -5,83 +5,118 @@ using System.Text;
 using UnityEngine;
 using KSP;
 
-#if false
+#if true
 namespace KRASH
 {
-	public class APIManager
+
+	public class APIManager : MonoBehaviour
 	{
 
 		//This is the actual instance. It gets instantiated when someone calls for it, below.
-		private static APIManager instance_ = null;
+		private static APIManager apiInstance = null;
 		//This is the public reference to the instance. Nobody else can change the instance, it's read only.
-		public static APIManager instance {
+		public static APIManager ApiInstance {
 			//get and set let you get the value or set the value. Providing only one (here: get) makes it read only or write only.
 			get {
+				Log.Info ("ApiInstance called");
 				//If the instance is null we make a new one
-				if (instance_ == null)
-					instance_ = new APIManager ();
+				if (apiInstance == null)
+					apiInstance = new APIManager ();
 				//Then we return the instance
-				return instance_;
+				return apiInstance;
 			}
 		}
 
-		public void TerminateSim()
-		{
-			Log.Info("TerminateSim called");
-		}
 
-		public void SetSetupCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost)
-		{
-			Log.Info ("SetSetupCosts");
-		}
-		public void SetPerMinCost(float flatPerMinCost, float perPartPerMinCost, float perTonPerMinCost)
-		{
-			Log.Info ("SetPerMinCost");
-		}
-		public void SetFlatCosts(float flatSetupCost, float flatPerMinCost)
-		{
-			Log.Info ("SetFlatCosts");
-		}
-		public void SetPerPartCosts(float perPartSetupCost, float perPartPerMinCost)
-		{
-			Log.Info ("SetPerPartCosts");
-		}
-		public void SetPerTonCosts(float perTonSetupCost, float perTonPerMinCost)
-		{
-			Log.Info ("SetPerTonCosts");
-		}
-		public float getCurrentSimCosts()
-		{
-			Log.Info ("getCurrentSimCosts");
-			return 0.0f;
-		}
-		public void addToCosts(float cost)
-		{
-			Log.Info ("addToCosts");
-		}
+#if true
+		public SimAPI simAPI = new SimAPI();
 
+		public class SimAPI
+		{
+			public void SetOverrideNode(string node)
+			{
+				Log.Info ("SetoverrideNode: " + node);
+				KRASH.cfg.setOverrideNode (node);
+			}
+
+			public void TerminateSim(string msg)
+			{
+				Log.Info ("TerminateSim called");
+				KRASH.simPauseMenuInstance.DisplayTerminationMessage (msg);
+			}
+
+			public void SetSetupCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost)
+			{
+				Log.Info ("APIManager.SetSetupCosts:  flatSetupCost: "+ flatSetupCost.ToString() + "   perPartSetupCost: " + perPartSetupCost.ToString() + "    perTonSetupCost: " + perTonSetupCost.ToString());
+				KRASH.cfg.flatSetupCost = flatSetupCost;
+				KRASH.cfg.perPartSetupCost = perPartSetupCost;
+				KRASH.cfg.perTonSetupCost = perTonSetupCost;
+			}
+
+			public void SetPerMinCost(float flatPerMinCost, float perPartPerMinCost, float perTonPerMinCost)
+			{
+				Log.Info ("APIManager.SetPerMinCost:  flatPerMinCost: " + flatPerMinCost.ToString () + "   perPartPerMinCost: " + perPartPerMinCost.ToString () + "    perTonPerMinCost: " + perTonPerMinCost.ToString ());
+				KRASH.cfg.flatPerMinCost = flatPerMinCost;
+				KRASH.cfg.perPartPerMinCost = perPartPerMinCost;
+				KRASH.cfg.perTonPerMinCost = perTonPerMinCost;
+			}
+
+			public void SetFlatCosts(float flatSetupCost, float flatPerMinCost)
+			{
+				Log.Info ("APIManager.SetFlatCosts:  flatSetupCost: " + flatSetupCost.ToString() + "    flatPerMinCost: " + flatPerMinCost.ToString());
+				KRASH.cfg.flatSetupCost = flatSetupCost;
+				KRASH.cfg.flatPerMinCost = flatPerMinCost;
+			}
+
+			public void SetPerPartCosts(float perPartSetupCost, float perPartPerMinCost)
+			{
+				Log.Info ("APIManager.SetPerPartCosts:  perPartSetupCost: " + perPartSetupCost.ToString() + "    perPartPerMinCost: " + perPartPerMinCost.ToString());
+				KRASH.cfg.perPartSetupCost = perPartSetupCost;
+				KRASH.cfg.perPartPerMinCost = perPartPerMinCost;
+			}
+
+			public void SetPerTonCosts(float perTonSetupCost, float perTonPerMinCost)
+			{
+				Log.Info ("APIManager.SetPerTonCosts:  perTonSetupCost: " + perTonSetupCost.ToString() + "    perTonPerMinCost: " + perTonPerMinCost.ToString());
+				KRASH.cfg.perTonSetupCost = perTonSetupCost;
+				KRASH.cfg.perTonPerMinCost = perTonPerMinCost;
+			}
+
+			public double getCurrentSimCosts()
+			{
+				Log.Info ("APIManager.getCurrentSimCosts");
+				return KRASHShelter.simCost;
+			}
+			public void addToCosts(float cost)
+			{
+				Log.Info ("APIManager.addToCosts");
+				KRASHShelter.simCost += cost;
+			}
+		}
+#endif
+		
 		public SimEvent SimMenuEvent = new SimEvent ();
 		public SimEvent SimStartEvent = new SimEvent ();
 		public SimEvent SimRestartEvent = new SimEvent ();
 		public SimEvent SimTerminationEvent = new SimEvent ();
-		public SimEvent SimTimedEvent = new SimEvent();
 
 		//The SimEvent class is used by all events. It basically just lets you add a listening method to the event, remove one, or fire all the events.
 		public class SimEvent
 		{
 			//This is the list of methods that should be activated when the event fires
-			private List<Action<Vessel, float>> listeningMethods = new List<Action<Vessel, float>> ();
+			private List<Action<Vessel, double>> listeningMethods = new List<Action<Vessel, double>> ();
 
 			//This adds an event to the List of listening methods
-			public void Add (Action<Vessel, float> method)
+			public void Add (Action<Vessel, double> method)
 			{
 				//We only add it if it isn't already added. Just in case.
+				Log.Info("SimEvent.Add");
 				if (!listeningMethods.Contains (method))
 					listeningMethods.Add (method);
 			}
 
 			//This removes and event from the List
-			public void Remove (Action<Vessel, float> method)
+			public void Remove (Action<Vessel, double> method)
 			{
 				//We also only remove it if it's actually in the list.
 				if (listeningMethods.Contains (method))
@@ -89,10 +124,11 @@ namespace KRASH
 			}
 
 			//This fires the event off, activating all the listening methods.
-			public void Fire (Vessel vessel, float cost)
+			public void Fire (Vessel vessel, double cost)
 			{
 				//Loop through the list of listening methods and Invoke them.
-				foreach (Action<Vessel, float> method in listeningMethods)
+				Log.Info("listeningMethods.count: " + listeningMethods.Count());
+				foreach (Action<Vessel, double> method in listeningMethods)
 					method.Invoke (vessel, cost);
 			}
 		}
@@ -100,5 +136,4 @@ namespace KRASH
 
 
 }
-
 #endif

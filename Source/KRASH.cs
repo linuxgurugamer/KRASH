@@ -51,22 +51,54 @@ namespace KRASH
 		// There is probably a better way to do this in a Unity-like way,
 		// But I don't know it.
 		public static KRASH instance;
+		public static SimulationPauseMenu simPauseMenuInstance;
+
+		public static Configuration cfg;
 		private static bool componentsLoaded = false;
-//		public static int cnt = 0;
-//		public int thiscnt;
+
 		// This is a flag for marking a save as 'dirty'. Any flag with this flag
 		// that enters SPACECENTER, EDITOR, or TRACKSTATION will be immediately reset
 		[KSPField (isPersistant = true)]
 		public bool SimulationActive = false;
 
+		#if false
+		public void simStart(Vessel v, double f)
+		{
+			Log.Info ("simStart");
+		}
+		public void testWrapper()
+		{
+			bool b = KRASHWrapper.SetSetupCosts (500.0f, 501.0f, 502.0f);
+			b = KRASHWrapper.addToCosts (12345.0f);
+			double d = KRASHWrapper.getCurrentSimCosts ();
+			//KRASHWrapper.AddSimStartEvent (simStart);
+
+		}
+		#endif
 		// This is our entry point
 		void Start ()
 		{            
-//			cnt++;
-//			thiscnt = cnt;
-//			Log.Info ("HoloDeck.Start, cnt: " + thiscnt.ToString());
 			// update the singleton;
 			instance = this;
+			APIManager api = APIManager.ApiInstance;
+
+			//testWrapper ();
+
+			#if true
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+			{
+				if (KRASHShelter.simCost > 0) {
+					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
+					Log.Info ("simCost found, Funds: " + Funding.Instance.Funds.ToString ());
+					KRASHShelter.simCost = 0;
+				}
+			}
+			#endif
+
+			Log.Info ("Loading configs");
+			cfg = new Configuration ();
+
+			cfg.LoadConfiguration (HighLogic.CurrentGame.Parameters.preset.ToString());
 
 			// Reload to pre-sim if we are in the wrong scene.
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT) {
@@ -98,16 +130,14 @@ namespace KRASH
 		// This is honestly probably not necessary, but better safe than sorry
 		void OnDestroy ()
 		{
-//			Log.Info ("HoloDeck.Destroy cnt: " + thiscnt.ToString());
 			SimulationNotification (false); 
-//			thiscnt = -1;
 			instance = null;
+			cfg = null;
 		}
 
 		// Activates the Simulation. Returns the success of the activation.
 		public  bool Activate ()
 		{
-//			Log.Info ("HoloDeck.Activate cnt: " + thiscnt.ToString());
 			// for recording save status, not sure what this string actually is tbh
 			string save = null;
 
@@ -126,10 +156,12 @@ namespace KRASH
 //					HoloDeck.OnLeavingEditor (EditorDriver.editorFacility, EditorLogic.fetch.launchSiteName);
 					KRASH.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 				}
-
+					
 				// Start the tell-tale
 				KRASH.instance.SimulationNotification (true);
 			}
+			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = false;
+			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = false;
 
 			return save != null ? true : false;
 		}
@@ -163,7 +195,7 @@ namespace KRASH
 			if (KRASH.instance.SimulationActive && System.IO.File.Exists (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs")) {
 				// Weird bug can be intorduced by how KSP keeps around KSPAddons until it decides to destroy
 				// them. We need to preempt this so extraneous behavior isn't observed
-//				Log.Info ("HoloDeck.Deactivate cnt: " + thiscnt.ToString());
+
 
 				DestroyModules ();
 
@@ -191,6 +223,10 @@ namespace KRASH
 					ShipConstruction.ShipConfig = KRASHShelter.lastShip;
 				}
 			}
+			//Log.Info ("Total sim cost: " + KRASHShelter.simCost.ToString ());
+			//Funding.Instance.AddFunds(-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
+			//Log.Info ("Funds: " + Funding.Instance.Funds.ToString ());
+			//KRASHShelter.simCost = 0;
 			KRASH.instance.SimulationActive = false;
 		}
 
@@ -213,7 +249,7 @@ namespace KRASH
 			}
 
 			KRASHShelter.lastShip = ShipConstruction.ShipConfig;
-			LaunchGUI.Instance.setLaunchSite (launchSite);
+			LaunchGUI.LaunchGuiInstance.setLaunchSite (launchSite);
 		}
 
 		// This is in here instead of GUI, because this isn't an 'implementation detail'
@@ -223,7 +259,8 @@ namespace KRASH
 			if (HighLogic.LoadedScene == GameScenes.FLIGHT) {
 				switch (state) {
 				case true:
-					InvokeRepeating ("DoSimulationNotification", 0.1f, 1.0f);
+					SetSimActiveNotification ();
+					InvokeRepeating ("DoSimulationNotification", 0.1f, 2.0f);
 					break;
 
 				case false:
@@ -245,7 +282,7 @@ namespace KRASH
 		}
 		private void DoSimulationNotification ()
 		{
-			ScreenMessages.PostScreenMessage (simNotification, 1.0f, ScreenMessageStyle.LOWER_CENTER);
+			ScreenMessages.PostScreenMessage (simNotification, 1.0f, ScreenMessageStyle.UPPER_CENTER);
 		}
 	}
 }

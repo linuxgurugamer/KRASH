@@ -1,27 +1,4 @@
-﻿Cfg file to store basic cost info:
-
-
-
-float	flatSetupCost;
-float	flatPerMinCost;
- 
-float	perPartSetupCost;
-float	perPartPerMinCost;
-
-float	perTonSetupCost;
-float	perTonPerMinCost;
-
-
-API Functions to set costs
-===========================
-function SetAllCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost, float flatPerMinCost, float perPartPerMinCost, float perTonPerMinCost)
-function SetSetupCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost)
-function SetPerMinCost(float flatPerMinCost, float perPartPerMinCost, float perTonPerMinCost)
-function SetFlatCosts(float flatSetupCost, float flatPerMinCost);
-function SetPerPartCosts(float perPartSetupCost, float perPartPerMinCost)
-function SetPerTonCosts(flost perTonSetupCost, perTonPerMinCost);
-
-
+﻿
 Simulation costs have several parts:
 
 Initial setup
@@ -30,42 +7,9 @@ Restarting simulation does not have any additional cost, but cost per minute wil
 Costs only apply to career mode, not science or sandbox
 The costs will be configurable via an interface.  I'll have an initial setup of costs, but they will all be configurable via the interface.
 
-Costs will be based on one  or more of the following:
-
-Fixed cost
-Cost per part
-Cost per ton
-Each one of the simulation parts will be able to have the cost basis set separately.  This will allow, for example, an initial fixed cost, and then a per-minute cost based on the number of parts, etc.
-
- 
-
-The API will include both setting and removing callbacks for the following events:
-
-Entering the KRASH window
-Starting the simulation
-Restarting the simulation
-Simulation termination
-Timed events, called every second or so
-
-API Functions (misc)
-====================
-function getCurrentSimCosts
-function addToCosts
-function TerminateSim
 
 ===========
 ToDo
-1.  Save settings
-2.  In hard mode
-	a.  End sim. if enter SOI w/o having data from space around or surface?  or if never reached?
-	b.  End sim if ship lands without any science from surface
-	c.  End sim if ship enters atmosphere without any previous data from surface or atmospheric science
-	d.	End sim if cost exceeds available cash
-	
-3.  Increase sim cost if in atmosphere???
+1.  Save settings ???
 
-
-GameEvents.onVesselSOIChanged.Add (this.CallbackSOIChanged);
-GameEvents.onVesselSOIChanged.Remove (this.CallbackSOIChanged);
-
-CelestialBodySubtree
+Timed events, called every second or so

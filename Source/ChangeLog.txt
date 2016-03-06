@@ -1,0 +1,38 @@
+﻿0.2.0	Initial release
+		Simple simulation, no costs or termination
+
+0.3.0	Bugs fixed:
+		Fixed Cancel button to cancen the sim
+		Fixed "Simulation Active" message not being displayed during sim
+		Disabled Quicksave and Quickload functions
+
+		New Features:
+		Simulation costs added for career mode
+		Configuration file added. See the config file for explanations:
+			flatSetupCost
+			flatPerMinCost
+			flatSetupCost 
+			flatPerMinCost 
+			perTonSetupCost 
+			perTonPerMinCost 
+			AtmoPerMinMultipler
+			ContinueIfNoCash
+			TerminateAtSoiWithoutData
+			TerminateAtLandWithoutData 
+			TerminateAtAtmoWithoutData 
+			MaxAllowableSimCost 
+			DefaultSimTime 
+
+		Config file enhanced with with nodes for each career type.  Top of 
+		the config file are the basic values, the values in the nodes override
+		the basic values (if present).
+
+		API added for modders
+		Ability to limit total simulation costs
+		Termination modes added for career:
+			Simulation terminated due to lack of funds
+			Simulation terminated due to cost limit reached
+			Simulation terminated due to lack of science data
+			Simulation terminated due to entering unknown SOI
+			Simulation terminated due to landing on unknown body
+			Simulation terminated due to vessel destruction

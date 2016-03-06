@@ -52,8 +52,10 @@ copy MiniAVC.dll %HOMEDIR%\install\Gamedata\KRASH
 copy bin\Release\KRASH.dll %HOMEDIR%\install\Gamedata\KRASH\Plugins
 copy  KRASH.version %HOMEDIR%\install\Gamedata\KRASH\KRASH.version
 copy ..\README.md %HOMEDIR%\install\Gamedata\KRASH
-rem copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
-
+copy README4Modders.txt  %HOMEDIR%\install\Gamedata\KRASH
+copy KRASHWrapper.cs  %HOMEDIR%\install\Gamedata\KRASH
+copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
+copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH
 
 %HOMEDRIVE%
 cd %HOMEDIR%\install
