@@ -429,7 +429,15 @@ namespace KRASH
 					selectedSite = runway;
 				}
 			}
-				
+
+			if (GUILayout.Button ("Orbit selection")) {
+				selectType = SelectionType.celestialbodies;
+				simType = SimType.ORBITING;
+				setOrbit(selectedBody);
+				//newAltitude = selectedBody.atmosphereDepth + 100;
+				//altitude = newAltitude.ToString ();
+			}
+						
 			if (GUILayout.Button ("Landed")) {
 				selectType = SelectionType.celestialbodies;
 				simType = SimType.LANDED;
@@ -440,13 +448,6 @@ namespace KRASH
 				newAltitude = Math.Floor( Math.Max(shipSize.z, Math.Max(shipSize.y, shipSize.x))) + 5;
 
 				altitude = newAltitude.ToString ();
-			}
-			if (GUILayout.Button ("Orbit selection")) {
-				selectType = SelectionType.celestialbodies;
-				simType = SimType.ORBITING;
-				setOrbit(selectedBody);
-				//newAltitude = selectedBody.atmosphereDepth + 100;
-				//altitude = newAltitude.ToString ();
 			}
 
 			GUILayout.EndHorizontal ();
@@ -533,7 +534,12 @@ namespace KRASH
 
 				foreach (CelestialBody body in bodiesList) {
 					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
-					bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
+
+					bool scienceOrbit;
+					if (!isCareerGame())
+						scienceOrbit = true;
+					else
+						scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
 
 					if (!isCareerGame () || scienceOrbit || body.isHomeWorld ) {
 						if (simType != SimType.LANDED || body.isHomeWorld || tree.landing.IsComplete) {
@@ -722,71 +728,72 @@ namespace KRASH
 			GUILayout.Label((dryMass + fuelMass).ToString(), fontColorYellow);
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (10);
-
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Simulation Costs:", fontColorCyan);
-			GUILayout.EndHorizontal ();
-
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Sim setup cost:");
-			GUILayout.FlexibleSpace ();
-			double simSetupCost = Math.Floor(KRASH.cfg.flatSetupCost +
-			                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartSetupCost +
-								(dryMass + fuelMass) * KRASH.cfg.perTonSetupCost);
-			
-			GUILayout.Label(simSetupCost.ToString(), fontColorYellow);
-			GUILayout.EndHorizontal ();
-
-
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label ("Est. Sim/min cost:");
-			GUILayout.FlexibleSpace ();
-
-			float estSimPerMin = KRASH.cfg.flatPerMinCost +
-			                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartPerMinCost +
-			                     (dryMass + fuelMass) * KRASH.cfg.perTonPerMinCost;
-			
-			GUILayout.Label(estSimPerMin.ToString(), fontColorYellow);
-			GUILayout.EndHorizontal ();
-			float m = KRASH.cfg.AtmoMultipler;
-			float estSimAtmoPerMin = estSimPerMin;
-				
-			if (m < 1.0F)
-				m = 1.0F;
-			if (m > 1.0) {
-				estSimAtmoPerMin = (float)Math.Floor(estSimPerMin * m + 1.0);
-				GUILayout.BeginHorizontal (GUILayout.Height(18));
-				GUILayout.Label ("Est. Atmo Sim/min cost:");
-				GUILayout.FlexibleSpace ();
-
-				GUILayout.Label(estSimAtmoPerMin.ToString(), fontColorYellow);
-				GUILayout.EndHorizontal ();
-			}
-
-
-			GUILayout.BeginHorizontal ();
-			limitMaxCosts = GUILayout.Toggle (limitMaxCosts, "Limit max costs");
-			GUILayout.FlexibleSpace ();
-			GUILayout.EndHorizontal ();
-			if (limitMaxCosts) {
-				if (KRASHShelter.LimitSimCost == 0) {
-					KRASHShelter.LimitSimCost = Math.Floor(simSetupCost + KRASH.cfg.DefaultSimTime * estSimAtmoPerMin);
-				}
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				GUILayout.BeginHorizontal ();
-				GUILayout.Label ("Limit: ");
-				GUILayout.FlexibleSpace ();
-				double f;
-				string s = GUILayout.TextField (KRASHShelter.LimitSimCost.ToString(), GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height(18));
-				try {
-					f = Convert.ToDouble (s);
-				} catch (Exception) {
-					f = KRASHShelter.LimitSimCost;
-				} finally {
-				}
-				if (f < simSetupCost)
-					f = simSetupCost;
-				KRASHShelter.LimitSimCost = f;
+				GUILayout.Label ("Simulation Costs:", fontColorCyan);
 				GUILayout.EndHorizontal ();
+
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label ("Sim setup cost:");
+				GUILayout.FlexibleSpace ();
+				double simSetupCost = Math.Floor (KRASH.cfg.flatSetupCost +
+				                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartSetupCost +
+				                     (dryMass + fuelMass) * KRASH.cfg.perTonSetupCost);
+			
+				GUILayout.Label (simSetupCost.ToString (), fontColorYellow);
+				GUILayout.EndHorizontal ();
+
+
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label ("Est. Sim/min cost:");
+				GUILayout.FlexibleSpace ();
+
+				float estSimPerMin = KRASH.cfg.flatPerMinCost +
+				                    EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartPerMinCost +
+				                    (dryMass + fuelMass) * KRASH.cfg.perTonPerMinCost;
+			
+				GUILayout.Label (estSimPerMin.ToString (), fontColorYellow);
+				GUILayout.EndHorizontal ();
+				float m = KRASH.cfg.AtmoMultipler;
+				float estSimAtmoPerMin = estSimPerMin;
+				
+				if (m < 1.0F)
+					m = 1.0F;
+				if (m > 1.0) {
+					estSimAtmoPerMin = (float)Math.Floor (estSimPerMin * m + 1.0);
+					GUILayout.BeginHorizontal (GUILayout.Height (18));
+					GUILayout.Label ("Est. Atmo Sim/min cost:");
+					GUILayout.FlexibleSpace ();
+
+					GUILayout.Label (estSimAtmoPerMin.ToString (), fontColorYellow);
+					GUILayout.EndHorizontal ();
+				}
+
+
+				GUILayout.BeginHorizontal ();
+				limitMaxCosts = GUILayout.Toggle (limitMaxCosts, "Limit max costs");
+				GUILayout.FlexibleSpace ();
+				GUILayout.EndHorizontal ();
+				if (limitMaxCosts) {
+					if (KRASHShelter.LimitSimCost == 0) {
+						KRASHShelter.LimitSimCost = Math.Floor (simSetupCost + KRASH.cfg.DefaultSimTime * estSimAtmoPerMin);
+					}
+					GUILayout.BeginHorizontal ();
+					GUILayout.Label ("Limit: ");
+					GUILayout.FlexibleSpace ();
+					double f;
+					string s = GUILayout.TextField (KRASHShelter.LimitSimCost.ToString (), GUILayout.MinWidth (90.0F), GUILayout.MaxWidth (90.0F), GUILayout.Height (18));
+					try {
+						f = Convert.ToDouble (s);
+					} catch (Exception) {
+						f = KRASHShelter.LimitSimCost;
+					} finally {
+					}
+					if (f < simSetupCost)
+						f = simSetupCost;
+					KRASHShelter.LimitSimCost = f;
+					GUILayout.EndHorizontal ();
+				}
 			}
 
 			GUILayout.FlexibleSpace ();
@@ -817,24 +824,26 @@ namespace KRASH
 			Log.Info ("site.name: " + site.name);
 			KRASHShelter.bodiesListAtSimStart = getAllowableBodies ("ALL");
 
-			KRASHShelter.preSimStatus = new List<PreSimStatus> ();
-			foreach (CelestialBody body in KRASHShelter.bodiesListAtSimStart) {
-				PreSimStatus s = new PreSimStatus();
-				s.flightsGlobalIndex = body.flightGlobalsIndex;
-				KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
-				s.isReached = tree.IsReached;;
-				s.landed = tree.landing.IsComplete;
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				KRASHShelter.preSimStatus = new List<PreSimStatus> ();
+				foreach (CelestialBody body in KRASHShelter.bodiesListAtSimStart) {
+					PreSimStatus s = new PreSimStatus ();
+					s.flightsGlobalIndex = body.flightGlobalsIndex;
+					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
+					s.isReached = tree.IsReached;
+					;
+					s.landed = tree.landing.IsComplete;
 
-				bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();
-				s.scienceFromAtmo = scienceFlying;
+					bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();
+					s.scienceFromAtmo = scienceFlying;
 
-				bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
-				s.scienceFromOrbit = scienceOrbit; 
+					bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
+					s.scienceFromOrbit = scienceOrbit; 
 
-				KRASHShelter.preSimStatus.Add (s);
-				s = null;
+					KRASHShelter.preSimStatus.Add (s);
+					s = null;
+				}
 			}
-
 			// Debug.Log("KK: EditorLogic.fetch.launchSiteName set to " + site.name);
 			//Trick KSP to think that you launched from Runway or LaunchPad
 			//I'm sure Squad will break this in the future
@@ -850,6 +859,7 @@ namespace KRASH
 
 		public void LaunchSim ()
 		{
+			Log.Info ("LaunchSim");
 			KRASH.instance.Activate ();
 			EditorLogic.fetch.launchVessel ();
 		}

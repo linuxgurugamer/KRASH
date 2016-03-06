@@ -138,6 +138,7 @@ namespace KRASH
 		// Activates the Simulation. Returns the success of the activation.
 		public  bool Activate ()
 		{
+			Log.Info ("Activate");
 			// for recording save status, not sure what this string actually is tbh
 			string save = null;
 
@@ -162,7 +163,7 @@ namespace KRASH
 			}
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = false;
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = false;
-
+			Log.Info ("Activate returning: " + (save != null ? true : false).ToString ());
 			return save != null ? true : false;
 		}
 

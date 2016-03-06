@@ -36,3 +36,7 @@
 			Simulation terminated due to entering unknown SOI
 			Simulation terminated due to landing on unknown body
 			Simulation terminated due to vessel destruction
+
+0.3.1	Bug fix:
+		Disable view of costs when not in career mode
+		Fix sandbox & science mode (wasn't starting at all)
