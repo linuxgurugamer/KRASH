@@ -40,3 +40,10 @@
 0.3.1	Bug fix:
 		Disable view of costs when not in career mode
 		Fix sandbox & science mode (wasn't starting at all)
+
+0.3.2	Bug fix:
+		When in Pause menu, game is not paused even though menu is up
+		Switching to another craft causes Pause menu to fail
+		In sandbox, go to another planet, then return and start career game, that last planet is still available
+		Make simcosts text larger
+		Decimal points not being accepted at end of number for lat/long

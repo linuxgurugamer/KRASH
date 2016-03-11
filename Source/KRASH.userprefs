@@ -2,23 +2,24 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="ChangeLog.txt">
     <Files>
-      <File FileName="SceneModules\FlightModule.cs" Line="416" Column="65" />
-      <File FileName="LaunchGUI.cs" Line="526" Column="62" />
+      <File FileName="SceneModules\FlightModule.cs" Line="449" Column="15" />
+      <File FileName="LaunchGUI.cs" Line="1" Column="1" />
       <File FileName="View\OrbitEditor.cs" Line="1" Column="1" />
       <File FileName="View\Lander.cs" Line="1" Column="1" />
-      <File FileName="KRASH.cs" Line="253" Column="39" />
+      <File FileName="KRASH.cs" Line="1" Column="1" />
       <File FileName="SceneModules\EditorModule.cs" Line="1" Column="1" />
       <File FileName="TODO.txt" Line="1" Column="1" />
       <File FileName="Configuration.cs" Line="1" Column="1" />
       <File FileName="APIManager.cs" Line="1" Column="1" />
-      <File FileName="KRASHShelter.cs" Line="29" Column="3" />
-      <File FileName="..\README.md" Line="64" Column="1" />
+      <File FileName="KRASHShelter.cs" Line="1" Column="1" />
+      <File FileName="..\README.md" Line="1" Column="1" />
       <File FileName="KRASHWrapper.cs" Line="1" Column="1" />
       <File FileName="README4Modders.txt" Line="1" Column="1" />
       <File FileName="buildrelease.bat" Line="1" Column="1" />
       <File FileName="KRASH.cfg" Line="1" Column="1" />
-      <File FileName="ChangeLog.txt" Line="42" Column="54" />
-      <File FileName="krash.version" Line="10" Column="12" />
+      <File FileName="ChangeLog.txt" Line="45" Column="1" />
+      <File FileName="krash.version" Line="14" Column="3" />
+      <File FileName="View\Core.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

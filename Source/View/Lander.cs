@@ -100,16 +100,16 @@ namespace KRASH.Hyperedit
 			var vessel = GetComponent<Vessel>();
 			if (vessel != FlightGlobals.ActiveVessel)
 			{
-				KRASH.instance.SetSimActiveNotification ();
+				KRASHShelter.instance.SetSimActiveNotification ();
 				Destroy(this);
 				return;
 			}
-			KRASH.instance.SetSimNotification ("Simulation Setup in Progress");
+			KRASHShelter.instance.SetSimNotification ("Simulation Setup in Progress");
 			if (AlreadyTeleported)
 			{
 				if (vessel.LandedOrSplashed)
 				{
-					KRASH.instance.SetSimActiveNotification ();
+					KRASHShelter.instance.SetSimActiveNotification ();
 					Destroy(this);
 				}
 				else
@@ -127,10 +127,11 @@ namespace KRASH.Hyperedit
 				var pqs = Body.pqsController;
 				if (pqs == null)
 				{
-					KRASH.instance.SetSimActiveNotification ();
+					KRASHShelter.instance.SetSimActiveNotification ();
 					Destroy(this);
 					return;
 				}
+
 				var alt = pqs.GetSurfaceHeight(
 					QuaternionD.AngleAxis(Longitude, Vector3d.down) *
 					QuaternionD.AngleAxis(Latitude, Vector3d.forward) * Vector3d.right) -
@@ -154,8 +155,65 @@ namespace KRASH.Hyperedit
 
 				var orbit = vessel.orbitDriver.orbit.Clone();
 				orbit.UpdateFromStateVectors(teleportPosition, teleportVelocity, Body, Planetarium.GetUniversalTime());
-				vessel.SetOrbit(orbit);
 
+				vessel.SetOrbit(orbit);
+#if false
+
+				#if false
+				try
+				{
+					Log.Info ("FixedUpdate HoldVesselUnpack");
+					OrbitPhysicsManager.HoldVesselUnpack(60);
+				}
+				catch (NullReferenceException)
+				{
+					Log.Info("OrbitPhysicsManager.HoldVesselUnpack threw NullReferenceException");
+				}
+				#endif
+
+				// rotation code
+				var newUp = FlightGlobals.getUpAxis();
+
+				#if false
+				//set the vessel's up vector
+				vessel.rootPart.partTransform.up = newUp;
+				//get the rotation that resulted from setting the up vector
+				var newRot = vessel.rootPart.partTransform.rotation;
+
+				//set the rotation
+				vessel.SetRotation(newRot);
+				#endif
+
+				// Get the direction from the world origin to target position
+				Vector3d curpos = vessel.GetWorldPos3D ();
+				Vector3d gee = FlightGlobals.getGeeForceAtPosition( vessel.GetWorldPos3D () );
+				//curpos.x = 0;
+				Quaternion normal = Quaternion.LookRotation (curpos);
+
+				var diff = Quaternion.FromToRotation(KRASHShelter.originalUp, gee);
+
+				vessel.SetRotation (diff * normal);
+//				vessel.SetRotation(normal2);
+
+				// adjust vessel rotation based on how much the up direction changed
+//				var diff = Quaternion.FromToRotation(curpos, newpos);
+//				vessel.SetRotation(diff * normal);
+
+				// adjust vessel rotation based on how much the up direction changed
+//				var diff = Quaternion.FromToRotation(KRASHShelter.originalUp, newUp);
+
+//				vessel.SetRotation(diff * vessel.transform.rotation);
+				// rotation code
+
+
+				// rotation code
+				Log.Info("originalUp: " + KRASHShelter.originalUp.ToString());
+				Log.Info ("newUp: " + newUp.ToString ());
+				Log.Info ("gee: " + gee.ToString ());
+				Log.Info ("diff: " + diff.ToString ());
+
+//				vessel.SetOrbit(orbit);
+#endif
 				AlreadyTeleported = true;
 			}
 		}

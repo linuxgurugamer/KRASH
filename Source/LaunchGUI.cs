@@ -21,6 +21,12 @@ namespace KRASH
 		public static LaunchGUI LaunchGuiInstance;
 
 		const string texPathDefault = "KRASH/Textures/KRASH";
+
+		public static LaunchSite selectedSite = null;
+		static SelectionType selectType = SelectionType.launchsites;
+		static public CelestialBody selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+		List<CelestialBody> bodiesList;
+
 		//const string texPathOn = "KRASH/Textures/AppLauncherIcon-On";
 		//const string texPathOff = "KRASH/Textures/AppLauncherIcon-Off";
 
@@ -51,6 +57,7 @@ namespace KRASH
 				GameEvents.onGUIApplicationLauncherReady.Add (this.OnGuiAppLauncherReady);
 				LaunchGuiInstance = this;
 			}
+
 		}
 
 		private void OnDestroy ()
@@ -130,6 +137,7 @@ namespace KRASH
 
 		public void SetVisible (bool visible)
 		{
+
 			this.visible = visible;
 		}
 
@@ -154,6 +162,12 @@ namespace KRASH
 		{
 			EditorLock (false);
 			SetVisible (!visible);
+			if (visible) {
+				selectedSite = null;
+				bodiesList = getAllowableBodies ();
+				selectType = SelectionType.launchsites;
+				selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+			}
 			if (visible)
 				APIManager.ApiInstance.SimMenuEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
 		}
@@ -269,11 +283,6 @@ namespace KRASH
 		//		private bool orbitSelection = false;
 		public List<LaunchSite> sites = new List<LaunchSite> ();
 
-		List<CelestialBody> bodiesList;
-
-		public static LaunchSite selectedSite = null;
-		static SelectionType selectType = SelectionType.launchsites;
-
 		public Boolean isCareerGame ()
 		{
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
@@ -364,8 +373,7 @@ namespace KRASH
 			LANDED,
 			ORBITING
 		}
-
-		static public CelestialBody selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+			
 		string altitude = "";
 		string latitude = "", longitude = "";
 		static public double newAltitude = 0.0, newLatitude = 0.0, newLongitude = 0.0;
@@ -541,8 +549,8 @@ namespace KRASH
 					else
 						scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
 
-					if (!isCareerGame () || scienceOrbit || body.isHomeWorld ) {
-						if (simType != SimType.LANDED || body.isHomeWorld || tree.landing.IsComplete) {
+					if (!isCareerGame () || scienceOrbit || body.isHomeWorld  || (simType == SimType.LANDED && tree.landing.IsComplete )) {
+						
 //						Log.Info ("body: " + body.name + "  is reached: " + tree.IsReached);
 							GUI.enabled = !(selectedBody == body);
 							if (GUILayout.Button (body.name, GUILayout.Height (30))) {
@@ -554,7 +562,7 @@ namespace KRASH
 								//smessage = "Reference body set to " + body.name;
 								//ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
 
-							}
+
 						}
 					}
 				}
@@ -613,7 +621,6 @@ namespace KRASH
 			GUILayout.BeginHorizontal ();
 			switch (type) {
 			case SelectionType.launchsites:
-				
 				GUILayout.Box (FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ().name, GUILayout.Height(21));
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
@@ -628,7 +635,7 @@ namespace KRASH
 				GUILayout.EndHorizontal ();
 				break;
 			case SelectionType.celestialbodies:
-				if (selectedBody != null) {;
+				if (selectedBody != null) {
 					GUILayout.Box (selectedBody.name);
 					GUILayout.EndHorizontal ();
 
@@ -659,7 +666,13 @@ namespace KRASH
 						} catch (Exception) {
 						} finally {
 						}
+						char last;
+						if (latitude.Length > 0)
+							last = latitude [latitude.Length - 1];
+						else last=' ';
 						latitude = newLatitude.ToString ();
+						if (last == '.')
+							latitude += ".";
 						GUILayout.EndHorizontal ();
 
 						GUILayout.BeginHorizontal ();
@@ -671,7 +684,12 @@ namespace KRASH
 						} catch (Exception) {
 						} finally {
 						}
+						if (longitude.Length > 0)
+							last = longitude [longitude.Length - 1];
+						else last=' ';
 						longitude = newLongitude.ToString ();
+						if (last == '.')
+							longitude += '.';
 						GUILayout.EndHorizontal ();
 					}
 				}
@@ -729,6 +747,8 @@ namespace KRASH
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (10);
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+
+
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Simulation Costs:", fontColorCyan);
 				GUILayout.EndHorizontal ();
@@ -742,8 +762,6 @@ namespace KRASH
 			
 				GUILayout.Label (simSetupCost.ToString (), fontColorYellow);
 				GUILayout.EndHorizontal ();
-
-
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Est. Sim/min cost:");
 				GUILayout.FlexibleSpace ();
@@ -768,7 +786,6 @@ namespace KRASH
 					GUILayout.Label (estSimAtmoPerMin.ToString (), fontColorYellow);
 					GUILayout.EndHorizontal ();
 				}
-
 
 				GUILayout.BeginHorizontal ();
 				limitMaxCosts = GUILayout.Toggle (limitMaxCosts, "Limit max costs");
@@ -860,7 +877,7 @@ namespace KRASH
 		public void LaunchSim ()
 		{
 			Log.Info ("LaunchSim");
-			KRASH.instance.Activate ();
+			KRASHShelter.instance.Activate ();
 			EditorLogic.fetch.launchVessel ();
 		}
 

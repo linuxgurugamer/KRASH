@@ -14,7 +14,7 @@ namespace KRASH
      * This class contains all of the code for manipulating the GUI, and interacting with the game
      * for KRASH in GameScenes.FLIGHT.
      */
- 
+	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
 	class FlightModule : MonoBehaviour
 	{
 		private const string TAG = "KRASH.FlightModule";
@@ -26,11 +26,23 @@ namespace KRASH
 
 		}
 
+		private void CallbackLevelWasLoaded (GameScenes scene)
+		{
+			if (HighLogic.LoadedScene == GameScenes.FLIGHT) {
+
+				Log.Info ("CallbackLevelWasLoaded");
+				menu.AddToPostDrawQueue ();
+			}
+
+		}
+
 		// Entry Point
 		void Start ()
 		{
-			if (!menu)
+			if (!menu) {
 				menu = this.GetComponent<SimulationPauseMenu> ();
+				GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
+			}
 		}
 
 		#if false
@@ -54,31 +66,50 @@ namespace KRASH
          * if our menu is not active, tell it to reduce by one ui layer.
          */
 
-
+		int pauseCnt = 0;
 		void Update ()
 		{
+			if (menu == null) {
+				return;
+			}
+			if (KRASHShelter.instance == null) {
+				Log.Info ("Update KRASH.instance == null");
+				return;
+			}
 			//		Log.Info ("PauseMenu.isOpen: " + PauseMenu.isOpen.ToString ());
 			// We don't want to do anything if we aren't simming
-			if (KRASH.instance.SimulationActive) {
+			if (KRASHShelter.instance.SimulationActive) {
 				if (FlightResultsDialog.isDisplaying) {
 					FlightResultsDialog.showExitControls = false;
-					FlightResultsDialog.Display ("Simulation ended in craft destruction!");
+					FlightResultsDialog.Display ("Simulation ended!");
 				}
 				// Hide the vanilla pause menu.
-				if (PauseMenu.isOpen) {
+				if (PauseMenu.isOpen) 
+				{
+					Log.Info ("PauseMenu.Close");
+					Log.Info ("FlightDriver.Pause: " + FlightDriver.Pause.ToString ());
 					PauseMenu.Close ();
+					Log.Info ("FlightDriver.Pause: " + FlightDriver.Pause.ToString ());
+					pauseCnt = 0;
 				}
 
 				// Check for pause keypress
 				if (GameSettings.PAUSE.GetKeyDown ()) {
+					Log.Info ("GetKeyDown    menu.isOpen: " + menu.isOpen);
 					switch (menu.isOpen) {
 					case false:
 						menu.Display ();
 						break;
 					case true:
+						Log.Info ("menu.Close");
 						menu.Close ();
 						break;
 					}
+				} else {
+					// This is to get around a wierd issue where the game unpauses
+					// for about 7-10 tics after PauseMenu.Close() is called.
+					if (menu.isOpen && pauseCnt++ < 20 /*&& FlightDriver.Pause */)
+						FlightDriver.SetPause (true);
 				}
 			}
 		}
@@ -142,6 +173,7 @@ namespace KRASH
 
 		private void Start ()
 		{
+			Log.Info ("SimulationPauseMenu Start");
 			KRASH.simPauseMenuInstance = this;
 			PauseMenu originalMenu = GameObject.FindObjectOfType (typeof(PauseMenu)) as PauseMenu;
 
@@ -150,23 +182,31 @@ namespace KRASH
 			_backgroundColor = originalMenu.backgroundColor;
 			_guiSkin = originalMenu.guiSkin;
 
-			RenderingManager.AddToPostDrawQueue (3, new Callback (DrawGUI));
+			AddToPostDrawQueue ();
 			_windowRect = new Rect ((float)(Screen.width / 2.0 - 125.0), (float)(Screen.height / 2.0 - 70.0), 250f, 130f);
 		}
-
+		public  void AddToPostDrawQueue()
+		{
+			RenderingManager.AddToPostDrawQueue (3, new Callback (DrawGUI));
+		}
 
 		//~SimulationPauseMenu ()
 		void OnDestroy ()
 		{
+			Log.Info ("SimulationPauseMenu OnDestroy");
 			Destroy ();
 		}
 
 		public void Display ()
 		{
+			Log.Info ("Display");
 			isOpen = true;
 			_display = true;
 			InputLockManager.SetControlLock (ControlTypes.PAUSE, "KRASHSimPauseMenu");
+			Log.Info ("Display:  FlightDriver.SetPause (true)");
 			FlightDriver.SetPause (true);
+			Log.Info ("FlightDriver.Pause: " + FlightDriver.Pause.ToString ());
+
 		}
 
 		public void Close ()
@@ -180,25 +220,34 @@ namespace KRASH
 				_miniSettings.GetType ().GetMethod ("Dismiss", BindingFlags.NonPublic | BindingFlags.Instance);
 			} else {
 				isOpen = false;
+				Log.Info ("Close _display set to false");
 				_display = false;
 				InputLockManager.RemoveControlLock ("KRASHSimPauseMenu");
+				Log.Info ("Close:  FlightDriver.SetPause (false)");
 				FlightDriver.SetPause (false);
+				Log.Info ("FlightDriver.Pause: " + FlightDriver.Pause.ToString ());
+
 			}            
 		}
 
 		public void Destroy ()
 		{
+			Log.Info ("SimulationPauseMenu Destroy");
 			RenderingManager.RemoveFromPostDrawQueue (3, new Callback (DrawGUI));
 		}
 
 		// Screw you, MiniSettings
 		private void Hide ()
 		{
+			Log.Info ("Hide _display = false");
+			isOpen = false;
 			_display = false;
 		}
 
 		private void Unhide ()
 		{
+			Log.Info ("Unhide");
+			isOpen = true;
 			_display = true;
 		}
 
@@ -215,7 +264,7 @@ namespace KRASH
 		[Persistent]
 		float simX = 10;
 		[Persistent]
-		float simY = 200;
+		float simY = 50;
 
 		const string simTitle = "Sim Costs:";
 
@@ -255,6 +304,7 @@ namespace KRASH
 								m = 1.0F;
 						}
 					}
+
 
 					lastUpdate = Planetarium.GetUniversalTime ();
 					float mass = FlightGlobals.fetch.activeVessel.GetTotalMass ();
@@ -306,7 +356,7 @@ namespace KRASH
 					}
 				}
 
-
+				simLabelStyle.fontSize = 20;
 				Vector2 size, 
 				sizeTitle = simLabelStyle.CalcSize (new GUIContent (simTitle));
 				//if (config.displayGameTime && config.logGameTime) {
@@ -368,10 +418,11 @@ namespace KRASH
 		bool doLanding = false;
 		bool simStarted = false;
 		int physicsCnt = 0;
+		//bool pausedtest = false;
 
 		private void DrawGUI ()
 		{
-			if (KRASH.instance.SimulationActive) {
+			if (KRASHShelter.instance.SimulationActive) {
 				if (!hyper && HighLogic.LoadedScene == GameScenes.FLIGHT) {
 					//foreach (Part p in FlightGlobals.fetch.activeVessel.Parts) {
 					//	p.
@@ -390,6 +441,12 @@ namespace KRASH
 						if (!doLanding) {
 							if (physicsCnt++ > PHYSICSWAIT) {
 								Log.Info ("Setting initial orbit");
+								#if false
+								KRASHShelter.originalUp = FlightGlobals.getUpAxis();
+								KRASHShelter.originalHeading = Quaternion.LookRotation (FlightGlobals.fetch.activeVessel.GetWorldPos3D ());
+
+								Log.Info ("DrawGUI KRASHShelter.originalUp: " + KRASHShelter.originalUp.ToString ());
+								#endif
 								Hyperedit.OrbitEditor.Simple (FlightGlobals.fetch.activeVessel.orbitDriver, 100000, LaunchGUI.selectedBody);
 								hyper = false;
 								physicsCnt = 0;
@@ -408,7 +465,7 @@ namespace KRASH
 					}
 				}
 
-				if ( !simStarted && LaunchGUI.selectedBody.flightGlobalsIndex == Planetarium.fetch.CurrentMainBody.flightGlobalsIndex) {
+				if (!simStarted && LaunchGUI.selectedBody.flightGlobalsIndex == Planetarium.fetch.CurrentMainBody.flightGlobalsIndex) {
 					simStarted = true;
 					APIManager.ApiInstance.SimStartEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, 0.0f);
 					if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
@@ -417,9 +474,16 @@ namespace KRASH
 						GameEvents.VesselSituation.onLand.Add (this.CallbackOnLand);
 					}
 				}
+
+
+//				if (simStarted && !pausedtest){
+//					pausedtest = true;
+//					PauseMenu.Close ();
+//					FlightDriver.SetPause (true);
+//				}
+				
 				CalcAndDisplaySimCost ();
 
-				//	Log.Info ("_display: " + _display.ToString ());
 				if (_display) {
 					GUI.skin = _guiSkin;
 					GUI.backgroundColor = _backgroundColor;
@@ -478,7 +542,7 @@ namespace KRASH
 				Close ();
 				FlightDriver.RevertToLaunch ();
 				// The RevertTolaunch reloads all the objects, so we destroy them here to avoid conflicts
-				KRASH.instance.DestroyModules ();
+				KRASHShelter.instance.DestroyModules ();
 			}
 			if (GUILayout.Button ("Cancel")) {
 				Close ();
@@ -553,7 +617,7 @@ namespace KRASH
 			Close ();
 			Close ();
 			APIManager.ApiInstance.SimTerminationEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
-			KRASH.instance.Deactivate (KRASHShelter.lastScene);
+			KRASHShelter.instance.Deactivate (KRASHShelter.lastScene);
 			Destroy ();
 
 			yield return 0;

@@ -27,8 +27,11 @@ namespace KRASH
 		public static List<CelestialBody> bodiesListAtSimStart;
 		public static List<PreSimStatus> preSimStatus;
 		public static double LimitSimCost { get; set; }
-
-
+		public static KRASH instance = null;
+		#if false
+		public static Vector3d originalUp;
+		public static Quaternion originalHeading;
+		#endif
         void Awake()
         {
             DontDestroyOnLoad(this);

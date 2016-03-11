@@ -1,15 +1,10 @@
-﻿
-Simulation costs have several parts:
-
-Initial setup
-Cost per minute
-Restarting simulation does not have any additional cost, but cost per minute will continue to accrue
-Costs only apply to career mode, not science or sandbox
-The costs will be configurable via an interface.  I'll have an initial setup of costs, but they will all be configurable via the interface.
+﻿The costs will be configurable via an interface.  I'll have an initial setup of costs, but they will all be configurable via the interface.
 
 
 ===========
 ToDo
-1.  Save settings ???
+Configurable settings:
+	font size
+	costs position
 
 Timed events, called every second or so

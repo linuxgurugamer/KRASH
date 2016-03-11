@@ -35,6 +35,7 @@ using UnityEngine;
 
 namespace KRASH
 {
+	#if true
 	// We want to load in all relevant game scenes, and be applied to all games.
 	[KSPScenario (ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
 		GameScenes.SPACECENTER,
@@ -42,6 +43,8 @@ namespace KRASH
 		GameScenes.FLIGHT,
 		GameScenes.TRACKSTATION
 	})]
+	#endif
+//	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
 	class KRASH : ScenarioModule
 	{
 		// Tag for marking debug logs with
@@ -50,7 +53,7 @@ namespace KRASH
 		// This class is a singleton, as much as Unity will allow.
 		// There is probably a better way to do this in a Unity-like way,
 		// But I don't know it.
-		public static KRASH instance;
+		//public static KRASH instance;
 		public static SimulationPauseMenu simPauseMenuInstance;
 
 		public static Configuration cfg;
@@ -79,7 +82,7 @@ namespace KRASH
 		void Start ()
 		{            
 			// update the singleton;
-			instance = this;
+			KRASHShelter.instance = this;
 			APIManager api = APIManager.ApiInstance;
 
 			//testWrapper ();
@@ -103,13 +106,13 @@ namespace KRASH
 			// Reload to pre-sim if we are in the wrong scene.
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT) {
 				Log.Info ("Not GameScenes.FLIGHT, calling Deactivate");
-				instance.Deactivate (GameScenes.SPACECENTER);
+				KRASHShelter.instance.Deactivate (GameScenes.SPACECENTER);
 			}
             
 			// Deploy scene-specific modules, for GUI hijacking and similar logic
 			switch (HighLogic.LoadedScene) {
 			case GameScenes.FLIGHT: 
-				if (!componentsLoaded && KRASH.instance.SimulationActive) 
+				if (!componentsLoaded && KRASHShelter.instance.SimulationActive) 
 				{
 					componentsLoaded = true;
 					Log.Info ("Adding components");
@@ -131,7 +134,7 @@ namespace KRASH
 		void OnDestroy ()
 		{
 			SimulationNotification (false); 
-			instance = null;
+			KRASHShelter.instance = null;
 			cfg = null;
 		}
 
@@ -143,23 +146,23 @@ namespace KRASH
 			string save = null;
 
 			// Make sure the instance actually exists. I can't imagine this ever failing, but NREs are bad.
-			if (instance != null) {   
+			if (KRASHShelter.instance != null) {   
 				// We create the pre-sim save.
 				save = GamePersistence.SaveGame ("KRASHRevert", HighLogic.SaveFolder, SaveMode.OVERWRITE);
 
 				// Mark the existing save as dirty.
-				KRASH.instance.SimulationActive = true;
+				KRASHShelter.instance.SimulationActive = true;
 
 				// Record the scene we are coming from
 				KRASHShelter.lastScene = HighLogic.LoadedScene;
 
 				if (KRASHShelter.lastScene == GameScenes.EDITOR) {
 //					HoloDeck.OnLeavingEditor (EditorDriver.editorFacility, EditorLogic.fetch.launchSiteName);
-					KRASH.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
+					KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 				}
 					
 				// Start the tell-tale
-				KRASH.instance.SimulationNotification (true);
+				KRASHShelter.instance.SimulationNotification (true);
 			}
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = false;
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = false;
@@ -193,7 +196,7 @@ namespace KRASH
 		public  void  Deactivate (GameScenes targetScene)
 		{
 			// This method only does something if the sim is active.
-			if (KRASH.instance.SimulationActive && System.IO.File.Exists (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs")) {
+			if (KRASHShelter.instance.SimulationActive && System.IO.File.Exists (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs")) {
 				// Weird bug can be intorduced by how KSP keeps around KSPAddons until it decides to destroy
 				// them. We need to preempt this so extraneous behavior isn't observed
 
@@ -228,7 +231,7 @@ namespace KRASH
 			//Funding.Instance.AddFunds(-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 			//Log.Info ("Funds: " + Funding.Instance.Funds.ToString ());
 			//KRASHShelter.simCost = 0;
-			KRASH.instance.SimulationActive = false;
+			KRASHShelter.instance.SimulationActive = false;
 		}
 
 		// This method should be called before activating the simulation directly from an editor, and allows

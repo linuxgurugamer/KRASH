@@ -90,6 +90,10 @@ namespace KRASH.Hyperedit
 		public static void SetOrbit(this Vessel vessel, Orbit newOrbit)
 		{
 			Log.Info ("vessel.SetOrbit");
+
+			//var originalUp = FlightGlobals.getUpAxis ();
+			//Log.Info ("originalUp: " + originalUp.ToString ());
+				
 			var destinationMagnitude = newOrbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()).magnitude;
 			if (destinationMagnitude > newOrbit.referenceBody.sphereOfInfluence)
 			{
@@ -127,6 +131,8 @@ namespace KRASH.Hyperedit
 
 			var newBody = vessel.orbitDriver.orbit.referenceBody;
 			Log.Info ("newBody: " + newBody.ToString ());
+
+
 			if (newBody != oldBody)
 			{
 				var evnt = new GameEvents.HostedFromToAction<Vessel, CelestialBody>(vessel, oldBody, newBody);
