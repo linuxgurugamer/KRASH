@@ -2,28 +2,28 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="ChangeLog.txt">
     <Files>
-      <File FileName="SceneModules\FlightModule.cs" Line="449" Column="15" />
-      <File FileName="LaunchGUI.cs" Line="1" Column="1" />
+      <File FileName="SceneModules\FlightModule.cs" Line="254" Column="29" />
+      <File FileName="View\Lander.cs" Line="101" Column="40" />
+      <File FileName="LaunchGUI.cs" Line="473" Column="48" />
+      <File FileName="KRASH.cs" Line="317" Column="104" />
+      <File FileName="KRASHShelter.cs" Line="1" Column="1" />
+      <File FileName="APIManager.cs" Line="1" Column="1" />
+      <File FileName="KRASHWrapper.cs" Line="1" Column="1" />
+      <File FileName="Configuration.cs" Line="1" Column="1" />
       <File FileName="View\OrbitEditor.cs" Line="1" Column="1" />
-      <File FileName="View\Lander.cs" Line="1" Column="1" />
-      <File FileName="KRASH.cs" Line="1" Column="1" />
       <File FileName="SceneModules\EditorModule.cs" Line="1" Column="1" />
       <File FileName="TODO.txt" Line="1" Column="1" />
-      <File FileName="Configuration.cs" Line="1" Column="1" />
-      <File FileName="APIManager.cs" Line="1" Column="1" />
-      <File FileName="KRASHShelter.cs" Line="1" Column="1" />
-      <File FileName="..\README.md" Line="1" Column="1" />
-      <File FileName="KRASHWrapper.cs" Line="1" Column="1" />
       <File FileName="README4Modders.txt" Line="1" Column="1" />
       <File FileName="buildrelease.bat" Line="1" Column="1" />
-      <File FileName="KRASH.cfg" Line="1" Column="1" />
-      <File FileName="ChangeLog.txt" Line="45" Column="1" />
-      <File FileName="krash.version" Line="14" Column="3" />
-      <File FileName="View\Core.cs" Line="1" Column="1" />
+      <File FileName="ChangeLog.txt" Line="52" Column="1" />
+      <File FileName="krash.version" Line="1" Column="1" />
+      <File FileName="KRASHCustom.cfg" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="D:\Users\jbb\github\KRASH\Source\KRASH.cs" line="272" column="37" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <DisabledProjects>

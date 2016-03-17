@@ -6,7 +6,8 @@
 // to your functions
 
 // KRASH is defined when compiling KRASH, to avoid this module from being included.  
-#if !KRASH
+#if KRASH
+//#if !KRASH
 
 using System;
 using System.Collections.Generic;
@@ -235,6 +236,28 @@ namespace KRASH
 			return false;
 		}
 
+
+		public static bool SetPercentCosts(float percentSetupCost, float percentPerMinCost)
+		{
+			if (KRASHAvailable) {
+				if (KRASHType != null) {
+					object successList = GetMemberInfoValue (KRASHType.GetMember ("simAPI") [0], ApiInstance);
+					if (successList != null) {
+						System.Reflection.MethodInfo addMethod = successList.GetType ().GetMethod ("SetPercentCosts");
+						addMethod.Invoke (successList, new object[] { percentSetupCost, percentPerMinCost });
+						return true;
+					} else {
+						InfoLog ("successList == null");
+						return false;
+					}
+				} else {
+					InfoLog ("KRASHType == null");
+					return false;
+				}
+			}
+			return false;
+		}
+
 		public static bool AddToCosts(float cost)
 		{
 			if (KRASHAvailable) {
@@ -278,9 +301,31 @@ namespace KRASH
 				}
 			}
 			return currentSimCosts;
-
 		}
 			
+		public static bool simulationActive()
+		{
+			bool b = false;
+			if (KRASHAvailable) {
+				if (KRASHType != null) {
+					object successList = GetMemberInfoValue (KRASHType.GetMember ("simAPI") [0], ApiInstance);
+					if (successList != null) {
+						System.Reflection.MethodInfo addMethod = successList.GetType ().GetMethod ("simulationActive");
+						b = (bool)addMethod.Invoke (successList, new object[] { });
+						InfoLog("KRASHWrapper.simulationActive  b: " + b.ToString());
+						return b;
+					} else {
+						InfoLog ("successList == null");
+						return b;
+					}
+				} else {
+					InfoLog ("KRASHType == null");
+					return b;
+				}
+			}
+			return b;
+		}
+
 		#region APIMethods
 
 		/***************/

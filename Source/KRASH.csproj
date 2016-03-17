@@ -26,6 +26,7 @@
         <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" />
         <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
         <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" />
+        <Command type="AfterBuild" command="xcopy KRASHCustom.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -99,5 +100,6 @@
     <None Include="KRASH.cfg" />
     <None Include="README4Modders.txt" />
     <None Include="ChangeLog.txt" />
+    <None Include="KRASHCustom.cfg" />
   </ItemGroup>
 </Project>

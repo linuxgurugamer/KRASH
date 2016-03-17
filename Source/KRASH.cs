@@ -30,39 +30,41 @@ using System.Reflection;
 
 using UnityEngine;
 
-//using KRASH.SceneModules;
-//using HoloDeck.AppLauncherButton;
 
 namespace KRASH
 {
-	#if true
+
 	// We want to load in all relevant game scenes, and be applied to all games.
-	[KSPScenario (ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
-		GameScenes.SPACECENTER,
-		GameScenes.EDITOR,
-		GameScenes.FLIGHT,
-		GameScenes.TRACKSTATION
-	})]
-	#endif
-//	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	class KRASH : ScenarioModule
+	//	[KSPScenario (ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
+	//		GameScenes.SPACECENTER
+	//		/*,
+	//		GameScenes.EDITOR,
+	//		GameScenes.FLIGHT,
+	//		GameScenes.TRACKSTATION */
+	//	})]
+
+	[KSPAddon (KSPAddon.Startup.SpaceCentre, true)]
+	public class KRASH : MonoBehaviour
 	{
-		// Tag for marking debug logs with
-		//private const string TAG = "HoloDeck.HoloDeck";
 
 		// This class is a singleton, as much as Unity will allow.
 		// There is probably a better way to do this in a Unity-like way,
 		// But I don't know it.
 		//public static KRASH instance;
-		public static SimulationPauseMenu simPauseMenuInstance;
-
-		public static Configuration cfg;
-		private static bool componentsLoaded = false;
 
 		// This is a flag for marking a save as 'dirty'. Any flag with this flag
 		// that enters SPACECENTER, EDITOR, or TRACKSTATION will be immediately reset
-		[KSPField (isPersistant = true)]
-		public bool SimulationActive = false;
+		//[KSPField (isPersistant = true)]
+		//public bool SimulationActive = false;
+
+		// This stores which of the cost settings is being used by this save
+		//[KSPField (isPersistant = true)]
+		//public string selectedCostsCfg = "";
+
+		public  SimulationPauseMenu simPauseMenuInstance;
+		public Configuration cfg = null;
+		private static bool componentsLoaded = false;
+
 
 		#if false
 		public void simStart(Vessel v, double f)
@@ -78,18 +80,41 @@ namespace KRASH
 
 		}
 		#endif
-		// This is our entry point
+		void Awake ()
+		{
+			Log.Info ("KRASH.Awake");
+		}
+
+		// We need to start AFTER the persistent data is loaded in KRASHPersistent
+		// So the following code takes care of that.
+		bool inited = false;
+
+		void Update ()
+		{
+			if (!inited && KRASHPersistent.inited) {
+				Start ();
+				inited = true;
+			}
+		}
+
 		void Start ()
-		{            
+		{      
+			Log.Info ("KRASH.Start");
+			DontDestroyOnLoad (this);      
 			// update the singleton;
+			if (KRASHShelter.instance != null) {
+				Log.Info ("KRASH.Start: KRASHShelter.instance ! null");
+				return;
+			}
+			if (KRASHPersistent.inited == false)
+				return;
 			KRASHShelter.instance = this;
 			APIManager api = APIManager.ApiInstance;
 
 			//testWrapper ();
 
 			#if true
-			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
-			{
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				if (KRASHShelter.simCost > 0) {
 					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 					Log.Info ("simCost found, Funds: " + Funding.Instance.Funds.ToString ());
@@ -99,9 +124,13 @@ namespace KRASH
 			#endif
 
 			Log.Info ("Loading configs");
-			cfg = new Configuration ();
-
-			cfg.LoadConfiguration (HighLogic.CurrentGame.Parameters.preset.ToString());
+			if (cfg == null)
+				cfg = new Configuration ();
+			
+			if (KRASHShelter.persistent.selectedCostsCfg == "")
+				KRASHShelter.persistent.selectedCostsCfg = "* " + HighLogic.CurrentGame.Parameters.preset.ToString ();
+			if (cfg.LoadConfiguration (KRASHShelter.persistent.selectedCostsCfg) == false)
+				cfg.LoadConfiguration ("* " + HighLogic.CurrentGame.Parameters.preset.ToString ());
 
 			// Reload to pre-sim if we are in the wrong scene.
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT) {
@@ -112,8 +141,7 @@ namespace KRASH
 			// Deploy scene-specific modules, for GUI hijacking and similar logic
 			switch (HighLogic.LoadedScene) {
 			case GameScenes.FLIGHT: 
-				if (!componentsLoaded && KRASHShelter.instance.SimulationActive) 
-				{
+				if (!componentsLoaded && KRASHShelter.persistent.shelterSimulationActive) {
 					componentsLoaded = true;
 					Log.Info ("Adding components");
 					gameObject.AddComponent<FlightModule> ();
@@ -126,14 +154,16 @@ namespace KRASH
 			}
 
 			// If the sim is active, display the tell-tale
-			SimulationNotification (SimulationActive);
+			SimulationNotification (KRASHShelter.persistent.shelterSimulationActive);
 		}
 
 		// This is called when the script is destroyed.
 		// This is honestly probably not necessary, but better safe than sorry
 		void OnDestroy ()
 		{
+			Log.Info ("OnDestroy");
 			SimulationNotification (false); 
+			return;
 			KRASHShelter.instance = null;
 			cfg = null;
 		}
@@ -146,31 +176,40 @@ namespace KRASH
 			string save = null;
 
 			// Make sure the instance actually exists. I can't imagine this ever failing, but NREs are bad.
-			if (KRASHShelter.instance != null) {   
-				// We create the pre-sim save.
-				save = GamePersistence.SaveGame ("KRASHRevert", HighLogic.SaveFolder, SaveMode.OVERWRITE);
+//			if (KRASHShelter.instance != null) {   
+			// We create the pre-sim save.
+			save = GamePersistence.SaveGame ("KRASHRevert", HighLogic.SaveFolder, SaveMode.OVERWRITE);
 
-				// Mark the existing save as dirty.
-				KRASHShelter.instance.SimulationActive = true;
+			// Mark the existing save as dirty.
+			KRASHShelter.persistent.shelterSimulationActive = true;
 
-				// Record the scene we are coming from
-				KRASHShelter.lastScene = HighLogic.LoadedScene;
+			//GameObject t = GameObject.Find ("KRASHPersistent");
+			//KRASHPersistent k = t.GetComponent<KRASHPersistent> ();
+			//if (k != KRASHShelter.persistent) {
+			//	Log.Info ("k != KRASHShelter.persistent");
+			//}
+			KRASHShelter.persistent.shelterSimulationActive = true;
 
-				if (KRASHShelter.lastScene == GameScenes.EDITOR) {
+
+			// Record the scene we are coming from
+			KRASHShelter.lastScene = HighLogic.LoadedScene;
+
+			if (KRASHShelter.lastScene == GameScenes.EDITOR) {
 //					HoloDeck.OnLeavingEditor (EditorDriver.editorFacility, EditorLogic.fetch.launchSiteName);
-					KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
-				}
-					
-				// Start the tell-tale
-				KRASHShelter.instance.SimulationNotification (true);
+				KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 			}
+					
+			// Start the tell-tale
+			KRASHShelter.instance.SimulationNotification (true);
+//			} else
+//				Log.Info ("Activate:  KRASHShelter.instance == null");
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = false;
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = false;
 			Log.Info ("Activate returning: " + (save != null ? true : false).ToString ());
 			return save != null ? true : false;
 		}
 
-		public void DestroyModules()
+		public void DestroyModules ()
 		{
 			Log.Info ("DestroyModules  unloading components");
 			componentsLoaded = false;
@@ -196,7 +235,7 @@ namespace KRASH
 		public  void  Deactivate (GameScenes targetScene)
 		{
 			// This method only does something if the sim is active.
-			if (KRASHShelter.instance.SimulationActive && System.IO.File.Exists (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs")) {
+			if (KRASHShelter.persistent.shelterSimulationActive && System.IO.File.Exists (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs")) {
 				// Weird bug can be intorduced by how KSP keeps around KSPAddons until it decides to destroy
 				// them. We need to preempt this so extraneous behavior isn't observed
 
@@ -231,14 +270,24 @@ namespace KRASH
 			//Funding.Instance.AddFunds(-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 			//Log.Info ("Funds: " + Funding.Instance.Funds.ToString ());
 			//KRASHShelter.simCost = 0;
-			KRASHShelter.instance.SimulationActive = false;
+
+			//KRASHShelter.instance.SimulationActive = false;
+			//GameObject t = GameObject.Find ("KRASHPersistent");
+			//KRASHPersistent k = t.GetComponent<KRASHPersistent> ();
+			//if (k != KRASHShelter.persistent) {
+			//	Log.Info ("k != KRASHShelter.persistent");
+			//}
+			KRASHShelter.persistent.shelterSimulationActive = false;
+
+			//KRASHPersistent.shelterSimulationActive = false;
 		}
 
 		// This method should be called before activating the simulation directly from an editor, and allows
 		// QOL improvements (like returning to that editor correctly, and automatically clearing the launch site)
 		// Either of these values can be null, if you want to do that for some reason
-		public  void OnLeavingEditor (EditorFacility facility,  LaunchGUI.LaunchSite launchSite)
+		public  void OnLeavingEditor (EditorFacility facility, LaunchGUI.LaunchSite launchSite)
 		{
+			Log.Info ("OnLeavingEditor");
 			// clear the launchpad.
 			if (launchSite != null) {
 				List<ProtoVessel> junkAtLaunchSite = ShipConstruction.FindVesselsLandedAt (HighLogic.CurrentGame.flightState, launchSite.name);
@@ -258,13 +307,19 @@ namespace KRASH
 
 		// This is in here instead of GUI, because this isn't an 'implementation detail'
 		// If some other mod uses sim mode for some reason, I still want this displayed.
-		private void SimulationNotification (bool state)
+		bool simNotificationActive = false;
+		public void SimulationNotification (bool state)
 		{
-			if (HighLogic.LoadedScene == GameScenes.FLIGHT) {
+			
+			//if (HighLogic.LoadedScene == GameScenes.FLIGHT) 
+			if (state != simNotificationActive)
+			{
+				Log.Info ("SimulationNotification     HighLogic.LoadedScene: " + HighLogic.LoadedScene.ToString());
+				simNotificationActive = state;
 				switch (state) {
 				case true:
 					SetSimActiveNotification ();
-					InvokeRepeating ("DoSimulationNotification", 0.1f, 2.0f);
+					InvokeRepeating ("DoSimulationNotification", 1.0f, 2.0f);
 					break;
 
 				case false:
@@ -274,18 +329,23 @@ namespace KRASH
 			}
 		}
 
-		string simNotification; 
+		static string simNotification;
 
-		public void SetSimActiveNotification()
+		public void SetSimActiveNotification ()
 		{
 			simNotification = "Simulation Active";
+			Log.Info ("SetSimActiveNotification   simNotification: " + simNotification);
 		}
-		public void SetSimNotification(string str)
+
+		public void SetSimNotification (string str)
 		{
 			simNotification = str;
+			Log.Info ("SetSimNotification   simNotification: " + simNotification);
 		}
+
 		private void DoSimulationNotification ()
 		{
+			Log.Info("DoSimulationNotification   simNotification: " + simNotification);
 			ScreenMessages.PostScreenMessage (simNotification, 1.0f, ScreenMessageStyle.UPPER_CENTER);
 		}
 	}

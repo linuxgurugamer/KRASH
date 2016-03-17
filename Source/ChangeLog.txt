@@ -47,3 +47,11 @@
 		In sandbox, go to another planet, then return and start career game, that last planet is still available
 		Make simcosts text larger
 		Decimal points not being accepted at end of number for lat/long
+
+0.4.0
+		Reduced starting costs by 90% based on feedback
+		Added % of initial ship cost to cost structure
+		Added description to cfg file
+		Added new cfg file for custom settings
+		Added abililty to relocate running costs during sim, or not display altogether
+		Added dialog to pause when ship lands

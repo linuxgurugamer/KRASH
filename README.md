@@ -12,6 +12,46 @@ persistence file (basically any of them worth their salt), and even handles it i
 
 Instructions
 
+Configurations
+
+There are 10 pre-defined configurations:
+
+Easy		Fairly low costs.  There are setup costs and per-minute costs, both for the number of parts and weight of the vessel
+Normal		Reasonable costs
+Moderate	Somewhat more expensive
+Hard		Even more expensive
+Easy-Percentage	Same as easy, except that instead of using the number of parts and weight, it uses a percentage of the cost of the vessel for the setup costs, and then a smaller percentage for each minute
+Normal-Percentage
+Moderate-Percentage
+Hard-Percentage
+
+For both type listed above, there is also a Custom setting
+
+In addition, you can create a customized config.  See the following image for the configuration screen:
+
+In the left column is a list of the available configs to use.  An asterick indicates one of the predefined settings and can't be changed.  Click on 
+the setting you would like to see, the values will be shown on the right side
+
+On the right half, the top shows the config name and the buttons:
+Save	Active only when the name doesn't begin with an asterick.  Will save the current config and make it active
+Accept	Accepts the current config as the active config for the current game
+Reset	Resets change to the current config
+Cancel	Cancels the changes and closes the screen
+Delete	Active only when name refers to existing custom config.  Will delete that config
+
+In the right half, there are two columns;  The left column shows the costs for the different 
+types:  Flat, Per-part, Per-ton and Percentage, along with the Atmospheric Multipler
+
+The right colum has the following:
+
+Termination options if no data at the specified location(ie:  Terminate at SOI, if  you enter an SOI
+and haven't received any science data from it, the sim will terminate)
+
+Miscellaneous Options.  The max sim cost is merely a default, and can be overridden when  you start the sim
+
+Note that the configuration window can be shown both in the Spacecenter view and in the editor, whether you are in
+a career game or not.  The costs will only apply if you are in a career game.
+
 
 In the VAB/SPH, load the ship you want to simulate
 Click the SIM button, you will see the following screen:

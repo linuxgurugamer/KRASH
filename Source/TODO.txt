@@ -1,4 +1,10 @@
-﻿The costs will be configurable via an interface.  I'll have an initial setup of costs, but they will all be configurable via the interface.
+﻿Done
+Add % of ship costs to costing structure for setup and per-minute
+
+
+---------------------
+
+The costs will be configurable via an interface.  I'll have an initial setup of costs, but they will all be configurable via the interface.
 
 
 ===========
@@ -8,3 +14,7 @@ Configurable settings:
 	costs position
 
 Timed events, called every second or so
+
+show dialog after vessel has touched down 
+Dialog to create custom costs, & select which custom costs to use
+

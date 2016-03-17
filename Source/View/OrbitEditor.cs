@@ -89,8 +89,6 @@ namespace KRASH.Hyperedit
 
 		public static void SetOrbit(this Vessel vessel, Orbit newOrbit)
 		{
-			Log.Info ("vessel.SetOrbit");
-
 			//var originalUp = FlightGlobals.getUpAxis ();
 			//Log.Info ("originalUp: " + originalUp.ToString ());
 				
@@ -110,7 +108,6 @@ namespace KRASH.Hyperedit
 
 			try
 			{
-				Log.Info ("vessel.SetOrbit 2");
 				OrbitPhysicsManager.HoldVesselUnpack(60);
 			}
 			catch (NullReferenceException)

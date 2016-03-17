@@ -95,6 +95,21 @@ namespace KRASH.Hyperedit
 			}
 		}
 
+		private PopupDialog _activePopup;
+		bool pausebeforestarting = false;
+
+		private void drawPauseAfterLanding ()
+		{
+			GUILayout.Label ("Vessel has landed.  Click the OK button to continue");
+			if (GUILayout.Button ("OK")) {
+				FlightDriver.SetPause (false);
+				KRASHShelter.instance.SetSimActiveNotification ();
+				Destroy (this);
+				_activePopup.Dismiss ();
+			}
+		}
+
+
 		public void FixedUpdate()
 		{
 			var vessel = GetComponent<Vessel>();
@@ -109,8 +124,18 @@ namespace KRASH.Hyperedit
 			{
 				if (vessel.LandedOrSplashed)
 				{
-					KRASHShelter.instance.SetSimActiveNotification ();
-					Destroy(this);
+					if (!pausebeforestarting)
+					{
+						pausebeforestarting = true;
+						FlightDriver.SetPause (true);
+						//PopupDialog.SpawnPopupDialog ("Vessel has landed", "Vessel has landed.  Click the OK button to continue", "OK", true, HighLogic.Skin);
+						_activePopup = PopupDialog.SpawnPopupDialog (new MultiOptionDialog (null, new Callback (drawPauseAfterLanding), "Vessel has Landed", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
+
+						//pausebeforestarting = 0;
+						//FlightDriver.SetPause (false);
+						//KRASHShelter.instance.SetSimActiveNotification ();
+						//Destroy (this);
+					}
 				}
 				else
 				{
@@ -137,6 +162,7 @@ namespace KRASH.Hyperedit
 					QuaternionD.AngleAxis(Latitude, Vector3d.forward) * Vector3d.right) -
 					pqs.radius;
 				alt = Math.Max(alt, 0); // Underwater!
+
 				if (TimeWarp.CurrentRateIndex != 0)
 				{
 					TimeWarp.SetRate(0, true);
@@ -145,6 +171,7 @@ namespace KRASH.Hyperedit
 				// HoldVesselUnpack is in display frames, not physics frames
 				Log.Info("alt: " + alt.ToString() + "   Altitude: " + Altitude.ToString());
 				Log.Info ("Latitude: " + Latitude.ToString () + "   Longitude: " + Longitude.ToString ());
+
 				var teleportPosition = Body.GetRelSurfacePosition(Latitude, Longitude, alt + Altitude);
 				var teleportVelocity = Body.getRFrmVel(teleportPosition + Body.position);
 				// convert from world space to orbit space
@@ -153,67 +180,18 @@ namespace KRASH.Hyperedit
 				// counter for the momentary fall when on rails (about one second)
 				teleportVelocity += teleportPosition.normalized * (Body.gravParameter / teleportPosition.sqrMagnitude);
 
+				var oldUp = vessel.orbit.pos.xzy.normalized; // can also be vessel.vesselTransform.position, I think
+				var newUp = teleportPosition.xzy.normalized; // teleportPosition is the orbitspace location (note the .xzy)
+				var rotation = Quaternion.FromToRotation(oldUp, newUp)*vessel.vesselTransform.rotation;
+
+
 				var orbit = vessel.orbitDriver.orbit.Clone();
 				orbit.UpdateFromStateVectors(teleportPosition, teleportVelocity, Body, Planetarium.GetUniversalTime());
 
+
 				vessel.SetOrbit(orbit);
-#if false
+				vessel.SetRotation(rotation);
 
-				#if false
-				try
-				{
-					Log.Info ("FixedUpdate HoldVesselUnpack");
-					OrbitPhysicsManager.HoldVesselUnpack(60);
-				}
-				catch (NullReferenceException)
-				{
-					Log.Info("OrbitPhysicsManager.HoldVesselUnpack threw NullReferenceException");
-				}
-				#endif
-
-				// rotation code
-				var newUp = FlightGlobals.getUpAxis();
-
-				#if false
-				//set the vessel's up vector
-				vessel.rootPart.partTransform.up = newUp;
-				//get the rotation that resulted from setting the up vector
-				var newRot = vessel.rootPart.partTransform.rotation;
-
-				//set the rotation
-				vessel.SetRotation(newRot);
-				#endif
-
-				// Get the direction from the world origin to target position
-				Vector3d curpos = vessel.GetWorldPos3D ();
-				Vector3d gee = FlightGlobals.getGeeForceAtPosition( vessel.GetWorldPos3D () );
-				//curpos.x = 0;
-				Quaternion normal = Quaternion.LookRotation (curpos);
-
-				var diff = Quaternion.FromToRotation(KRASHShelter.originalUp, gee);
-
-				vessel.SetRotation (diff * normal);
-//				vessel.SetRotation(normal2);
-
-				// adjust vessel rotation based on how much the up direction changed
-//				var diff = Quaternion.FromToRotation(curpos, newpos);
-//				vessel.SetRotation(diff * normal);
-
-				// adjust vessel rotation based on how much the up direction changed
-//				var diff = Quaternion.FromToRotation(KRASHShelter.originalUp, newUp);
-
-//				vessel.SetRotation(diff * vessel.transform.rotation);
-				// rotation code
-
-
-				// rotation code
-				Log.Info("originalUp: " + KRASHShelter.originalUp.ToString());
-				Log.Info ("newUp: " + newUp.ToString ());
-				Log.Info ("gee: " + gee.ToString ());
-				Log.Info ("diff: " + diff.ToString ());
-
-//				vessel.SetOrbit(orbit);
-#endif
 				AlreadyTeleported = true;
 			}
 		}

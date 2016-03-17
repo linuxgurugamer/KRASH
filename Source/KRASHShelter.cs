@@ -6,6 +6,36 @@ using UnityEngine;
 
 namespace KRASH
 {
+	[KSPScenario (ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
+		GameScenes.SPACECENTER,
+		GameScenes.EDITOR,
+		GameScenes.FLIGHT,
+		GameScenes.TRACKSTATION
+	})]
+	public class KRASHPersistent : ScenarioModule
+	{
+		public static bool inited = false;
+		[KSPField (isPersistant = true)]
+		public bool shelterSimulationActive = false;
+
+		[KSPField (isPersistant = true)]
+		public string selectedCostsCfg = "";
+
+		override public void  OnAwake()
+		{
+			//Log.Info ("KRASHPersistent.Awake");
+			KRASHShelter.persistent = this;
+			inited = true;
+		}
+
+		public void Start()
+		{
+			//Log.Info ("KRASHPersistent.Start");
+			//KRASHShelter.persistent = this;
+		}
+	}
+
+
 	class PreSimStatus
 	{
 		public int	flightsGlobalIndex { get; set; }
@@ -19,6 +49,8 @@ namespace KRASH
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
     class KRASHShelter : MonoBehaviour
     {
+		public static KRASHPersistent persistent;
+
         // Editor stuff
         public static EditorFacility lastEditor = EditorFacility.None;
         public static ConfigNode lastShip = null;
@@ -28,12 +60,16 @@ namespace KRASH
 		public static List<PreSimStatus> preSimStatus;
 		public static double LimitSimCost { get; set; }
 		public static KRASH instance = null;
-		#if false
-		public static Vector3d originalUp;
-		public static Quaternion originalHeading;
-		#endif
-        void Awake()
+		public static float shipCost {get; set; }
+
+		void Awake()
+		{
+			Log.Info ("KRASHShelter.Awake");
+		}
+
+		void Start()
         {
+			Log.Info ("KRASHShelter.Start");
             DontDestroyOnLoad(this);
         }
     }

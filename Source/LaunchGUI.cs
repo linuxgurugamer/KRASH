@@ -6,30 +6,10 @@ using System.Diagnostics;
 
 namespace KRASH
 {
-	[KSPAddon (KSPAddon.Startup.EditorAny, false)]
+//	[KSPAddon (KSPAddon.Startup.EditorAny, false)]
+	[KSPAddon (KSPAddon.Startup.SpaceCentre, true)]
 	public class LaunchGUI : MonoBehaviour
 	{
-		public const String TITLE = "KRASH";
-		//private const int WIDTH = 725;
-		//private const int HEIGHT = 425;
-		//private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
-		private bool visible = false;
-		private ApplicationLauncherButton button = null;
-		private int INITORBIT = 10000;
-
-		bool limitMaxCosts = false;
-		public static LaunchGUI LaunchGuiInstance;
-
-		const string texPathDefault = "KRASH/Textures/KRASH";
-
-		public static LaunchSite selectedSite = null;
-		static SelectionType selectType = SelectionType.launchsites;
-		static public CelestialBody selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
-		List<CelestialBody> bodiesList;
-
-		//const string texPathOn = "KRASH/Textures/AppLauncherIcon-On";
-		//const string texPathOff = "KRASH/Textures/AppLauncherIcon-Off";
-
 		// Following code copied from KerbalKonstructs
 		public enum SiteType
 		{
@@ -44,15 +24,45 @@ namespace KRASH
 			celestialbodies
 		}
 
-		private void Start ()
+		public const String TITLE = "KRASH";
+		//private const int WIDTH = 725;
+		//private const int HEIGHT = 425;
+		//private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
+		private bool visible = false;
+		private static ApplicationLauncherButton button = null;
+		private int INITORBIT = 10000;
+
+		bool limitMaxCosts = false;
+		public static LaunchGUI LaunchGuiInstance = null;
+
+		const string texPathDefault = "KRASH/Textures/KRASH";
+
+		public static LaunchSite selectedSite = null;
+		static SelectionType selectType = SelectionType.launchsites;
+		static public CelestialBody selectedBody; // = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+		List<CelestialBody> bodiesList;
+
+		//const string texPathOn = "KRASH/Textures/AppLauncherIcon-On";
+		//const string texPathOff = "KRASH/Textures/AppLauncherIcon-Off";
+
+
+		LaunchGUI()
 		{
-			if (button == null) {
-				OnGuiAppLauncherReady ();
-			}
+			Log.Info("LaunchGUI instantiated");
 		}
 
-		private void Awake ()
+		public  void Start ()
 		{
+			Log.Info ("LaunchGUI.Start");
+			if (LaunchGUI.button == null) {
+				OnGuiAppLauncherReady ();
+			}
+			DontDestroyOnLoad(this);
+		}
+
+		public  void Awake ()
+		{
+			Log.Info ("LaunchGUI.Awake");
 			if (LaunchGUI.LaunchGuiInstance == null) {
 				GameEvents.onGUIApplicationLauncherReady.Add (this.OnGuiAppLauncherReady);
 				LaunchGuiInstance = this;
@@ -62,10 +72,11 @@ namespace KRASH
 
 		private void OnDestroy ()
 		{
-			GameEvents.onGUIApplicationLauncherReady.Remove (this.OnGuiAppLauncherReady);
-			if (this.button != null) {
-				ApplicationLauncher.Instance.RemoveModApplication (this.button);
-			}
+			Log.Info ("LaunchGUI.OnDestroy");
+//			GameEvents.onGUIApplicationLauncherReady.Remove (this.OnGuiAppLauncherReady);
+//			if (this.button != null) {
+//				ApplicationLauncher.Instance.RemoveModApplication (this.button);
+//			}
 		}
 
 		private void ButtonState (bool state)
@@ -76,18 +87,19 @@ namespace KRASH
 
 		private void OnGuiAppLauncherReady ()
 		{
-			try {
-				button = ApplicationLauncher.Instance.AddModApplication (
-					GUIToggle, GUIToggle, 	
-					null, null,
-					null, null,
-					ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH, //visibleInScenes
-					GameDatabase.Instance.GetTexture (texPathDefault, false) //texture
-				);
-			} catch (Exception ex) {
-				Log.Error ("Error adding ApplicationLauncher button: " + ex.Message);
+			if (LaunchGUI.button == null) {
+				try {
+					LaunchGUI.button = ApplicationLauncher.Instance.AddModApplication (
+						GUIToggle, GUIToggle, 	
+						null, null,
+						null, null,
+						ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH, //visibleInScenes
+						GameDatabase.Instance.GetTexture (texPathDefault, false) //texture
+					);
+				} catch (Exception ex) {
+					Log.Error ("Error adding ApplicationLauncher button: " + ex.Message);
+				}
 			}
-
 		}
 
 
@@ -99,25 +111,21 @@ namespace KRASH
 		{
 			try
 			{
-				if (this.button == null)
+				if (LaunchGUI.button == null)
 				{
 					return;
 				}
 
-				if (EditorLogic.fetch != null && EditorLogic.fetch.ship.parts.Count > 0)
+				if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.fetch != null && EditorLogic.fetch.ship.parts.Count > 0)
 				{
-					if ( this.button.State == RUIToggleButton.ButtonState.DISABLED)
+					if ( LaunchGUI.button.State == RUIToggleButton.ButtonState.DISABLED)
 					{
-						this.button.Enable();
+						LaunchGUI.button.Enable();
 					}
-					//else if ( this.button.State != RUIToggleButton.ButtonState.FALSE)
-					//{
-					//	this.button.SetFalse();
-					//}
 				}
-				else if (this.button.State != RUIToggleButton.ButtonState.DISABLED)
+				else if (LaunchGUI.button.State != RUIToggleButton.ButtonState.DISABLED)
 				{
-					this.button.Disable();
+					LaunchGUI.button.Disable();
 				}
 			}
 			catch (Exception ex)
@@ -144,50 +152,80 @@ namespace KRASH
 		//bool isEditorLocked = false;
 		private void EditorLock(bool state)
 		{
+
+			//Log.Info("EditorLock: state: " + state.ToString());
 			if (state)
 			{
 				InputLockManager.SetControlLock(ControlTypes.All, "KRASHEditorLock");
-				EditorLogic.fetch.Lock (true, true, true, "KRASH_Editor");
+				if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
+					EditorLogic.fetch.Lock (true, true, true, "KRASH_Editor");
 				//isEditorLocked = true;
 			}
 			else
 			{
 				InputLockManager.SetControlLock(ControlTypes.None, "KRASHEditorLock");
-				EditorLogic.fetch.Unlock ("KRASH_Editor");
+				if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
+					EditorLogic.fetch.Unlock ("KRASH_Editor");
 				//isEditorLocked = false;
 			}
 		}
 
+		bool configDisplayActive = false;
 		public void GUIToggle ()
 		{
-			EditorLock (false);
-			SetVisible (!visible);
-			if (visible) {
-				selectedSite = null;
-				bodiesList = getAllowableBodies ();
-				selectType = SelectionType.launchsites;
-				selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+			// Check for right mouse click
+			if (Input.GetMouseButtonUp (1) || HighLogic.LoadedScene == GameScenes.SPACECENTER) {
+				configDisplayActive = !configDisplayActive;
+				EditorLock (configDisplayActive);
+				//cfgWinData = false;
+				//onRightButtonStockClick ();
+				return;
+			} else {
+				// Only go into sim mode if cfg screen not being shown
+				if (!configDisplayActive) {
+					EditorLock (false);
+					SetVisible (!visible);
+					if (visible) {
+						selectedSite = null;
+						bodiesList = getAllowableBodies ();
+						selectType = SelectionType.launchsites;
+						selectedBody = FlightGlobals.Bodies.Where (cb => cb.isHomeWorld).FirstOrDefault ();
+					}
+					if (visible)
+						APIManager.ApiInstance.SimMenuEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
+				}
 			}
-			if (visible)
-				APIManager.ApiInstance.SimMenuEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
+			Log.Info ("Exiting GUIToggle");
 		}
 
 		//		Rect windowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
 		//Rect windowRect = new Rect (((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 425, 580);
 		// ASH 28102014 - Needs to be bigger for filter
-		Rect windowRect = new Rect (((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
+		bool rectConfigured = false;
+		Rect windowRect;
+		Rect cfgWindowRect;
 
 		public void OnGUI ()
 		{
-			
-			try {
-				if (this.Visible ()) {
-					drawSelector ();
+			if (!rectConfigured) {
+				windowRect = new Rect (((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
+				cfgWindowRect = new Rect (((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 350, (Screen.height / 2 - 300), 700, 525);
+				rectConfigured = true;
+			}
+
+			if (configDisplayActive) {
+				cfgWindowRect = GUI.Window (0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
+
+			} else {	
+				try {
+					if (this.Visible ()) {
+						drawSelector ();
 //					windowRect = GUI.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
 //					this.bounds = GUILayout.Window (this.GetInstanceID (), this.bounds, this.Window, TITLE, HighLogic.Skin.window);
+					}
+				} catch (Exception e) {
+					Log.Error ("exception: " + e.Message);
 				}
-			} catch (Exception e) {
-				Log.Error ("exception: " + e.Message);
 			}
 		}
 
@@ -197,6 +235,362 @@ namespace KRASH
 			GUILayout.Label (text, HighLogic.Skin.label);
 			GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
+		}
+		bool cfgWinData = false;
+		string strConfigName;
+		string strflatSetupCost;
+		string strflatPerMinCost;
+
+		string strperPartSetupCost;
+		string strperPartPerMinCost;
+
+		string strperTonSetupCost;
+		string strperTonPerMinCost;
+
+		string strpercentSetupCost;
+		string strpercentPerMinCost;
+
+		string strAtmoMultipler;
+		bool bTerminateAtSoiWithoutData;
+		bool bTerminateAtLandWithoutData;
+		bool bTerminateAtAtmoWithoutData;
+
+		bool bContinueIfNoCash;
+		string strMaxAllowableSimCost;
+		string strDefaultSimTime;
+
+		//string strselectedCosts = KRASHShelter.instance.cfg.selectedCosts;
+
+		bool bshowRunningSimCosts;
+		string strhorizontalPos;
+		string strverticalPos;
+
+		string currentConfigName;
+
+		void initCfgWinData ()
+		{
+			Log.Info ("initCfgWinData");
+			cfgWinData = true;
+			if (KRASHShelter.instance.cfg == null)
+				Log.Info ("initCfgWinData cfg == null");
+			
+			strConfigName = KRASHShelter.persistent.selectedCostsCfg;
+			strflatSetupCost = KRASHShelter.instance.cfg.flatSetupCost.ToString ();
+			strflatPerMinCost = KRASHShelter.instance.cfg.flatPerMinCost.ToString ();
+
+			strperPartSetupCost = KRASHShelter.instance.cfg.perPartSetupCost.ToString ();
+			strperPartPerMinCost = KRASHShelter.instance.cfg.perPartPerMinCost.ToString ();
+
+			strperTonSetupCost = KRASHShelter.instance.cfg.perTonSetupCost.ToString ();
+			strperTonPerMinCost = KRASHShelter.instance.cfg.perTonPerMinCost.ToString ();
+
+			strpercentSetupCost = (100 * KRASHShelter.instance.cfg.percentSetupCost).ToString ();
+			strpercentPerMinCost = (100 * KRASHShelter.instance.cfg.percentPerMinCost).ToString ();
+
+			strAtmoMultipler = KRASHShelter.instance.cfg.AtmoMultipler.ToString ();
+			bTerminateAtSoiWithoutData = KRASHShelter.instance.cfg.TerminateAtSoiWithoutData;
+			bTerminateAtLandWithoutData = KRASHShelter.instance.cfg.TerminateAtLandWithoutData;
+			bTerminateAtAtmoWithoutData = KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData;
+
+			bContinueIfNoCash = KRASHShelter.instance.cfg.ContinueIfNoCash;
+			strMaxAllowableSimCost = KRASHShelter.instance.cfg.MaxAllowableSimCost.ToString ();
+			strDefaultSimTime = KRASHShelter.instance.cfg.DefaultSimTime.ToString ();
+
+		//	strselectedCosts = KRASH.cfg.selectedCosts;
+			strConfigName = KRASHShelter.persistent.selectedCostsCfg;
+			bshowRunningSimCosts = KRASHShelter.instance.cfg.showRunningSimCosts;
+			strhorizontalPos = KRASHShelter.instance.cfg.horizontalPos.ToString ();
+			strverticalPos = KRASHShelter.instance.cfg.verticalPos.ToString ();
+
+		}
+
+		void saveCfgData(bool saveToFile, string strConfigName)
+		{
+			KRASHShelter.instance.cfg.flatSetupCost = Convert.ToSingle(Convert.ToDouble (strflatSetupCost));
+			KRASHShelter.instance.cfg.flatPerMinCost =  Convert.ToSingle(Convert.ToDouble (strflatPerMinCost));
+
+			KRASHShelter.instance.cfg.perPartSetupCost =  Convert.ToSingle(Convert.ToDouble (strperPartSetupCost));
+			KRASHShelter.instance.cfg.perPartPerMinCost =  Convert.ToSingle(Convert.ToDouble (strperPartPerMinCost));
+
+			KRASHShelter.instance.cfg.perTonSetupCost =  Convert.ToSingle(Convert.ToDouble (strperTonSetupCost));
+			KRASHShelter.instance.cfg.perTonPerMinCost =  Convert.ToSingle(Convert.ToDouble (strperTonPerMinCost));
+
+			KRASHShelter.instance.cfg.percentSetupCost =  Convert.ToSingle(Convert.ToDouble (strpercentSetupCost)) / 100.0f;
+			KRASHShelter.instance.cfg.percentPerMinCost =  Convert.ToSingle(Convert.ToDouble (strpercentPerMinCost)) / 100.0f;
+
+			KRASHShelter.instance.cfg.AtmoMultipler =  Convert.ToSingle(Convert.ToDouble (strAtmoMultipler));
+			KRASHShelter.instance.cfg.TerminateAtSoiWithoutData = bTerminateAtSoiWithoutData;
+			KRASHShelter.instance.cfg.TerminateAtLandWithoutData = bTerminateAtLandWithoutData;
+			KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData = bTerminateAtAtmoWithoutData  ;
+
+			KRASHShelter.instance.cfg.ContinueIfNoCash = bContinueIfNoCash;
+			KRASHShelter.instance.cfg.MaxAllowableSimCost =  Convert.ToSingle(Convert.ToDouble (strMaxAllowableSimCost));
+			KRASHShelter.instance.cfg.DefaultSimTime = Convert.ToUInt16(strDefaultSimTime);
+
+			KRASHShelter.persistent.selectedCostsCfg = strConfigName;
+
+			KRASHShelter.instance.cfg.showRunningSimCosts = bshowRunningSimCosts;
+			KRASHShelter.instance.cfg.horizontalPos = Convert.ToUInt16( strhorizontalPos);
+			KRASHShelter.instance.cfg.verticalPos = Convert.ToUInt16( strverticalPos);
+			if (saveToFile)
+				KRASHShelter.instance.cfg.SaveConfiguration (strConfigName);
+		}
+			
+		public void drawCfgWindow(int id)
+		{
+			Log.Info ("drawCfgWindow 1");
+
+			bool cfgExists;
+
+			if (!cfgWinData) {
+				Log.Info ("drawCfgWindow cfgWinData == false");
+				initCfgWinData ();
+				// currentConfigName = KRASHShelter.instance.cfg.configName;
+				currentConfigName = KRASHShelter.persistent.selectedCostsCfg;
+			}
+			GUI.skin = HighLogic.Skin;
+	
+			Log.Info ("drawCfgWindow 2:    currentConfigName: " + currentConfigName);
+
+			List<string> cfgs = KRASHShelter.instance.cfg.GetAvailableCfgs ();
+
+			GUILayout.BeginArea (new Rect (5, 50, 170, 465));
+			DrawTitle ("Selected Cfg");
+			GUILayout.Space (8);
+			cfgExists = false;
+			sitesScrollPosition = GUILayout.BeginScrollView (sitesScrollPosition);
+			foreach (string cfg in cfgs) {
+				GUILayout.BeginHorizontal ();
+
+				GUI.enabled = !(cfg  == strConfigName);
+				if (cfg == strConfigName)
+					cfgExists = true;
+				if (GUILayout.Button (cfg, GUILayout.Height (25), GUILayout.Width(140))) {
+					KRASHShelter.instance.cfg.LoadConfiguration (cfg);
+					initCfgWinData ();
+				}
+				GUI.enabled = true;
+				GUILayout.EndHorizontal ();
+
+			}
+
+			GUILayout.EndScrollView ();
+			GUILayout.EndArea();
+
+			GUILayout.BeginArea (new Rect (185, 25, 700 - 185, 40));
+			GUILayout.BeginHorizontal ();
+			if (HighLogic.CurrentGame.Mode != Game.Modes.CAREER) {
+				GUILayout.Label ("Configs don't apply to Sandbox or Science games");
+			}
+			GUILayout.EndHorizontal ();
+			GUILayout.EndArea();
+			GUILayout.BeginArea (new Rect (185, 50, 700 - 185, 75));
+
+			GUILayout.BeginVertical ();
+			GUILayout.Space (5);
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Config name: ");
+			strConfigName = GUILayout.TextField (strConfigName, GUILayout.MinWidth (150.0F), GUILayout.MaxWidth (150.0F));
+
+			if (strConfigName.Length > 0 && strConfigName [0] == '*') {
+				var lstyle = new GUIStyle (GUI.skin.label);
+				lstyle.normal.textColor = Color.red;
+				GUILayout.Label ("<-----> Must be renamed to save", lstyle);
+			}
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			var bstyle = new GUIStyle (GUI.skin.button);
+			bstyle.normal.textColor = Color.yellow;
+			bstyle.normal.textColor = Color.yellow;
+			GUILayout.FlexibleSpace ();
+			GUI.enabled = strConfigName.Length == 0 || (!(strConfigName [0] == '*') && strConfigName != "defaults"); ;
+			if (GUILayout.Button ("Save", bstyle, GUILayout.Width(70))) {
+				saveCfgData (true, strConfigName);
+				configDisplayActive = !configDisplayActive;
+				EditorLock (configDisplayActive);
+				return;
+			}
+			GUI.enabled = true;
+			GUILayout.FlexibleSpace ();
+
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				if (GUILayout.Button ("Accept", bstyle, GUILayout.Width (70))) {
+					saveCfgData (false, strConfigName);
+					cfgWinData = false;
+					configDisplayActive = !configDisplayActive;
+					EditorLock (configDisplayActive);
+					KRASHShelter.persistent.selectedCostsCfg = strConfigName;
+					initCfgWinData ();
+					return;
+				}
+				GUILayout.FlexibleSpace ();
+			}
+			if (GUILayout.Button ("Reset", bstyle, GUILayout.Width(70))) {
+				KRASHShelter.instance.cfg.LoadConfiguration (currentConfigName);
+				initCfgWinData ();
+			}
+			GUILayout.FlexibleSpace ();
+
+			if (GUILayout.Button ("Cancel", bstyle, GUILayout.Width(70))) {
+				configDisplayActive = !configDisplayActive;
+				EditorLock (configDisplayActive);
+				cfgWinData = false;
+				Log.Info ("Cancel  currentConfigName: [" + currentConfigName + "]");
+				KRASHShelter.instance.cfg.LoadConfiguration (currentConfigName);
+				return;
+			}
+			GUILayout.FlexibleSpace ();
+			GUI.enabled = strConfigName.Length == 0 || (!(strConfigName[0] == '*') && cfgExists);
+			if (GUILayout.Button ("Delete", bstyle, GUILayout.Width(70))) {
+				KRASHShelter.instance.cfg.DeleteConfiguration (strConfigName);
+				KRASHShelter.instance.cfg.LoadConfiguration ("* " + HighLogic.CurrentGame.Parameters.preset.ToString ());
+				strConfigName = KRASHShelter.instance.cfg.configName;
+//				configDisplayActive = !configDisplayActive;
+//				EditorLock (configDisplayActive);
+//				return;
+			}
+			GUILayout.FlexibleSpace ();
+			GUI.enabled = true;
+
+			GUILayout.EndHorizontal ();
+			GUILayout.EndVertical ();
+			GUILayout.EndArea();
+
+			GUILayout.BeginArea (new Rect (185, 125, 225, 300));
+			GUILayout.BeginVertical ();
+
+			DrawTitle ("Cost Options");
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Flat Setup Costs: ");
+			GUILayout.FlexibleSpace ();
+			strflatSetupCost = GUILayout.TextField (strflatSetupCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Flat Per-minute Costs: ");
+			GUILayout.FlexibleSpace ();
+			strflatPerMinCost = GUILayout.TextField (strflatPerMinCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Per-part Setup Costs: ");
+			GUILayout.FlexibleSpace ();
+			strperPartSetupCost = GUILayout.TextField (strperPartSetupCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Per-part Per-minute Costs: ");
+			GUILayout.FlexibleSpace ();
+			strperPartPerMinCost = GUILayout.TextField (strperPartPerMinCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Per-ton Setup Costs: ");
+			GUILayout.FlexibleSpace ();
+			strperTonSetupCost = GUILayout.TextField (strperTonSetupCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Per-ton Per-minute Costs: ");
+			GUILayout.FlexibleSpace ();
+			strperTonPerMinCost = GUILayout.TextField (strperTonPerMinCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Percentage Setup Costs: ");
+			GUILayout.FlexibleSpace ();
+			strpercentSetupCost = GUILayout.TextField (strpercentSetupCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Percentage Per-minute Costs: ");
+			GUILayout.FlexibleSpace ();
+			strpercentPerMinCost = GUILayout.TextField (strpercentPerMinCost, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();;
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Atmospheric Multiplier: ");
+			GUILayout.FlexibleSpace ();
+			strAtmoMultipler = GUILayout.TextField (strAtmoMultipler, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.EndVertical ();
+			GUILayout.EndArea ();
+
+			GUILayout.BeginArea (new Rect (425, 125, 250, 450));
+			GUILayout.BeginVertical ();
+
+			DrawTitle ("Termination Options (no data)");
+
+			GUILayout.BeginHorizontal ();
+			bTerminateAtSoiWithoutData = GUILayout.Toggle (bTerminateAtSoiWithoutData, "Terminate at Soi");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			bTerminateAtLandWithoutData = GUILayout.Toggle (bTerminateAtLandWithoutData, "Terminate at Land");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			bTerminateAtAtmoWithoutData = GUILayout.Toggle (bTerminateAtAtmoWithoutData, "Terminate at Atmo");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.Space (15);
+			DrawTitle ("Miscellaneous Options");
+
+			GUILayout.BeginHorizontal ();
+			bContinueIfNoCash = GUILayout.Toggle (bContinueIfNoCash, "Continue sim if no cash");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Default Max Sim Cost: ");
+			GUILayout.FlexibleSpace ();
+			strMaxAllowableSimCost = GUILayout.TextField (strMaxAllowableSimCost, GUILayout.MinWidth (60.0F), GUILayout.MaxWidth (60.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.Space (10);
+			#if false
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label ("Default time for calculations: ");
+			GUILayout.FlexibleSpace ();
+			strDefaultSimTime = GUILayout.TextField (strDefaultSimTime, GUILayout.MinWidth (40.0F), GUILayout.MaxWidth (40.0F));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.Space (10);
+			#endif
+
+			Log.Info ("drawCfgWindow 9");
+
+			GUILayout.BeginHorizontal ();
+			bshowRunningSimCosts = GUILayout.Toggle (bshowRunningSimCosts, "Show Running Sim Costs");
+			GUILayout.FlexibleSpace ();
+			GUILayout.EndHorizontal ();
+
+			if (bshowRunningSimCosts) {
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label ("Horizontal Position: ");
+				GUILayout.FlexibleSpace ();
+				strhorizontalPos = GUILayout.TextField (strhorizontalPos, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+				GUILayout.EndHorizontal ();
+
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label ("Vertical Position: ");
+				GUILayout.FlexibleSpace ();
+				strverticalPos = GUILayout.TextField (strverticalPos, GUILayout.MinWidth (50.0F), GUILayout.MaxWidth (50.0F));
+				GUILayout.EndHorizontal ();
+
+			}
+	
+			GUILayout.EndVertical ();
+			GUILayout.EndArea ();
+			GUI.DragWindow ();
 		}
 
 		#if true
@@ -281,7 +675,7 @@ namespace KRASH
 		//		Rect windowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
 		//		private SiteType editorType = SiteType.Any;
 		//		private bool orbitSelection = false;
-		public List<LaunchSite> sites = new List<LaunchSite> ();
+		public static List<LaunchSite> sites = new List<LaunchSite> ();
 
 		public Boolean isCareerGame ()
 		{
@@ -321,6 +715,7 @@ namespace KRASH
 				selectType = SelectionType.launchsites;
 				simType = SimType.LAUNCHPAD;;
 
+		#if false
 				if (EditorDriver.editorFacility.Equals (EditorFacility.SPH)) {
 					simType = SimType.RUNWAY;
 					selectedSite = runway;
@@ -328,14 +723,28 @@ namespace KRASH
 					simType = SimType.LAUNCHPAD;
 					selectedSite = launchpad;
 				}
+		#endif
 				inited = true;
 
 				bodiesList = getAllowableBodies ();
-
-				sites.Add (runway);
-				sites.Add (launchpad);
+		#if false
+				if (sites.Count () == 0) {
+					sites.Add (runway);
+					sites.Add (launchpad);
+				}
+		#endif
 			}
-
+			if (selectedSite == null) {
+				if (EditorDriver.editorFacility.Equals (EditorFacility.SPH)) {
+					simType = SimType.RUNWAY;
+					selectedSite = runway;
+				} else {
+					simType = SimType.LAUNCHPAD;
+					selectedSite = launchpad;
+				}
+			}
+			//if (sites == null)
+			//	sites = new List<LaunchSite> ();
 			if (sites.Count == 0) {
 				Log.Info ("adding to sites");
 				// (string sName, string sAuthor, SiteType sType, GameObject sGameObject)
@@ -343,8 +752,7 @@ namespace KRASH
 				sites.Add (runway);
 				selectType = SelectionType.launchsites;
 			}
-
-
+				
 			// Camera.main is null when first loading a scene
 			if (Camera.main != null) {
 				windowRect = GUI.Window (0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
@@ -374,8 +782,8 @@ namespace KRASH
 			ORBITING
 		}
 			
-		string altitude = "";
-		string latitude = "", longitude = "";
+		static string altitude = "";
+		static string latitude = "", longitude = "";
 		static public double newAltitude = 0.0, newLatitude = 0.0, newLongitude = 0.0;
 		static public SimType simType = SimType.LANDED;
 		Vector3 shipSize;
@@ -593,6 +1001,7 @@ namespace KRASH
 			bstyle.normal.textColor = Color.yellow;
 			//bstyle.normal.background = new Texture2D(2,2);
 
+
 			if (GUILayout.Button ("Start simulation", bstyle, GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
 				GUI.backgroundColor = oldColor;
 				EditorLock (false);
@@ -746,6 +1155,7 @@ namespace KRASH
 			GUILayout.Label((dryMass + fuelMass).ToString(), fontColorYellow);
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (10);
+
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 
 
@@ -756,9 +1166,14 @@ namespace KRASH
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Sim setup cost:");
 				GUILayout.FlexibleSpace ();
-				double simSetupCost = Math.Floor (KRASH.cfg.flatSetupCost +
-				                     EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartSetupCost +
-				                     (dryMass + fuelMass) * KRASH.cfg.perTonSetupCost);
+
+				float drycost, fuelcost;
+				KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
+
+
+				double simSetupCost = Math.Floor (KRASHShelter.instance.cfg.flatSetupCost +
+					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
+					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost);
 			
 				GUILayout.Label (simSetupCost.ToString (), fontColorYellow);
 				GUILayout.EndHorizontal ();
@@ -766,13 +1181,13 @@ namespace KRASH
 				GUILayout.Label ("Est. Sim/min cost:");
 				GUILayout.FlexibleSpace ();
 
-				float estSimPerMin = KRASH.cfg.flatPerMinCost +
-				                    EditorLogic.fetch.ship.parts.Count * KRASH.cfg.perPartPerMinCost +
-				                    (dryMass + fuelMass) * KRASH.cfg.perTonPerMinCost;
+				float estSimPerMin = KRASHShelter.instance.cfg.flatPerMinCost +
+					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartPerMinCost +
+					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonPerMinCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost;
 			
 				GUILayout.Label (estSimPerMin.ToString (), fontColorYellow);
 				GUILayout.EndHorizontal ();
-				float m = KRASH.cfg.AtmoMultipler;
+				float m = KRASHShelter.instance.cfg.AtmoMultipler;
 				float estSimAtmoPerMin = estSimPerMin;
 				
 				if (m < 1.0F)
@@ -793,7 +1208,7 @@ namespace KRASH
 				GUILayout.EndHorizontal ();
 				if (limitMaxCosts) {
 					if (KRASHShelter.LimitSimCost == 0) {
-						KRASHShelter.LimitSimCost = Math.Floor (simSetupCost + KRASH.cfg.DefaultSimTime * estSimAtmoPerMin);
+						KRASHShelter.LimitSimCost = Math.Floor (simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin);
 					}
 					GUILayout.BeginHorizontal ();
 					GUILayout.Label ("Limit: ");
@@ -877,6 +1292,7 @@ namespace KRASH
 		public void LaunchSim ()
 		{
 			Log.Info ("LaunchSim");
+
 			KRASHShelter.instance.Activate ();
 			EditorLogic.fetch.launchVessel ();
 		}

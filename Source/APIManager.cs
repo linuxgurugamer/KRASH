@@ -36,50 +36,57 @@ namespace KRASH
 			public void SetOverrideNode(string node)
 			{
 				Log.Info ("SetoverrideNode: " + node);
-				KRASH.cfg.setOverrideNode (node);
+				KRASHShelter.instance.cfg.setOverrideNode (node);
 			}
 
 			public void TerminateSim(string msg)
 			{
 				Log.Info ("TerminateSim called");
-				KRASH.simPauseMenuInstance.DisplayTerminationMessage (msg);
+				KRASHShelter.instance.simPauseMenuInstance.DisplayTerminationMessage (msg);
 			}
 
 			public void SetSetupCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost)
 			{
 				Log.Info ("APIManager.SetSetupCosts:  flatSetupCost: "+ flatSetupCost.ToString() + "   perPartSetupCost: " + perPartSetupCost.ToString() + "    perTonSetupCost: " + perTonSetupCost.ToString());
-				KRASH.cfg.flatSetupCost = flatSetupCost;
-				KRASH.cfg.perPartSetupCost = perPartSetupCost;
-				KRASH.cfg.perTonSetupCost = perTonSetupCost;
+				KRASHShelter.instance.cfg.flatSetupCost = flatSetupCost;
+				KRASHShelter.instance.cfg.perPartSetupCost = perPartSetupCost;
+				KRASHShelter.instance.cfg.perTonSetupCost = perTonSetupCost;
 			}
 
 			public void SetPerMinCost(float flatPerMinCost, float perPartPerMinCost, float perTonPerMinCost)
 			{
 				Log.Info ("APIManager.SetPerMinCost:  flatPerMinCost: " + flatPerMinCost.ToString () + "   perPartPerMinCost: " + perPartPerMinCost.ToString () + "    perTonPerMinCost: " + perTonPerMinCost.ToString ());
-				KRASH.cfg.flatPerMinCost = flatPerMinCost;
-				KRASH.cfg.perPartPerMinCost = perPartPerMinCost;
-				KRASH.cfg.perTonPerMinCost = perTonPerMinCost;
+				KRASHShelter.instance.cfg.flatPerMinCost = flatPerMinCost;
+				KRASHShelter.instance.cfg.perPartPerMinCost = perPartPerMinCost;
+				KRASHShelter.instance.cfg.perTonPerMinCost = perTonPerMinCost;
 			}
 
 			public void SetFlatCosts(float flatSetupCost, float flatPerMinCost)
 			{
 				Log.Info ("APIManager.SetFlatCosts:  flatSetupCost: " + flatSetupCost.ToString() + "    flatPerMinCost: " + flatPerMinCost.ToString());
-				KRASH.cfg.flatSetupCost = flatSetupCost;
-				KRASH.cfg.flatPerMinCost = flatPerMinCost;
+				KRASHShelter.instance.cfg.flatSetupCost = flatSetupCost;
+				KRASHShelter.instance.cfg.flatPerMinCost = flatPerMinCost;
 			}
 
 			public void SetPerPartCosts(float perPartSetupCost, float perPartPerMinCost)
 			{
 				Log.Info ("APIManager.SetPerPartCosts:  perPartSetupCost: " + perPartSetupCost.ToString() + "    perPartPerMinCost: " + perPartPerMinCost.ToString());
-				KRASH.cfg.perPartSetupCost = perPartSetupCost;
-				KRASH.cfg.perPartPerMinCost = perPartPerMinCost;
+				KRASHShelter.instance.cfg.perPartSetupCost = perPartSetupCost;
+				KRASHShelter.instance.cfg.perPartPerMinCost = perPartPerMinCost;
+			}
+
+			public void SetPercentCosts(float percentSetupCost, float percentPerMinCost)
+			{
+				Log.Info ("APIManager.percentSetupCost:  percentSetupCost: " + percentSetupCost.ToString() + "    percentPerMinCost: " + percentPerMinCost.ToString());
+				KRASHShelter.instance.cfg.percentSetupCost = percentSetupCost;
+				KRASHShelter.instance.cfg.percentPerMinCost = percentPerMinCost;
 			}
 
 			public void SetPerTonCosts(float perTonSetupCost, float perTonPerMinCost)
 			{
 				Log.Info ("APIManager.SetPerTonCosts:  perTonSetupCost: " + perTonSetupCost.ToString() + "    perTonPerMinCost: " + perTonPerMinCost.ToString());
-				KRASH.cfg.perTonSetupCost = perTonSetupCost;
-				KRASH.cfg.perTonPerMinCost = perTonPerMinCost;
+				KRASHShelter.instance.cfg.perTonSetupCost = perTonSetupCost;
+				KRASHShelter.instance.cfg.perTonPerMinCost = perTonPerMinCost;
 			}
 
 			public double getCurrentSimCosts()
@@ -91,6 +98,11 @@ namespace KRASH
 			{
 				Log.Info ("APIManager.addToCosts");
 				KRASHShelter.simCost += cost;
+			}
+
+			public bool simulationActive()
+			{
+				return KRASHShelter.instance.simPauseMenuInstance.SimStarted();
 			}
 		}
 #endif
@@ -128,8 +140,10 @@ namespace KRASH
 			{
 				//Loop through the list of listening methods and Invoke them.
 				Log.Info("listeningMethods.count: " + listeningMethods.Count());
-				foreach (Action<Vessel, double> method in listeningMethods)
+				foreach (Action<Vessel, double> method in listeningMethods) {
+					Log.Info ("method.Invoke");
 					method.Invoke (vessel, cost);
+				}
 			}
 		}
 	}
