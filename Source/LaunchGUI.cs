@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using KSP.UI.Screens;
 
 namespace KRASH
 {
@@ -116,16 +117,23 @@ namespace KRASH
 					return;
 				}
 
-				if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.fetch != null && EditorLogic.fetch.ship.parts.Count > 0)
+				if (HighLogic.LoadedScene == GameScenes.SPACECENTER ||  EditorLogic.RootPart != null)
 				{
-					if ( LaunchGUI.button.State == RUIToggleButton.ButtonState.DISABLED)
+
+					if ( LaunchGUI.button.enabled == false)
 					{
+						Log.Info("Enabling button");
 						LaunchGUI.button.Enable();
+				//		LaunchGUI.button.SetTrue();
+						LaunchGUI.button.enabled= true;
 					}
 				}
-				else if (LaunchGUI.button.State != RUIToggleButton.ButtonState.DISABLED)
+				else if (LaunchGUI.button.enabled)
 				{
+					Log.Info("Disabling button");
 					LaunchGUI.button.Disable();
+			//		LaunchGUI.button.SetFalse();
+					LaunchGUI.button.enabled = false;
 				}
 			}
 			catch (Exception ex)
@@ -166,13 +174,15 @@ namespace KRASH
 				InputLockManager.SetControlLock(ControlTypes.None, "KRASHEditorLock");
 				if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
 					EditorLogic.fetch.Unlock ("KRASH_Editor");
-				//isEditorLocked = false;
 			}
 		}
 
 		bool configDisplayActive = false;
 		public void GUIToggle ()
 		{
+			if (HighLogic.LoadedScene != GameScenes.SPACECENTER  && EditorLogic.RootPart == null  && !Input.GetMouseButtonUp (1)) {
+				return;
+			}
 			// Check for right mouse click
 			if (Input.GetMouseButtonUp (1) || HighLogic.LoadedScene == GameScenes.SPACECENTER) {
 				configDisplayActive = !configDisplayActive;
@@ -1003,6 +1013,7 @@ namespace KRASH
 
 
 			if (GUILayout.Button ("Start simulation", bstyle, GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
+				Log.Info ("Start simulation");
 				GUI.backgroundColor = oldColor;
 				EditorLock (false);
 				//				Log.Info ("Active vessel: " + FlightGlobals.fetch.activeVessel.orbitDriver.ToString () + "   SelectedBody: " + selectedBody.ToString ());

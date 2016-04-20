@@ -22,11 +22,11 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
-        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" />
-        <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" />
-        <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" />
-        <Command type="AfterBuild" command="xcopy KRASHCustom.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" />
+        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy KRASHCustom.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" externalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -40,24 +40,41 @@
       <CustomCommands>
         <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
         <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy KRASHCustom.cfg R:\KSP_1.0.5_Dev\GameData\KRASH /y" externalConsole="True" />
         <Command type="AfterBuild" command="buildrelease.bat" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>R:\KSP_1.0.5_Dev\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPCore">
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPCore.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="Vectrosity">
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Vectrosity.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPAssets">
+      <HintPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SceneModules\EditorModule.cs" />

@@ -95,6 +95,13 @@ namespace KRASH
 				Start ();
 				inited = true;
 			}
+			Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
+			if (KRASHShelter.simCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive)
+			{
+				Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
+				KRASHShelter.startingFunds = 0;
+				KRASHShelter.simCost = 0;
+			}
 		}
 
 		void Start ()
@@ -164,8 +171,8 @@ namespace KRASH
 			Log.Info ("OnDestroy");
 			SimulationNotification (false); 
 			return;
-			KRASHShelter.instance = null;
-			cfg = null;
+			//KRASHShelter.instance = null;
+			//cfg = null;
 		}
 
 		// Activates the Simulation. Returns the success of the activation.
@@ -188,7 +195,7 @@ namespace KRASH
 			//if (k != KRASHShelter.persistent) {
 			//	Log.Info ("k != KRASHShelter.persistent");
 			//}
-			KRASHShelter.persistent.shelterSimulationActive = true;
+			//KRASHShelter.persistent.shelterSimulationActive = true;
 
 
 			// Record the scene we are coming from
@@ -198,7 +205,9 @@ namespace KRASH
 //					HoloDeck.OnLeavingEditor (EditorDriver.editorFacility, EditorLogic.fetch.launchSiteName);
 				KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 			}
-					
+			KRASHShelter.simCost = 0;
+			KRASHShelter.startingFunds = Funding.Instance.Funds;
+
 			// Start the tell-tale
 			KRASHShelter.instance.SimulationNotification (true);
 //			} else
@@ -219,11 +228,13 @@ namespace KRASH
 
 
 			foreach (SimulationPauseMenu simulationPauseMenu in simulationPauseMenus) {
-				DestroyImmediate (simulationPauseMenu);
+				if (simulationPauseMenu != null)
+					DestroyImmediate (simulationPauseMenu);
 			}
 
 			foreach (FlightModule flightModule in flightModules) {
-				DestroyImmediate (flightModule);
+				if (flightModule != null)
+					DestroyImmediate (flightModule);
 			}
 
 //			foreach (EditorModule editorModule in editorModules) {
@@ -239,7 +250,6 @@ namespace KRASH
 				// Weird bug can be intorduced by how KSP keeps around KSPAddons until it decides to destroy
 				// them. We need to preempt this so extraneous behavior isn't observed
 
-
 				DestroyModules ();
 
 				// Ok, here is where this is tricky. We can't just directly load the save, we need to 
@@ -251,6 +261,8 @@ namespace KRASH
 				GamePersistence.SaveGame (newGame, "persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
 				System.IO.File.Delete (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs");
 
+
+
 				newGame.startScene = targetScene;
 				// This has to be before... newGame.Start()
 				if (targetScene == GameScenes.EDITOR) {
@@ -259,6 +271,19 @@ namespace KRASH
 
 				newGame.Start ();
 				//HoloDeck.instance.SimulationActive = false;
+
+				#if false
+				if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+					if (KRASHShelter.simCost > 0) {
+						// Need to subtract the funds here, after the save has been loaded
+						Log.Info ("simCost: " + KRASHShelter.simCost.ToString ());
+						Log.Info ("Current funds before simCost: " + Funding.Instance.Funds.ToString ());
+						Funding.Instance.AddFunds (-1 * KRASHShelter.simCost, TransactionReasons.RnDs);
+						Log.Info ("Current funds after simCost: " + Funding.Instance.Funds.ToString ());
+						KRASHShelter.simCost = 0;
+					}
+				}
+				#endif
 
 				// ... And this has to be after. <3 KSP
 				if (targetScene == GameScenes.EDITOR) {

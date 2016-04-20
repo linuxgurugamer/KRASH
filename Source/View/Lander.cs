@@ -95,7 +95,7 @@ namespace KRASH.Hyperedit
 			}
 		}
 
-		private PopupDialog _activePopup;
+		//private PopupDialog _activePopup;
 		bool pausebeforestarting = false;
 
 		private void drawPauseAfterLanding ()
@@ -105,7 +105,7 @@ namespace KRASH.Hyperedit
 				FlightDriver.SetPause (false);
 				KRASHShelter.instance.SetSimActiveNotification ();
 				Destroy (this);
-				_activePopup.Dismiss ();
+				//_activePopup.Dismiss ();
 			}
 		}
 
@@ -129,7 +129,20 @@ namespace KRASH.Hyperedit
 						pausebeforestarting = true;
 						FlightDriver.SetPause (true);
 						//PopupDialog.SpawnPopupDialog ("Vessel has landed", "Vessel has landed.  Click the OK button to continue", "OK", true, HighLogic.Skin);
-						_activePopup = PopupDialog.SpawnPopupDialog (new MultiOptionDialog (null, new Callback (drawPauseAfterLanding), "Vessel has Landed", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
+						var dialog = new MultiOptionDialog ("Vessel has landed.  Click the OK button to continue", "", HighLogic.UISkin, new DialogGUIBase[] {
+							new DialogGUIButton ("OK", () => {
+								FlightDriver.SetPause (false);
+								KRASHShelter.instance.SetSimActiveNotification ();
+								Destroy (this);
+							//	_activePopup.Dismiss ();
+							})
+						});
+						PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), dialog, false, HighLogic.UISkin, true);
+
+
+
+						//_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),new MultiOptionDialog (null, new Callback (drawPauseAfterLanding), "Vessel has Landed", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
+
 
 						//pausebeforestarting = 0;
 						//FlightDriver.SetPause (false);

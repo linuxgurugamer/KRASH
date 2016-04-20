@@ -55,6 +55,7 @@ namespace KRASH
         public static EditorFacility lastEditor = EditorFacility.None;
         public static ConfigNode lastShip = null;
 		public static double simCost = 0.0F;
+		public static double startingFunds = 0.0f;
         public static GameScenes lastScene;
 		public static List<CelestialBody> bodiesListAtSimStart;
 		public static List<PreSimStatus> preSimStatus;
