@@ -91,16 +91,20 @@ namespace KRASH
 
 		void Update ()
 		{
+			
+
 			if (!inited && KRASHPersistent.inited) {
 				Start ();
 				inited = true;
 			}
-			Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
-			if (KRASHShelter.simCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive)
-			{
-				Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
-				KRASHShelter.startingFunds = 0;
-				KRASHShelter.simCost = 0;
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
+
+				if (KRASHShelter.simCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
+					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
+					KRASHShelter.startingFunds = 0;
+					KRASHShelter.simCost = 0;
+				}
 			}
 		}
 
@@ -120,7 +124,6 @@ namespace KRASH
 
 			//testWrapper ();
 
-			#if true
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				if (KRASHShelter.simCost > 0) {
 					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
@@ -128,7 +131,6 @@ namespace KRASH
 					KRASHShelter.simCost = 0;
 				}
 			}
-			#endif
 
 			Log.Info ("Loading configs");
 			if (cfg == null)
@@ -205,8 +207,10 @@ namespace KRASH
 //					HoloDeck.OnLeavingEditor (EditorDriver.editorFacility, EditorLogic.fetch.launchSiteName);
 				KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 			}
-			KRASHShelter.simCost = 0;
-			KRASHShelter.startingFunds = Funding.Instance.Funds;
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				KRASHShelter.simCost = 0;
+				KRASHShelter.startingFunds = Funding.Instance.Funds;
+			}
 
 			// Start the tell-tale
 			KRASHShelter.instance.SimulationNotification (true);
