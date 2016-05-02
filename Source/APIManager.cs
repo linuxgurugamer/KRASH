@@ -92,7 +92,7 @@ namespace KRASH
 			public double getCurrentSimCosts()
 			{
 				Log.Info ("APIManager.getCurrentSimCosts");
-				return KRASHShelter.simCost;
+				return KRASHShelter.simCost + KRASHShelter.simSetupCost;
 			}
 			public void addToCosts(float cost)
 			{

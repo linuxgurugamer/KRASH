@@ -1182,11 +1182,11 @@ namespace KRASH
 				KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
 
 
-				double simSetupCost = Math.Floor (KRASHShelter.instance.cfg.flatSetupCost +
+				KRASHShelter.simSetupCost = (float)Math.Round (KRASHShelter.instance.cfg.flatSetupCost +
 					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
-					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost);
+					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost, 1);
 			
-				GUILayout.Label (simSetupCost.ToString (), fontColorYellow);
+				GUILayout.Label (KRASHShelter.simSetupCost.ToString (), fontColorYellow);
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label ("Est. Sim/min cost:");
@@ -1196,7 +1196,7 @@ namespace KRASH
 					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartPerMinCost +
 					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonPerMinCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost;
 			
-				GUILayout.Label (estSimPerMin.ToString (), fontColorYellow);
+				GUILayout.Label (Math.Round(estSimPerMin, 1).ToString (), fontColorYellow);
 				GUILayout.EndHorizontal ();
 				float m = KRASHShelter.instance.cfg.AtmoMultipler;
 				float estSimAtmoPerMin = estSimPerMin;
@@ -1204,7 +1204,7 @@ namespace KRASH
 				if (m < 1.0F)
 					m = 1.0F;
 				if (m > 1.0) {
-					estSimAtmoPerMin = (float)Math.Floor (estSimPerMin * m + 1.0);
+					estSimAtmoPerMin = (float)Math.Round (estSimPerMin * m, 1);
 					GUILayout.BeginHorizontal (GUILayout.Height (18));
 					GUILayout.Label ("Est. Atmo Sim/min cost:");
 					GUILayout.FlexibleSpace ();
@@ -1219,7 +1219,7 @@ namespace KRASH
 				GUILayout.EndHorizontal ();
 				if (limitMaxCosts) {
 					if (KRASHShelter.LimitSimCost == 0) {
-						KRASHShelter.LimitSimCost = Math.Floor (simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin);
+						KRASHShelter.LimitSimCost = Math.Round (KRASHShelter.simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin, 1);
 					}
 					GUILayout.BeginHorizontal ();
 					GUILayout.Label ("Limit: ");
@@ -1232,8 +1232,8 @@ namespace KRASH
 						f = KRASHShelter.LimitSimCost;
 					} finally {
 					}
-					if (f < simSetupCost)
-						f = simSetupCost;
+					if (f < KRASHShelter.simSetupCost)
+						f = KRASHShelter.simSetupCost;
 					KRASHShelter.LimitSimCost = f;
 					GUILayout.EndHorizontal ();
 				}
@@ -1274,7 +1274,7 @@ namespace KRASH
 					s.flightsGlobalIndex = body.flightGlobalsIndex;
 					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
 					s.isReached = tree.IsReached;
-					;
+
 					s.landed = tree.landing.IsComplete;
 
 					bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();

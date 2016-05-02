@@ -55,3 +55,8 @@
 		Added new cfg file for custom settings
 		Added abililty to relocate running costs during sim, or not display altogether
 		Added dialog to pause when ship lands
+0.5.2
+		Updated for 1.1
+		Fixed bug where funds weren't being deducted at end of simulation from current funcs
+0.5.3
+		Added Changed estimated calcs of cost from Floor to Round, to 1 decimal place

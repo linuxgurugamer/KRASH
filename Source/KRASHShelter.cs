@@ -54,14 +54,24 @@ namespace KRASH
         // Editor stuff
         public static EditorFacility lastEditor = EditorFacility.None;
         public static ConfigNode lastShip = null;
-		public static double simCost = 0.0F;
-		public static double startingFunds = 0.0f;
+		public static double simcost = 0.0f;
+		public static double simCost {
+			get {
+				return simcost;
+			}
+			set {
+				Log.Info ("Setting simCost: " + value.ToString ());
+				simcost = value;
+			}
+		} // = 0.0F;
+		public static double startingFunds { get; set; } = 0.0f;
         public static GameScenes lastScene;
 		public static List<CelestialBody> bodiesListAtSimStart;
 		public static List<PreSimStatus> preSimStatus;
 		public static double LimitSimCost { get; set; }
 		public static KRASH instance = null;
 		public static float shipCost {get; set; }
+		public static float simSetupCost { get; set; } = 0;
 
 		void Awake()
 		{

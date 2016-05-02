@@ -100,10 +100,18 @@ namespace KRASH
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
 
-				if (KRASHShelter.simCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
+				if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
+					Log.Info ("Deducting 1 from funds");
+					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simSetupCost, TransactionReasons.Any);
 					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 					KRASHShelter.startingFunds = 0;
 					KRASHShelter.simCost = 0;
+					KRASHShelter.simSetupCost = 0;
+				} else {
+					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 				}
 			}
 		}
@@ -125,10 +133,16 @@ namespace KRASH
 			//testWrapper ();
 
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
-				if (KRASHShelter.simCost > 0) {
+				if (KRASHShelter.simCost + KRASHShelter.simSetupCost > 0) {
+					Log.Info ("Deducting 2 from funds");
+					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+
+					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simSetupCost, TransactionReasons.Any);
 					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 					Log.Info ("simCost found, Funds: " + Funding.Instance.Funds.ToString ());
 					KRASHShelter.simCost = 0;
+					KRASHShelter.simSetupCost = 0;
 				}
 			}
 
@@ -208,6 +222,7 @@ namespace KRASH
 				KRASHShelter.instance.OnLeavingEditor (EditorDriver.editorFacility, LaunchGUI.selectedSite);
 			}
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				KRASHShelter.simSetupCost = 0;
 				KRASHShelter.simCost = 0;
 				KRASHShelter.startingFunds = Funding.Instance.Funds;
 			}
@@ -278,13 +293,14 @@ namespace KRASH
 
 				#if false
 				if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
-					if (KRASHShelter.simCost > 0) {
+					if (KRASHShelter.simCost + KRASHShelter.simSetupCost > 0) {
 						// Need to subtract the funds here, after the save has been loaded
 						Log.Info ("simCost: " + KRASHShelter.simCost.ToString ());
 						Log.Info ("Current funds before simCost: " + Funding.Instance.Funds.ToString ());
 						Funding.Instance.AddFunds (-1 * KRASHShelter.simCost, TransactionReasons.RnDs);
 						Log.Info ("Current funds after simCost: " + Funding.Instance.Funds.ToString ());
 						KRASHShelter.simCost = 0;
+						KRASHShelter.simSetupCost = 0;
 					}
 				}
 				#endif

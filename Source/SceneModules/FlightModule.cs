@@ -202,10 +202,16 @@ namespace KRASH
 				float dryMass, fuelMass;
 				EditorLogic.fetch.ship.GetShipMass (out dryMass, out fuelMass);
 
-				KRASHShelter.simCost = KRASHShelter.instance.cfg.flatSetupCost +
+				//KRASHShelter.simCost = KRASHShelter.instance.cfg.flatSetupCost +
+				//	EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
+				//	(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost +
+				//	KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost;
+				
+				KRASHShelter.simSetupCost = KRASHShelter.instance.cfg.flatSetupCost +
 					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
 					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost +
 					KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost;
+				Log.Info ("simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 
 				lastUpdate = Planetarium.GetUniversalTime ();
 
@@ -256,7 +262,6 @@ namespace KRASH
 
 		public void Display ()
 		{
-			Log.Info ("jbb Display");
 			isOpen = true;
 		//	_display = true;
 			InputLockManager.SetControlLock (ControlTypes.PAUSE, "KRASHSimPauseMenu");
@@ -377,16 +382,21 @@ namespace KRASH
 							mass * KRASHShelter.instance.cfg.perTonPerMinCost +
 							KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
 				}
-
-				if (Funding.Instance.Funds < KRASHShelter.simCost) {
+					
+				if (Funding.Instance.Funds < KRASHShelter.simCost + KRASHShelter.simSetupCost) {
 					// First make sure that funds won't go negative
-					KRASHShelter.simCost = Funding.Instance.Funds;
+
+					KRASHShelter.simCost = Funding.Instance.Funds - KRASHShelter.simSetupCost;
+
 					if (!KRASHShelter.instance.cfg.ContinueIfNoCash) {
+						Log.Info ("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString ());
+						Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
+						Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
 						DisplayTerminationMessage ("Simulation terminated due to lack of funds");
 					}
 				} 
-				if (KRASHShelter.simCost >= KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0 ) {
-					KRASHShelter.simCost = KRASHShelter.LimitSimCost;
+				if (KRASHShelter.simCost + KRASHShelter.simSetupCost >= KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0 ) {
+					KRASHShelter.simCost = KRASHShelter.LimitSimCost - KRASHShelter.simSetupCost;
 					DisplayTerminationMessage ("Simulation terminated due to cost limit reached");
 				}
 				// Following code is for displaying the costs during flight
@@ -421,9 +431,11 @@ namespace KRASH
 				simInfoPos.Set (simX, simY, 200, sizeTitle.y);
 				DrawOutline (simInfoPos, simTitle, 1, simLabelStyle, Color.black, Color.yellow);
 
-				string costs = Math.Floor (KRASHShelter.simCost).ToString ();
+				string costs = Math.Round (KRASHShelter.simCost + KRASHShelter.simSetupCost, 1).ToString ();
 
 				Log.Info("current thread id: " + Thread.CurrentThread.GetHashCode().ToString()); 
+				Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+				Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 
 				size = simLabelStyle.CalcSize (new GUIContent (costs));
 				simInfoPos.Set (simX + sizeTitle.x + 5, simY, 200, size.y);
@@ -485,10 +497,10 @@ namespace KRASH
 		{
 			return simStarted;
 		}
-		int ticCntr = 0;
+	//	int ticCntr = 0;
 		private void DrawGUI ()
 		{
-			ticCntr++;
+		//	ticCntr++;
 
 			if (KRASHShelter.persistent.shelterSimulationActive) {
 				if (!hyper && HighLogic.LoadedScene == GameScenes.FLIGHT) {
@@ -649,7 +661,7 @@ namespace KRASH
 
 //						_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
 //							new MultiOptionDialog(null, new Callback (drawRevertWarning), "Reverting Simulation", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
-						APIManager.ApiInstance.SimRestartEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
+						APIManager.ApiInstance.SimRestartEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost + KRASHShelter.simSetupCost);
 						Hide ();
 					}
 				}
@@ -787,7 +799,7 @@ namespace KRASH
 
 			Close ();
 
-			APIManager.ApiInstance.SimTerminationEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
+			APIManager.ApiInstance.SimTerminationEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost + KRASHShelter.simSetupCost);
 
 			KRASHShelter.instance.Deactivate (KRASHShelter.lastScene);
 
