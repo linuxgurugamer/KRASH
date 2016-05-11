@@ -43,9 +43,9 @@ set d=%HOMEDIR%\install\Gamedata\KRASH\Textures
 if exist %d% goto five
 mkdir %d%
 :five
-del %HOMEDIR%\install\Gamedata\KRASH\*.*
-del %HOMEDIR%\install\Gamedata\KRASH\Plugins\*.*
-del %HOMEDIR%\install\Gamedata\KRASH\Textures\*.*
+del /y %HOMEDIR%\install\Gamedata\KRASH\*.*
+del /y %HOMEDIR%\install\Gamedata\KRASH\Plugins\*.*
+del /y %HOMEDIR%\install\Gamedata\KRASH\Textures\*.*
 
 xcopy Textures\KRASH*.png   %HOMEDIR%\install\GameData\KRASH\Textures /Y
 copy MiniAVC.dll %HOMEDIR%\install\Gamedata\KRASH

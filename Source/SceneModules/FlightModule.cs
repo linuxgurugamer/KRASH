@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections;
 using UnityEngine;
-using System.Threading; 
+using System.Threading;
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
 
@@ -31,7 +31,7 @@ namespace KRASH
 			if (HighLogic.LoadedScene == GameScenes.FLIGHT) {
 
 				Log.Info ("CallbackLevelWasLoaded");
-			//	KRASHShelter.instance.simPauseMenuInstance.AddToPostDrawQueue ();
+				//	KRASHShelter.instance.simPauseMenuInstance.AddToPostDrawQueue ();
 			}
 
 		}
@@ -46,11 +46,11 @@ namespace KRASH
 			GameObject t = GameObject.Find ("SimulationPauseMenu");
 			KRASHShelter.instance.simPauseMenuInstance = t.GetComponent<SimulationPauseMenu> ();
 
-		//		KRASHShelter.instance.simPauseMenuInstance = new SimulationPauseMenu();
-				// KSP isn't calling Start for the simpausemenu, so we do it here
-		//		KRASHShelter.instance.simPauseMenuInstance.Start ();
-				GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
-		//	}
+			//		KRASHShelter.instance.simPauseMenuInstance = new SimulationPauseMenu();
+			// KSP isn't calling Start for the simpausemenu, so we do it here
+			//		KRASHShelter.instance.simPauseMenuInstance.Start ();
+			GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
+			//	}
 //			GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
 			DontDestroyOnLoad (this);  
 		}
@@ -77,6 +77,7 @@ namespace KRASH
          */
 
 		int pauseCnt = 0;
+
 		void Update ()
 		{
 			// We don't want to do anything if we aren't simming
@@ -94,8 +95,9 @@ namespace KRASH
 				//Log.Info ("KRASHShelter.instance.simPauseMenuInstance.isOpen: " + KRASHShelter.instance.simPauseMenuInstance.isOpen.ToString ());
 
 				bool b;
-				try {b = FlightResultsDialog.isDisplaying; }
-				catch (Exception) {
+				try {
+					b = FlightResultsDialog.isDisplaying;
+				} catch (Exception) {
 					Log.Info ("FlightResultsDialog.isDisplaying exception");
 					b = false;
 				}
@@ -103,13 +105,13 @@ namespace KRASH
 					FlightResultsDialog.showExitControls = false;
 					FlightResultsDialog.allowClosingDialog = true;
 					FlightResultsDialog.Display ("Simulation ended!");
-				};
+				}
+				;
 
 				// Hide the vanilla pause menu.
 				//Log.Info("Checking PauseMenu");
 				//Log.Info("PauseMenu.isOpen: " + PauseMenu.isOpen.ToString());
-				if (PauseMenu.isOpen) 
-				{
+				if (PauseMenu.isOpen) {
 					PauseMenu.Close ();
 					pauseCnt = 0;
 				}
@@ -164,9 +166,9 @@ namespace KRASH
 		private const string TAG = "KRASH.FlightModule.SimulationPauseMenu";
 
 		private Rect _windowRect;
-//		private bool _display = false;
+		//		private bool _display = false;
 		private Color _backgroundColor;
-//		private GUISkin _guiSkin;
+		//		private GUISkin _guiSkin;
 		private PopupDialog _activePopup;
 		private MiniSettings _miniSettings;
 
@@ -175,18 +177,20 @@ namespace KRASH
 
 		public bool isOpen = false;
 
-		public  SimulationPauseMenu()
+		public  SimulationPauseMenu ()
 		{
-			Log.Info("SimulationPauseMenu instantiated");
+			Log.Info ("SimulationPauseMenu instantiated");
 		}
+
 		public void Awake ()
 		{
-			Log.Info("SimulationPauseMenu.Awake");
+			Log.Info ("SimulationPauseMenu.Awake");
 
 		}
-		public void test(string s)
+
+		public void test (string s)
 		{
-			Log.Info("SimulationPauseMenu.test s: " + s);
+			Log.Info ("SimulationPauseMenu.test s: " + s);
 		}
 
 		double lastUpdate = 0.0F;
@@ -208,9 +212,9 @@ namespace KRASH
 				//	KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost;
 				
 				KRASHShelter.simSetupCost = KRASHShelter.instance.cfg.flatSetupCost +
-					EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
-					(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost +
-					KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost;
+				EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
+				(dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost +
+				KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost;
 				Log.Info ("simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 
 				lastUpdate = Planetarium.GetUniversalTime ();
@@ -248,7 +252,7 @@ namespace KRASH
 		//	Log.Info ("AddToPostDrawQueue DrawGUI");
 		//	RenderingManager.AddToPostDrawQueue (3, new Callback (DrawGUI));
 		//}
-		private void OnGUI()
+		private void OnGUI ()
 		{
 			DrawGUI ();
 		}
@@ -263,7 +267,7 @@ namespace KRASH
 		public void Display ()
 		{
 			isOpen = true;
-		//	_display = true;
+			//	_display = true;
 			InputLockManager.SetControlLock (ControlTypes.PAUSE, "KRASHSimPauseMenu");
 			Log.Info ("Display:  FlightDriver.SetPause (true)");
 			FlightDriver.SetPause (true);
@@ -325,11 +329,11 @@ namespace KRASH
 		[Persistent]
 		int simSize = 10;
 		[Persistent]
-//		float simX = KRASH.cfg.horizontalPos;
+		//		float simX = KRASH.cfg.horizontalPos;
 		float simX = 10;
 		[Persistent]
 		float simY = 50;
-//		float simY = KRASH.cfg.verticalPos;
+		//		float simY = KRASH.cfg.verticalPos;
 
 		const string simTitle = "Sim Costs:";
 
@@ -355,7 +359,7 @@ namespace KRASH
 		{
 			if (!simStarted)
 				return;
-		//	Log.Info ("lastUpdate: " + lastUpdate.ToString () + "     Planetarium.GetUniversalTime: " + Planetarium.GetUniversalTime ().ToString ());
+			//	Log.Info ("lastUpdate: " + lastUpdate.ToString () + "     Planetarium.GetUniversalTime: " + Planetarium.GetUniversalTime ().ToString ());
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				float m = 1.0F;
 				if (Planetarium.GetUniversalTime () - lastUpdate >= 1) {
@@ -377,10 +381,10 @@ namespace KRASH
 					int cnt = parts.Count ();
 
 					KRASHShelter.simCost = KRASHShelter.simCost +
-						(KRASHShelter.instance.cfg.flatPerMinCost +
-							cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
-							mass * KRASHShelter.instance.cfg.perTonPerMinCost +
-							KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
+					(KRASHShelter.instance.cfg.flatPerMinCost +
+					cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
+					mass * KRASHShelter.instance.cfg.perTonPerMinCost +
+					KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
 				}
 					
 				if (Funding.Instance.Funds < KRASHShelter.simCost + KRASHShelter.simSetupCost) {
@@ -390,12 +394,12 @@ namespace KRASH
 
 					if (!KRASHShelter.instance.cfg.ContinueIfNoCash) {
 						Log.Info ("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString ());
-						Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
-						Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
+						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 						DisplayTerminationMessage ("Simulation terminated due to lack of funds");
 					}
 				} 
-				if (KRASHShelter.simCost + KRASHShelter.simSetupCost >= KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0 ) {
+				if (KRASHShelter.simCost + KRASHShelter.simSetupCost >= KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0) {
 					KRASHShelter.simCost = KRASHShelter.LimitSimCost - KRASHShelter.simSetupCost;
 					DisplayTerminationMessage ("Simulation terminated due to cost limit reached");
 				}
@@ -414,34 +418,35 @@ namespace KRASH
 					foreach (PreSimStatus bodyStatus in KRASHShelter.preSimStatus) {
 						if (bodyStatus.flightsGlobalIndex == FlightGlobals.fetch.activeVessel.mainBody.flightGlobalsIndex) {
 							if (!bodyStatus.scienceFromAtmo) {
-								Log.Info ("vessel.RevealAltitude: " + FlightGlobals.fetch.activeVessel.RevealAltitude ().ToString());
+								Log.Info ("vessel.RevealAltitude: " + FlightGlobals.fetch.activeVessel.RevealAltitude ().ToString ());
 								Log.Info ("vessel.altitdue: " + FlightGlobals.fetch.activeVessel.altitude.ToString ());
 								Log.Info ("AtmosphereDepth: " + FlightGlobals.fetch.activeVessel.mainBody.atmosphereDepth.ToString ());
-								DisplayTerminationMessage ("Simulation terminated due to lack of science data from " + 
-									FlightGlobals.fetch.activeVessel.mainBody.name + " atmosphere");
+								DisplayTerminationMessage ("Simulation terminated due to lack of science data from " +
+								FlightGlobals.fetch.activeVessel.mainBody.name + " atmosphere");
 							}
 						}
 					}
 				}
+				if (KRASHShelter.uiVisiblity.isVisible ()) {
+					simLabelStyle.fontSize = 20;
+					Vector2 size, 
+					sizeTitle = simLabelStyle.CalcSize (new GUIContent (simTitle));
+					//if (config.displayGameTime && config.logGameTime) {
+					simInfoPos.Set (simX, simY, 200, sizeTitle.y);
+					DrawOutline (simInfoPos, simTitle, 1, simLabelStyle, Color.black, Color.yellow);
 
-				simLabelStyle.fontSize = 20;
-				Vector2 size, 
-				sizeTitle = simLabelStyle.CalcSize (new GUIContent (simTitle));
-				//if (config.displayGameTime && config.logGameTime) {
-				simInfoPos.Set (simX, simY, 200, sizeTitle.y);
-				DrawOutline (simInfoPos, simTitle, 1, simLabelStyle, Color.black, Color.yellow);
+					string costs = Math.Round (KRASHShelter.simCost + KRASHShelter.simSetupCost, 1).ToString ();
 
-				string costs = Math.Round (KRASHShelter.simCost + KRASHShelter.simSetupCost, 1).ToString ();
+					Log.Info ("current thread id: " + Thread.CurrentThread.GetHashCode ().ToString ()); 
+					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
 
-				Log.Info("current thread id: " + Thread.CurrentThread.GetHashCode().ToString()); 
-				Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
-				Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
-
-				size = simLabelStyle.CalcSize (new GUIContent (costs));
-				simInfoPos.Set (simX + sizeTitle.x + 5, simY, 200, size.y);
-				DrawOutline (simInfoPos, costs, 1, simLabelStyle, Color.black, Color.white);
-				simInfoPos.Set (simInfoPos.xMin, simInfoPos.yMin + size.y, 200, size.y);
-				//}
+					size = simLabelStyle.CalcSize (new GUIContent (costs));
+					simInfoPos.Set (simX + sizeTitle.x + 5, simY, 200, size.y);
+					DrawOutline (simInfoPos, costs, 1, simLabelStyle, Color.black, Color.white);
+					simInfoPos.Set (simInfoPos.xMin, simInfoPos.yMin + size.y, 200, size.y);
+					//}
+				}
 			}
 		}
 
@@ -450,8 +455,10 @@ namespace KRASH
 		private void CallbackWillDestroy (Vessel evt)
 		{
 			Log.Info ("CallbackWillDestroy");
-			if (evt == FlightGlobals.ActiveVessel)
+			if (evt == FlightGlobals.ActiveVessel) {
+				StartCoroutine (WaitForFlightResultsDialog (true));
 				DisplayTerminationMessage ("Simulation terminated due to vessel destruction");
+			}
 						
 		}
 
@@ -476,9 +483,9 @@ namespace KRASH
 			Log.Info ("CallbackOnland");
 			if (KRASHShelter.instance.cfg.TerminateAtLandWithoutData && !destbody.isHomeWorld) {
 				foreach (PreSimStatus bodyStatus in KRASHShelter.preSimStatus) {
-						if (bodyStatus.flightsGlobalIndex == destbody.flightGlobalsIndex) {
-							if (!bodyStatus.isReached || !bodyStatus.landed) {
-								DisplayTerminationMessage ("Simulation terminated due to landing on unknown body");
+					if (bodyStatus.flightsGlobalIndex == destbody.flightGlobalsIndex) {
+						if (!bodyStatus.isReached || !bodyStatus.landed) {
+							DisplayTerminationMessage ("Simulation terminated due to landing on unknown body");
 						}
 					}
 				}
@@ -493,14 +500,14 @@ namespace KRASH
 		int physicsCnt = 0;
 		//bool pausedtest = false;
 
-		public bool SimStarted()
+		public bool SimStarted ()
 		{
 			return simStarted;
 		}
-	//	int ticCntr = 0;
+		//	int ticCntr = 0;
 		private void DrawGUI ()
 		{
-		//	ticCntr++;
+			//	ticCntr++;
 
 			if (KRASHShelter.persistent.shelterSimulationActive) {
 				if (!hyper && HighLogic.LoadedScene == GameScenes.FLIGHT) {
@@ -566,7 +573,7 @@ namespace KRASH
 //					FlightDriver.SetPause (true);
 //				}
 				CalcAndDisplaySimCost ();
-				if (isOpen) {
+				if (isOpen && !FlightResultsDialog.isDisplaying) {
 //					Log.Info ("Displaying draw window");
 //					GUI.skin = _guiSkin;
 					GUI.backgroundColor = _backgroundColor;
@@ -584,98 +591,98 @@ namespace KRASH
 				}
 
 				GUILayout.Space (SPACER);
+			}
+			if (GUILayout.Button ("<color=orange>Terminate Simulation</color>"/*, _guiSkin.button */)) {
+				string revertTarget;
 
-				if (GUILayout.Button ("<color=orange>Terminate Simulation</color>"/*, _guiSkin.button */)) {
-
-					string revertTarget;
-
-					switch (KRASHShelter.lastScene) {
-					case GameScenes.EDITOR:
-						switch (KRASHShelter.lastEditor) {
-						case EditorFacility.SPH:
-							revertTarget = "Spaceplane Hangar";
-							break;
-						case EditorFacility.VAB:
-							revertTarget = "Vehicle Assembly Building";
-							break;
-							// This should never happen. If it does, just go to the SC
-						default:
-							revertTarget = "Space Center";
-							KRASHShelter.lastScene = GameScenes.SPACECENTER;
-							break;
-						}
+				switch (KRASHShelter.lastScene) {
+				case GameScenes.EDITOR:
+					switch (KRASHShelter.lastEditor) {
+					case EditorFacility.SPH:
+						revertTarget = "Spaceplane Hangar";
 						break;
-					case GameScenes.SPACECENTER:
-						revertTarget = "Space Center";
+					case EditorFacility.VAB:
+						revertTarget = "Vehicle Assembly Building";
 						break;
+					// This should never happen. If it does, just go to the SC
 					default:
-						revertTarget = "Pre-Simulation";
+						revertTarget = "Space Center";
+						KRASHShelter.lastScene = GameScenes.SPACECENTER;
 						break;
 					}
-					string s = "Revert to " + revertTarget + " (" + KSPUtil.PrintTimeLong( ((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime)));
-					DialogGUIBase[] options = new DialogGUIBase[2];
+					break;
+				case GameScenes.SPACECENTER:
+					revertTarget = "Space Center";
+					break;
+				default:
+					revertTarget = "Pre-Simulation";
+					break;
+				}
+				string s = "Revert to " + revertTarget + " (" + KSPUtil.PrintTimeLong (((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime)));
+				DialogGUIBase[] options = new DialogGUIBase[2];
 
-					options[0] = new DialogGUIButton(s, () => {
-						StartCoroutine (WaitForFlightResultsDialog ());
+				options [0] = new DialogGUIButton (s, () => {
+					StartCoroutine (WaitForFlightResultsDialog ());
+				});
+				options [1] = new DialogGUIButton ("Cancel", () => {
+					Log.Info ("Close 2");
+
+					Close ();
+				});
+				var multidialog = new MultiOptionDialog ("Terminating will set the game back to an earlier state. Are you sure you want to continue?", "Terminating Simulation",
+					                   HighLogic.UISkin, 450, options);
+
+				_activePopup = PopupDialog.SpawnPopupDialog (new Vector2 (0.5f, 0.5f), new Vector2 (0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
+				Hide ();
+			}
+
+
+			if (FlightDriver.CanRevertToPostInit) {
+
+				if (GUILayout.Button ("<color=orange>Restart Simulation</color>"/*, _guiSkin.button*/)) {
+
+					DialogGUIBase[] options = new DialogGUIBase[2];
+					string s = "Revert to Launch(" + KSPUtil.PrintTimeLong (((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime))) + " ago";
+					options [0] = new DialogGUIButton (s, () => {
+						Log.Info ("Close 3");
+
+						Close ();
+						Log.Info ("Close 4");
+
+						Close ();
+						FlightDriver.RevertToLaunch ();
+						// The RevertTolaunch reloads all the objects, so we destroy them here to avoid conflicts
+						KRASHShelter.instance.DestroyModules ();
 					});
 					options [1] = new DialogGUIButton ("Cancel", () => {
-						Log.Info ("Close 2");
+						Log.Info ("Close 5");
 
 						Close ();
 					});
-					var multidialog = new MultiOptionDialog("Terminating will set the game back to an earlier state. Are you sure you want to continue?","Terminating Simulation",
-						HighLogic.UISkin, 450, options);
-
-					_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
-					Hide ();
-				}
 
 
-				if (FlightDriver.CanRevertToPostInit) {
-
-					if (GUILayout.Button ("<color=orange>Restart Simulation</color>"/*, _guiSkin.button*/)) {
-
-						DialogGUIBase[] options = new DialogGUIBase[2];
-						string s = "Revert to Launch("  + KSPUtil.PrintTimeLong( ((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime))) + " ago";
-						options[0] = new DialogGUIButton(s, () => {
-							Log.Info ("Close 3");
-
-							Close ();
-							Log.Info ("Close 4");
-
-							Close ();
-							FlightDriver.RevertToLaunch ();
-							// The RevertTolaunch reloads all the objects, so we destroy them here to avoid conflicts
-							KRASHShelter.instance.DestroyModules ();
-						});
-						options [1] = new DialogGUIButton ("Cancel", () => {
-							Log.Info ("Close 5");
-
-							Close ();
-						});
-
-
-						var multidialog = new MultiOptionDialog("Reverting will set the game back to an earlier state. Are you sure you want to continue?","Reverting Simulation",
-							HighLogic.UISkin, 450, options);
+					var multidialog = new MultiOptionDialog ("Reverting will set the game back to an earlier state. Are you sure you want to continue?", "Reverting Simulation",
+						                   HighLogic.UISkin, 450, options);
 						
 
 
 
-						_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
+					_activePopup = PopupDialog.SpawnPopupDialog (new Vector2 (0.5f, 0.5f), new Vector2 (0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
 
 //						_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
 //							new MultiOptionDialog(null, new Callback (drawRevertWarning), "Reverting Simulation", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
-						APIManager.ApiInstance.SimRestartEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost + KRASHShelter.simSetupCost);
-						Hide ();
-					}
-				}
-
-				GUILayout.Space (SPACER);
-
-				if (GUILayout.Button ("Settings"/*, _guiSkin.button*/)) {
+					APIManager.ApiInstance.SimRestartEvent.Fire ((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost + KRASHShelter.simSetupCost);
 					Hide ();
-					_miniSettings = MiniSettings.Create (Unhide);
 				}
+			}
+
+			GUILayout.Space (SPACER);
+
+			if (GUILayout.Button ("Settings"/*, _guiSkin.button*/)) {
+				Hide ();
+				_miniSettings = MiniSettings.Create (Unhide);
+			}
+			#if false
 			} else {
 				
 
@@ -688,76 +695,9 @@ namespace KRASH
 
 				}
 			}
+			#endif
 		}
 
-		#if false
-		private void drawRevertWarning ()
-		{
-			GUILayout.Label ("Reverting will set the game back to an earlier state. Are you sure you want to continue?");
-			if (GUILayout.Button ("Revert to Launch (" + KSPUtil.PrintTime ((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime), 3, false) + " ago)")) {
-				Close ();
-				Close ();
-				FlightDriver.RevertToLaunch ();
-				// The RevertTolaunch reloads all the objects, so we destroy them here to avoid conflicts
-				KRASHShelter.instance.DestroyModules ();
-			}
-			if (GUILayout.Button ("Cancel")) {
-				Close ();
-			}
-		}
-		#endif
-
-		#if false
-		private void drawTerminationWarning ()
-		{
-			GUILayout.Label ("Terminating will set the game back to an earlier state. Are you sure you want to continue?");
-
-			string revertTarget;
-
-			switch (KRASHShelter.lastScene) {
-			case GameScenes.EDITOR:
-				switch (KRASHShelter.lastEditor) {
-				case EditorFacility.SPH:
-					revertTarget = "Spaceplane Hangar";
-					break;
-				case EditorFacility.VAB:
-					revertTarget = "Vehicle Assembly Building";
-					break;
-				// This should never happen. If it does, just go to the SC
-				default:
-					revertTarget = "Space Center";
-					KRASHShelter.lastScene = GameScenes.SPACECENTER;
-					break;
-				}
-				break;
-			case GameScenes.SPACECENTER:
-				revertTarget = "Space Center";
-				break;
-			default:
-				revertTarget = "Pre-Simulation";
-				break;
-			}
-			string s = "Revert to " + revertTarget + " (" + KSPUtil.PrintTimeLong( ((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime)));
-			DialogGUIBase[] options = new DialogGUIBase[2];
-
-			options[0] = new DialogGUIButton(s, () => {
-				StartCoroutine (WaitForFlightResultsDialog ());
-			});
-			options [1] = new DialogGUIButton ("Cancel", () => {
-				Close ();
-			});
-
-
-			if (GUILayout.Button ("Revert to " + revertTarget + " (" + KSPUtil.PrintTime ((int)(Planetarium.GetUniversalTime () - FlightDriver.PostInitState.UniversalTime), 3, false) + " ago)")) {
-				//	GameEvents.onVesselSOIChanged.Remove (this.CallbackSOIChanged);
-				StartCoroutine (WaitForFlightResultsDialog ());
-			}
-            
-			if (GUILayout.Button ("Cancel")) {
-				Close ();
-			}
-		}
-		#endif
 
 		public void   DisplayTerminationMessage (string msg)
 		{
@@ -769,9 +709,35 @@ namespace KRASH
 			}
 		}
 
-		public IEnumerator WaitForFlightResultsDialog ()
+
+		bool returnedAfterDialog = false;
+		public IEnumerator WaitForFlightResultsDialog (bool returnAfterDialog = false)
 		{ 
 			Log.Info ("IEnumerator WaitForFlightResultsDialog");
+
+			if (!returnedAfterDialog) {
+				FlightResultsDialog.showExitControls = false;
+				FlightResultsDialog.allowClosingDialog = true;
+
+				FlightResultsDialog.Display ("Simulation results!");
+
+				bool b = true;
+
+				while (b) {
+					try {
+						b = FlightResultsDialog.isDisplaying;
+					} catch (Exception) {
+						Log.Info ("FlightResultsDialog.isDisplaying exception");
+						b = false;
+					}
+					if (b)
+						yield return 0;
+				}
+			}
+			returnedAfterDialog = returnAfterDialog;
+			if (returnAfterDialog)
+				yield break;
+			
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				GameEvents.onVesselSOIChanged.Remove (this.CallbackSOIChanged);
 				GameEvents.onVesselWillDestroy.Remove (this.CallbackWillDestroy);
@@ -779,25 +745,9 @@ namespace KRASH
 			}
 			KRASHShelter.instance.SimulationNotification (false);
 
-			FlightResultsDialog.showExitControls = false;
-			FlightResultsDialog.allowClosingDialog = true;
-
-			FlightResultsDialog.Display ("Simulation results!");
-
-			bool b = true;
-
-			while (b) {
-				try {b = FlightResultsDialog.isDisplaying; }
-				catch (Exception) {
-					Log.Info ("FlightResultsDialog.isDisplaying exception");
-					b = false;
-				}
-				if (b) yield return 0;
-			}
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = true;
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = true;
 			Log.Info ("Close 6");
-
 			Close ();
 			Log.Info ("Close 7");
 

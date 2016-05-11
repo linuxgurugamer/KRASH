@@ -72,10 +72,13 @@ namespace KRASH
 		public static KRASH instance = null;
 		public static float shipCost {get; set; }
 		public static float simSetupCost { get; set; } = 0;
+		public static UICLASS uiVisiblity;
 
 		void Awake()
 		{
 			Log.Info ("KRASHShelter.Awake");
+			uiVisiblity = new UICLASS ();
+			uiVisiblity.Awake ();
 		}
 
 		void Start()

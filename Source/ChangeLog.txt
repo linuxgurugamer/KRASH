@@ -63,3 +63,7 @@
 0.5.4
 		Added code to ensure that no latitude or longitude of 0.0 will be passed to Unity, this to work
 		around a Unity bug.
+0.5.5
+		Added code to hide costs if UI is hidden
+		Fixed issue when in career mode, if sim terminated in crash, unable to restart sim
+		Fixed issue where Flight results dialog would show up multiple times
