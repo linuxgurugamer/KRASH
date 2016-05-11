@@ -67,3 +67,5 @@
 		Added code to hide costs if UI is hidden
 		Fixed issue when in career mode, if sim terminated in crash, unable to restart sim
 		Fixed issue where Flight results dialog would show up multiple times
+0.6.6
+		Added some code to check for a null value from the ProgressTracking when launching a sim

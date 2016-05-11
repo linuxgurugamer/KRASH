@@ -967,7 +967,7 @@ namespace KRASH
 					else
 						scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
 
-					if (!isCareerGame () || scienceOrbit || body.isHomeWorld  || (simType == SimType.LANDED && tree.landing.IsComplete )) {
+					if (!isCareerGame () || scienceOrbit || body.isHomeWorld  || (simType == SimType.LANDED && tree != null && tree.landing.IsComplete )) {
 						
 //						Log.Info ("body: " + body.name + "  is reached: " + tree.IsReached);
 							GUI.enabled = !(selectedBody == body);
@@ -1273,18 +1273,20 @@ namespace KRASH
 					PreSimStatus s = new PreSimStatus ();
 					s.flightsGlobalIndex = body.flightGlobalsIndex;
 					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
-					s.isReached = tree.IsReached;
+					if (tree != null) {
+						s.isReached = tree.IsReached;
 
-					s.landed = tree.landing.IsComplete;
+						s.landed = tree.landing.IsComplete;
 
-					bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();
-					s.scienceFromAtmo = scienceFlying;
+						bool scienceFlying = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("Flying")).Any ();
+						s.scienceFromAtmo = scienceFlying;
 
-					bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
-					s.scienceFromOrbit = scienceOrbit; 
+						bool scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
+						s.scienceFromOrbit = scienceOrbit; 
 
-					KRASHShelter.preSimStatus.Add (s);
-					s = null;
+						KRASHShelter.preSimStatus.Add (s);
+						s = null;
+					}
 				}
 			}
 			// Debug.Log("KK: EditorLogic.fetch.launchSiteName set to " + site.name);
