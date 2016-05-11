@@ -60,3 +60,6 @@
 		Fixed bug where funds weren't being deducted at end of simulation from current funcs
 0.5.3
 		Added Changed estimated calcs of cost from Floor to Round, to 1 decimal place
+0.5.4
+		Added code to ensure that no latitude or longitude of 0.0 will be passed to Unity, this to work
+		around a Unity bug.

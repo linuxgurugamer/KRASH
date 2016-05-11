@@ -38,9 +38,8 @@
     <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.0.5_Dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
-        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.0.5_Dev\GameData\KRASH\Textures /Y" externalConsole="True" />
-        <Command type="AfterBuild" command="xcopy $(TargetDir)\KRASH.pdb  R:\KSP_1.1.2_dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.1.2_dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
+        <Command type="AfterBuild" command="xcopy ${ProjectDir}\Textures\*  R:\KSP_1.1.2_dev\GameData\KRASH\Textures /Y" externalConsole="True" />
         <Command type="AfterBuild" command="xcopy KRASH.cfg R:\KSP_1.1.2_dev\GameData\KRASH /y" externalConsole="True" />
         <Command type="AfterBuild" command="xcopy KRASHCustom.cfg R:\KSP_1.1.2_dev\GameData\KRASH /y" externalConsole="True" />
         <Command type="AfterBuild" command="buildrelease.bat" externalConsole="True" pauseExternalConsole="True" />

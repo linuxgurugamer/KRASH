@@ -534,6 +534,10 @@ namespace KRASH
 							}
 						} else if (!FlightGlobals.fetch.activeVessel.HoldPhysics && physicsCnt++ > PHYSICSWAIT) {
 							Action<double, double, CelestialBody> onManualEdit = (latVal, lonVal, body) => {
+								if (LaunchGUI.newLatitude == 0.0f)
+									LaunchGUI.newLatitude = 0.001;
+								if (LaunchGUI.newLongitude == 0.0f)
+									LaunchGUI.newLongitude = 0.001;
 								latVal = LaunchGUI.newLatitude;
 								lonVal = LaunchGUI.newLongitude;
 								body = LaunchGUI.selectedBody;
