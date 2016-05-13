@@ -67,5 +67,8 @@
 		Added code to hide costs if UI is hidden
 		Fixed issue when in career mode, if sim terminated in crash, unable to restart sim
 		Fixed issue where Flight results dialog would show up multiple times
-0.6.6
+0.5.6
 		Added some code to check for a null value from the ProgressTracking when launching a sim
+0.5.7
+		Fixed issue where a ship could be recovered when landed, or return to space center when landed, and then 
+		recover ship from space center.  Recovery tab disabled

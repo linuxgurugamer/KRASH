@@ -413,7 +413,6 @@ namespace KRASH
 			GUILayout.BeginHorizontal ();
 			var bstyle = new GUIStyle (GUI.skin.button);
 			bstyle.normal.textColor = Color.yellow;
-			bstyle.normal.textColor = Color.yellow;
 			GUILayout.FlexibleSpace ();
 			GUI.enabled = strConfigName.Length == 0 || (!(strConfigName [0] == '*') && strConfigName != "defaults"); ;
 			if (GUILayout.Button ("Save", bstyle, GUILayout.Width(70))) {

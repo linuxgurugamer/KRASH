@@ -82,7 +82,19 @@ namespace KRASH
 		{
 			// We don't want to do anything if we aren't simming
 			if (KRASHShelter.persistent.shelterSimulationActive) {
-				
+
+				// Don't allow any of the recovery buttons to be used
+				AltimeterSliderButtons _Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
+				if (_Recovery_button != null && _Recovery_button.slidingTab.enabled) {
+					_Recovery_button.hoverArea = null;
+					_Recovery_button.slidingTab.enabled = false;
+					_Recovery_button.spaceCenterButton.enabled = false;
+					_Recovery_button.vesselRecoveryButton.enabled = false;
+					Log.Info ("Recovery locked");	
+				}
+
+
+
 				if (KRASHShelter.instance.simPauseMenuInstance == null) {
 					Log.Info ("FlightModule.Update KRASH.simPauseMenuInstance == null"); 
 					return;
@@ -630,7 +642,7 @@ namespace KRASH
 					Close ();
 				});
 				var multidialog = new MultiOptionDialog ("Terminating will set the game back to an earlier state. Are you sure you want to continue?", "Terminating Simulation",
-					                   HighLogic.UISkin, 450, options);
+					                  HighLogic.UISkin, 450, options);
 
 				_activePopup = PopupDialog.SpawnPopupDialog (new Vector2 (0.5f, 0.5f), new Vector2 (0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
 				Hide ();
@@ -662,7 +674,7 @@ namespace KRASH
 
 
 					var multidialog = new MultiOptionDialog ("Reverting will set the game back to an earlier state. Are you sure you want to continue?", "Reverting Simulation",
-						                   HighLogic.UISkin, 450, options);
+						                  HighLogic.UISkin, 450, options);
 						
 
 
@@ -711,6 +723,7 @@ namespace KRASH
 
 
 		bool returnedAfterDialog = false;
+
 		public IEnumerator WaitForFlightResultsDialog (bool returnAfterDialog = false)
 		{ 
 			Log.Info ("IEnumerator WaitForFlightResultsDialog");
