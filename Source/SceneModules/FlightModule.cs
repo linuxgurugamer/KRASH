@@ -86,7 +86,7 @@ namespace KRASH
 				// Don't allow any of the recovery buttons to be used
 				AltimeterSliderButtons _Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
 				if (_Recovery_button != null && _Recovery_button.slidingTab.enabled) {
-					_Recovery_button.hoverArea = null;
+					_Recovery_button.hoverArea = new XSelectable();
 					_Recovery_button.slidingTab.enabled = false;
 					_Recovery_button.spaceCenterButton.enabled = false;
 					_Recovery_button.vesselRecoveryButton.enabled = false;
