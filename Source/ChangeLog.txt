@@ -74,3 +74,5 @@
 		recover ship from space center.  Recovery tab disabled
 0.5.8
 		Fixed constant exceptions when in flight from KSP.UI.Screens.AltimeterSliderButtons.LateUpdate
+0.5.9
+		Fixed slowdown during simulation mode 

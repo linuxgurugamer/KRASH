@@ -20,6 +20,7 @@ namespace KRASH
 	class FlightModule : MonoBehaviour
 	{
 		private const string TAG = "KRASH.FlightModule";
+		public static AltimeterSliderButtons _Recovery_button = null;
 
 		FlightModule ()
 		{
@@ -50,6 +51,7 @@ namespace KRASH
 			// KSP isn't calling Start for the simpausemenu, so we do it here
 			//		KRASHShelter.instance.simPauseMenuInstance.Start ();
 			GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
+
 			//	}
 //			GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
 			DontDestroyOnLoad (this);  
@@ -80,11 +82,15 @@ namespace KRASH
 
 		void Update ()
 		{
+
 			// We don't want to do anything if we aren't simming
 			if (KRASHShelter.persistent.shelterSimulationActive) {
 
 				// Don't allow any of the recovery buttons to be used
-				AltimeterSliderButtons _Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
+			//	AltimeterSliderButtons _Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
+				if (_Recovery_button == null) {	
+					_Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
+				}
 				if (_Recovery_button != null && _Recovery_button.slidingTab.enabled) {
 					_Recovery_button.hoverArea = new XSelectable();
 					_Recovery_button.slidingTab.enabled = false;

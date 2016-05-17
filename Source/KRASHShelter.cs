@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+using KSP.UI.Screens;
+using KSP.UI.Dialogs;
+
 namespace KRASH
 {
 	[KSPScenario (ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
@@ -74,6 +77,8 @@ namespace KRASH
 		public static float simSetupCost { get; set; } = 0;
 		public static UICLASS uiVisiblity;
 
+
+
 		void Awake()
 		{
 			Log.Info ("KRASHShelter.Awake");
@@ -84,7 +89,85 @@ namespace KRASH
 		void Start()
         {
 			Log.Info ("KRASHShelter.Start");
+		
+
+
             DontDestroyOnLoad(this);
         }
+
+		void OnDestroy()
+		{
+
+		}
+		void RotateGizmoSpawnedSpawned(AltimeterSliderButtons asb) {
+			Log.Info ("RotateGizmoSpawnedSpawned");
+		}
     }
+
+	#if false
+	[KSPAddon(KSPAddon.Startup.Flight, true)]
+	class GizmoEvents : MonoBehaviour
+	{
+		public static readonly EventData<AltimeterSliderButtons> onAltimeterSliderButtonsSpawned = new EventData<AltimeterSliderButtons>("onAltimeterSliderButtons");
+
+
+		class GizmoCreationListener : MonoBehaviour
+		{
+			private void Start()
+			// I use Start instead of Awake because whatever setup the editor does to the gizmo won't be done yet
+			{
+				AltimeterSliderButtons altimeterSliderButtons = null;
+
+
+				if (gameObject.GetComponentCached(ref altimeterSliderButtons) != null)
+				{
+					onAltimeterSliderButtonsSpawned.Fire(altimeterSliderButtons);
+				}
+				else if (gameObject.GetComponentCached(ref altimeterSliderButtons) != null)
+				{
+					onAltimeterSliderButtonsSpawned.Fire(altimeterSliderButtons);
+				}
+				else Debug.LogError("Didn't find a gizmo on this GameObject -- something has broken");
+
+				// could destroy this MB now, unless you wanted to use OnDestroy to sent an event
+			}
+
+			private void OnDestroy()
+			{
+				// could also send an event on despawn here
+			}
+		}
+
+
+		private void Awake()
+		{
+			AddListenerToGizmo("AltimeterSliderButtons");
+
+			Destroy(gameObject);
+		}
+
+
+		private static void AddListenerToGizmo(string prefabName)
+		{
+			var prefab = AssetBase.GetPrefab(prefabName);
+
+			if (prefab == null)
+			{
+				Debug.LogError("Couldn't find Gizmo '" + prefabName + "'");
+				return;
+			}
+
+			prefab.AddOrGetComponent<GizmoCreationListener>();
+
+			#if DEBUG
+			Debug.Log("Added listener to " + prefabName);
+			#endif
+		}
+	}
+#endif
+
+
+
+
+
 }
