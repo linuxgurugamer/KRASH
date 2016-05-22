@@ -83,3 +83,5 @@
 		Fixed NullReferenceException when first opening a career game from the main menu
 0.5.11
 		Fixed issue where you couldn't start a sim in orbit or landed
+0.5.12
+		Fixed checks for size, mass & part count for orbital & landed sims to properly check against facility being used

@@ -1000,11 +1000,21 @@ namespace KRASH
 
 		float getMassLimit()
 		{
-			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
-				return 99999999999f;
+			SimType s = simType;
+			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY) {
+				switch (selectedSite.GetSiteType ()) {
+				case SiteType.VAB:
+					s = SimType.LAUNCHPAD;
+					break;
+				case SiteType.SPH:
+					s = SimType.RUNWAY;
+					break;
+
+				}
+			}
 			bool isPad = false;
 			float editorNormLevel;
-			if (simType == SimType.LAUNCHPAD) {
+			if (s == SimType.LAUNCHPAD) {
 				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.LaunchPad);
 				isPad = true;
 			} else {
@@ -1015,17 +1025,62 @@ namespace KRASH
 
 		Vector3 getSizeLimit()
 		{
-			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
-				return new Vector3(9999,9999,9999);
+	//		if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
+	//			return new Vector3(9999,9999,9999);
+
+			SimType s = simType;
+			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY) {
+				switch (selectedSite.GetSiteType ()) {
+				case SiteType.VAB:
+					s = SimType.LAUNCHPAD;
+					break;
+				case SiteType.SPH:
+					s = SimType.RUNWAY;
+					break;
+
+				}
+			}
+
+
 			bool isPad = false;
 			float editorNormLevel;
-			if (simType == SimType.LAUNCHPAD) {
+			if (s == SimType.LAUNCHPAD) {
 				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.LaunchPad);
 				isPad = true;
 			} else {
 				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.Runway);
 			}
 			return GameVariables.Instance.GetCraftSizeLimit (editorNormLevel, isPad);
+		}
+		int getPartLimit() 
+		{
+//			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
+//				return 9999;
+
+			SimType s = simType;
+			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY) {
+				switch (selectedSite.GetSiteType ()) {
+				case SiteType.VAB:
+					s = SimType.LAUNCHPAD;
+					break;
+				case SiteType.SPH:
+					s = SimType.RUNWAY;
+					break;
+
+				}
+			}
+
+			bool isPad = false;
+			float editorNormLevel;
+
+			if (s == SimType.LAUNCHPAD) {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.VehicleAssemblyBuilding);
+				isPad = true;
+			} else {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.SpaceplaneHangar);
+			}
+			return GameVariables.Instance.GetPartCountLimit(editorNormLevel, isPad);
+
 		}
 
 		// ======================================================================================
@@ -1071,6 +1126,13 @@ namespace KRASH
 					startSim += "\nShip too tall";
 					flyable = false;
 				}
+
+				if (EditorLogic.fetch.ship.parts.Count() > getPartLimit())
+				{
+					startSim += "\nToo many parts for facility";
+					flyable = false;
+				}
+
 			}
 			if (flyable) {
 				startSim = "Start simulation";
