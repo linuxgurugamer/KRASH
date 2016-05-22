@@ -81,3 +81,5 @@
 		would then stop it, leaving the sim enabled until a real launch was done
 		Fixed inability to hide sim costs during sim
 		Fixed NullReferenceException when first opening a career game from the main menu
+0.5.11
+		Fixed issue where you couldn't start a sim in orbit or landed

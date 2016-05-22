@@ -1001,7 +1001,7 @@ namespace KRASH
 		float getMassLimit()
 		{
 			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
-				return -1;
+				return 99999999999f;
 			bool isPad = false;
 			float editorNormLevel;
 			if (simType == SimType.LAUNCHPAD) {
