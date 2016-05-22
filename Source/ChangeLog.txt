@@ -76,3 +76,8 @@
 		Fixed constant exceptions when in flight from KSP.UI.Screens.AltimeterSliderButtons.LateUpdate
 0.5.9
 		Fixed slowdown during simulation mode 
+0.5.10
+		Fixed bug where a ship too big or heavy for the launchpad/runway would be allowed to launch, but the game
+		would then stop it, leaving the sim enabled until a real launch was done
+		Fixed inability to hide sim costs during sim
+		Fixed NullReferenceException when first opening a career game from the main menu

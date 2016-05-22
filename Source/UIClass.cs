@@ -42,7 +42,7 @@ namespace KRASH
 
 		public bool isVisible()
 		{
-			return uiVisible;
+			return uiVisible && KRASHShelter.instance.cfg.showRunningSimCosts;
 		}
 
 		public void setVisible(bool b)

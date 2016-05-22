@@ -91,29 +91,33 @@ namespace KRASH
 
 		void Update ()
 		{
-			
 
 			if (!inited && KRASHPersistent.inited) {
 				Start ();
 				inited = true;
 			}
-			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
-				Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
 
-				if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
-					Log.Info ("Deducting 1 from funds");
-					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
-					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
-					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simSetupCost, TransactionReasons.Any);
-					Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
-					KRASHShelter.startingFunds = 0;
-					KRASHShelter.simCost = 0;
-					KRASHShelter.simSetupCost = 0;
-				} else {
-					Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
-					Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				Log.Info ("Update 3");
+				if (Funding.Instance != null) {
+					Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
+
+					if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
+						Log.Info ("Deducting 1 from funds");
+						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+						Funding.Instance.AddFunds (-1.0F * KRASHShelter.simSetupCost, TransactionReasons.Any);
+						Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
+						KRASHShelter.startingFunds = 0;
+						KRASHShelter.simCost = 0;
+						KRASHShelter.simSetupCost = 0;
+					} else {
+						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+					}
 				}
 			}
+
 		}
 
 		void Start ()

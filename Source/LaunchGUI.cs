@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using KSP.UI.Screens;
+using Upgradeables;
 
 namespace KRASH
 {
@@ -344,6 +345,7 @@ namespace KRASH
 			KRASHShelter.instance.cfg.verticalPos = Convert.ToUInt16( strverticalPos);
 			if (saveToFile)
 				KRASHShelter.instance.cfg.SaveConfiguration (strConfigName);
+			KRASHShelter.instance.cfg.saveDisplayValues ();
 		}
 			
 		public void drawCfgWindow(int id)
@@ -467,7 +469,7 @@ namespace KRASH
 			GUILayout.EndVertical ();
 			GUILayout.EndArea();
 
-			GUILayout.BeginArea (new Rect (185, 125, 225, 300));
+			GUILayout.BeginArea (new Rect (185, 125, 225, 330));
 			GUILayout.BeginVertical ();
 
 			DrawTitle ("Cost Options");
@@ -993,6 +995,40 @@ namespace KRASH
 			drawRightSelectorWindow (selectType);
 			GUI.DragWindow ();
 		}
+		// ======================================================================================
+
+
+		float getMassLimit()
+		{
+			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
+				return -1;
+			bool isPad = false;
+			float editorNormLevel;
+			if (simType == SimType.LAUNCHPAD) {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.LaunchPad);
+				isPad = true;
+			} else {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.Runway);
+			}
+			return GameVariables.Instance.GetCraftMassLimit (editorNormLevel, isPad);
+		}
+
+		Vector3 getSizeLimit()
+		{
+			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
+				return new Vector3(9999,9999,9999);
+			bool isPad = false;
+			float editorNormLevel;
+			if (simType == SimType.LAUNCHPAD) {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.LaunchPad);
+				isPad = true;
+			} else {
+				editorNormLevel = ScenarioUpgradeableFacilities.GetFacilityLevel (SpaceCenterFacility.Runway);
+			}
+			return GameVariables.Instance.GetCraftSizeLimit (editorNormLevel, isPad);
+		}
+
+		// ======================================================================================
 
 		void drawRightSelectorWindow (SelectionType type)
 		{
@@ -1011,16 +1047,53 @@ namespace KRASH
 			//bstyle.normal.background = new Texture2D(2,2);
 
 
-			if (GUILayout.Button ("Start simulation", bstyle, GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
-				Log.Info ("Start simulation");
-				GUI.backgroundColor = oldColor;
-				EditorLock (false);
-				//				Log.Info ("Active vessel: " + FlightGlobals.fetch.activeVessel.orbitDriver.ToString () + "   SelectedBody: " + selectedBody.ToString ());
-				LaunchSim ();
-				SetVisible (false);
+			float dryMass, fuelMass;
+			string startSim = "";
+			bool flyable = true;
+			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+				
+				float launchMassLimit = getMassLimit ();
 
-				return;
+				//EditorLogic.fetch.ship.GetShipMass (out dryMass, out fuelMass);
+				//if (dryMass + fuelMass > launchMassLimit) {
+				if (EditorLogic.fetch.ship.GetTotalMass() > launchMassLimit) {
+					flyable = false;
+					startSim = "Ship too heavy";
+				}
+				
+				Vector3 s = EditorLogic.fetch.ship.shipSize;
+				Vector3 sizeLimit = getSizeLimit ();
+				if (s.x + s.z > sizeLimit.x) {
+					startSim += "\nShip too wide";
+					flyable = false;
+				}
+				if (s.y > sizeLimit.y) {
+					startSim += "\nShip too tall";
+					flyable = false;
+				}
 			}
+			if (flyable) {
+				startSim = "Start simulation";
+			
+
+				if (GUILayout.Button ("Start simulation", bstyle, GUILayout.Width (170.0f), GUILayout.Height (125.0f))) {
+					Log.Info ("Start simulation");
+					GUI.backgroundColor = oldColor;
+					EditorLock (false);
+
+					LaunchSim ();
+					SetVisible (false);
+
+					return;
+				}
+			} else {
+				GUILayout.Label ("Vessel Unlaunchable for following reason(s):");
+				GUILayout.EndHorizontal ();
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label (startSim, "TextField");
+			}
+
+
 			GUI.backgroundColor = oldColor;
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (15);
@@ -1143,7 +1216,7 @@ namespace KRASH
 			GUILayout.Label (EditorLogic.fetch.ship.parts.Count.ToString (), fontColorYellow);
 			GUILayout.EndHorizontal ();
 
-			float dryMass, fuelMass;
+//			float dryMass, fuelMass;
 			EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
 
 			GUILayout.BeginHorizontal ();

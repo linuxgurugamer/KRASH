@@ -194,6 +194,21 @@ namespace KRASH
 			//LogConfiguration(nodename);
 		}
 
+		public void saveDisplayValues()
+		{
+			Log.Info ("saveDisplayValues");
+			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+			ConfigNode node = configFile.GetNode (KRASH_CUSTOM_NODE);
+			node.SetValue ("showRunningSimCosts", showRunningSimCosts.ToString());
+			node.SetValue("horizontalPos", horizontalPos.ToString());
+			node.SetValue("verticalPos", verticalPos.ToString());
+
+			configFileNode.RemoveNode (KRASH_CUSTOM_NODE);
+			configFileNode.AddNode (KRASH_CUSTOM_NODE, node);
+
+			configFile.Save(KRASH_CUSTOM_CFG_FILE);
+		}
+
 		public void DeleteConfiguration (string strConfigName)
 		{
 			if (strConfigName [0] == '*') {
@@ -253,6 +268,7 @@ namespace KRASH
 					configFile.Save (KRASH_CUSTOM_CFG_FILE);
 				}
 			}
+			saveDisplayValues ();
 		}
 
 		public bool LoadConfiguration (string nodename)

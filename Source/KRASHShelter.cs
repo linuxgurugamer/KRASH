@@ -13,7 +13,8 @@ namespace KRASH
 		GameScenes.SPACECENTER,
 		GameScenes.EDITOR,
 		GameScenes.FLIGHT,
-		GameScenes.TRACKSTATION
+		GameScenes.TRACKSTATION,
+		GameScenes.SPACECENTER
 	})]
 	public class KRASHPersistent : ScenarioModule
 	{
