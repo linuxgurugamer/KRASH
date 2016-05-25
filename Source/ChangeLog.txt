@@ -85,3 +85,6 @@
 		Fixed issue where you couldn't start a sim in orbit or landed
 0.5.12
 		Fixed checks for size, mass & part count for orbital & landed sims to properly check against facility being used
+0.5.13
+		Fixed bug where ships length & width were being added together when checking for a ship too wide
+		Added display of reasons for inability to start sim, along with the limit being exceeded

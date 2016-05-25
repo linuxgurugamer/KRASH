@@ -1113,23 +1113,27 @@ namespace KRASH
 				//if (dryMass + fuelMass > launchMassLimit) {
 				if (EditorLogic.fetch.ship.GetTotalMass() > launchMassLimit) {
 					flyable = false;
-					startSim = "Ship too heavy";
+					startSim = "Vessel too heavy: " + Math.Round (EditorLogic.fetch.ship.GetTotalMass (), 1).ToString () + "t";
+					startSim +=	"\nWeight limit: " + launchMassLimit +"t";
 				}
 				
 				Vector3 s = EditorLogic.fetch.ship.shipSize;
 				Vector3 sizeLimit = getSizeLimit ();
-				if (s.x + s.z > sizeLimit.x) {
-					startSim += "\nShip too wide";
+				if (s.x > sizeLimit.x || s.z > sizeLimit.z) {
+					startSim += "\nVessel too wide: \n" + Math.Round (s.x,1).ToString () + "m x" + Math.Round (s.z,1).ToString () + "m";
+					startSim += "\nWidth limit: " + sizeLimit.x.ToString () + "m";
 					flyable = false;
 				}
 				if (s.y > sizeLimit.y) {
-					startSim += "\nShip too tall";
+					startSim += "\nVessel too tall: \n"+ Math.Round (s.y,1).ToString () + "m";
+					startSim += "\nHeight limit: " + sizeLimit.y.ToString () + "m";
 					flyable = false;
 				}
 
 				if (EditorLogic.fetch.ship.parts.Count() > getPartLimit())
 				{
-					startSim += "\nToo many parts for facility";
+					startSim += "\nToo many parts: " + EditorLogic.fetch.ship.parts.Count ().ToString ();
+					startSim += "\nPart limit: " + getPartLimit().ToString();
 					flyable = false;
 				}
 
@@ -1152,7 +1156,10 @@ namespace KRASH
 				GUILayout.Label ("Vessel Unlaunchable for following reason(s):");
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
-				GUILayout.Label (startSim, "TextField");
+				GUIStyle t = new GUIStyle ("TextField");
+				t.fontSize = 11;
+//				GUILayout.Label (startSim, "TextField");
+				GUILayout.Label (startSim, t);
 			}
 
 
