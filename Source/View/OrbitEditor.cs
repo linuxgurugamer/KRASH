@@ -47,12 +47,14 @@ namespace KRASH.Hyperedit
 
 		private static Orbit CreateOrbit(double inc, double e, double sma, double lan, double w, double mEp, double epoch, CelestialBody body)
 		{
+			if (inc == 0)
+				inc = 0.0001d;
 			if (double.IsNaN(inc))
-				inc = 0;
+				inc = 0.0001d;
 			if (double.IsNaN(e))
 				e = 0;
 			if (double.IsNaN(sma))
-				sma = body.Radius + body.atmosphereDepth + 10000;
+				sma = body.Radius + body.atmosphereDepth + 10000d;
 			if (double.IsNaN(lan))
 				lan = 0;
 			if (double.IsNaN(w))
