@@ -88,3 +88,13 @@
 0.5.13
 		Fixed bug where ships length & width were being added together when checking for a ship too wide
 		Added display of reasons for inability to start sim, along with the limit being exceeded
+0.5.14
+		Fixed exploding ships after teleport
+0.5.15
+		Fixed exploding ships after teleport to landed state
+		Fixed issue where if flight can't be entered due to some reason, simulation mode will be exited.
+			This can happen in the following two (known) scenarios:
+				1.  Try to launch, no kerbals available, cancel launch
+				2.  In career mode, if you try to simulate a vessel for which you haven't researched the parts, 
+					the simulation does not start but the game remains in simulation mode. Obviously can happen only 
+					if you import a ship design from another save. 

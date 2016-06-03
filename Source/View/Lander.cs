@@ -31,9 +31,9 @@ namespace KRASH.Hyperedit
 
 		public static void ToggleLanding(double latitude, double longitude, double altitude, CelestialBody body, Action<double, double, CelestialBody> onManualEdit)
 		{
-			Log.Info ("ToggleLanding");
 			if (FlightGlobals.fetch == null || FlightGlobals.ActiveVessel == null || body == null)
 				return;
+			Log.Info ("KRASH.HyperEdit.ToggleLanding");
 			var lander = FlightGlobals.ActiveVessel.GetComponent<LanderAttachment>();
 			if (lander == null)
 			{
@@ -41,7 +41,6 @@ namespace KRASH.Hyperedit
 				lander.Latitude = latitude;
 				lander.Longitude = longitude;
 				lander.Altitude = altitude;
-				Log.Info ("lander.Altitude: " + lander.Altitude.ToString ());
 				lander.Body = body;
 				lander.OnManualEdit = onManualEdit;
 			}
@@ -139,15 +138,6 @@ namespace KRASH.Hyperedit
 						});
 						PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), dialog, false, HighLogic.UISkin, true);
 
-
-
-						//_activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),new MultiOptionDialog (null, new Callback (drawPauseAfterLanding), "Vessel has Landed", HighLogic.Skin, new DialogOption[0]), false, HighLogic.Skin);
-
-
-						//pausebeforestarting = 0;
-						//FlightDriver.SetPause (false);
-						//KRASHShelter.instance.SetSimActiveNotification ();
-						//Destroy (this);
 					}
 				}
 				else
@@ -193,10 +183,14 @@ namespace KRASH.Hyperedit
 				// counter for the momentary fall when on rails (about one second)
 				teleportVelocity += teleportPosition.normalized * (Body.gravParameter / teleportPosition.sqrMagnitude);
 
-				var oldUp = vessel.orbit.pos.xzy.normalized; // can also be vessel.vesselTransform.position, I think
-				var newUp = teleportPosition.xzy.normalized; // teleportPosition is the orbitspace location (note the .xzy)
-				var rotation = Quaternion.FromToRotation(oldUp, newUp)*vessel.vesselTransform.rotation;
+			//	var oldUp = vessel.orbit.pos.xzy.normalized; // can also be vessel.vesselTransform.position, I think
+			//	var newUp = teleportPosition.xzy.normalized; // teleportPosition is the orbitspace location (note the .xzy)
+			//	var rotation = Quaternion.FromToRotation(oldUp, newUp)*vessel.vesselTransform.rotation;
 
+				var from = Vector3d.up;
+				var to = teleportPosition.xzy.normalized;
+				var rotation = Quaternion.FromToRotation(from, to);
+			
 
 				var orbit = vessel.orbitDriver.orbit.Clone();
 				orbit.UpdateFromStateVectors(teleportPosition, teleportVelocity, Body, Planetarium.GetUniversalTime());

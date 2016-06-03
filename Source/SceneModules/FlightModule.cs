@@ -557,7 +557,7 @@ namespace KRASH
 								physicsCnt = 0;
 								doLanding = true;
 							}
-						} else if (!FlightGlobals.fetch.activeVessel.HoldPhysics && physicsCnt++ > PHYSICSWAIT) {
+						} else if (!FlightGlobals.fetch.activeVessel.HoldPhysics && physicsCnt++ > PHYSICSWAIT * 1) {
 							Action<double, double, CelestialBody> onManualEdit = (latVal, lonVal, body) => {
 								if (LaunchGUI.newLatitude == 0.0f)
 									LaunchGUI.newLatitude = 0.001;
@@ -566,8 +566,14 @@ namespace KRASH
 								latVal = LaunchGUI.newLatitude;
 								lonVal = LaunchGUI.newLongitude;
 								body = LaunchGUI.selectedBody;
+								Log.Info("latVal: " + latVal.ToString() + "    lonVal: " + lonVal.ToString());
 							};
-
+							Log.Info ("Setting landing"); 
+							if (LaunchGUI.newLatitude == 0.0f)
+								LaunchGUI.newLatitude = 0.001;
+							if (LaunchGUI.newLongitude == 0.0f)
+								LaunchGUI.newLongitude = 0.001;
+							Log.Info ("LaunchGUI.newLatitude: " + LaunchGUI.newLatitude.ToString () + "   LaunchGUI.newLongitude: " + LaunchGUI.newLongitude.ToString ());
 							Hyperedit.DoLander.ToggleLanding (LaunchGUI.newLatitude, LaunchGUI.newLongitude, LaunchGUI.newAltitude, LaunchGUI.selectedBody, onManualEdit);
 							hyper = true;
 						}

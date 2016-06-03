@@ -22,7 +22,7 @@ namespace KRASH.Hyperedit
 		{
 			Log.Info ("Simple, currentlyEditing:" + currentlyEditing.ToString());
 			SetOrbit(currentlyEditing, CreateOrbit(0, 0, altitude + body.Radius, 0, 0, 0, 0, body));
-		}
+		} 
 
 
 		public static void GetSimple(OrbitDriver currentlyEditing, out double altitude, out CelestialBody body)
@@ -51,12 +51,16 @@ namespace KRASH.Hyperedit
 				inc = 0.0001d;
 			if (double.IsNaN(inc))
 				inc = 0.0001d;
+			
 			if (double.IsNaN(e))
 				e = 0;
 			if (double.IsNaN(sma))
 				sma = body.Radius + body.atmosphereDepth + 10000d;
 			if (double.IsNaN(lan))
-				lan = 0;
+				lan = 0.0001d;
+			if (lan == 0)
+				lan = 0.0001d;
+			
 			if (double.IsNaN(w))
 				w = 0;
 			if (double.IsNaN(mEp))
