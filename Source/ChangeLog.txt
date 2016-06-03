@@ -98,3 +98,5 @@
 				2.  In career mode, if you try to simulate a vessel for which you haven't researched the parts, 
 					the simulation does not start but the game remains in simulation mode. Obviously can happen only 
 					if you import a ship design from another save. 
+0.5.16
+		The previous fix wasn't good, and it was still staying in sim mode, now fixed
