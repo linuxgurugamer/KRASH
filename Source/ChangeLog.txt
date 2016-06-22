@@ -20,7 +20,7 @@
 			TerminateAtSoiWithoutData
 			TerminateAtLandWithoutData 
 			TerminateAtAtmoWithoutData 
-			MaxAllowableSimCost 
+			DefaultMaxAllowableSimCost 
 			DefaultSimTime 
 
 		Config file enhanced with with nodes for each career type.  Top of 
@@ -100,3 +100,12 @@
 					if you import a ship design from another save. 
 0.5.16
 		The previous fix wasn't good, and it was still staying in sim mode, now fixed
+
+0.5.17
+		Added check for enough funds in Editor
+		Now uses the MaxAllowableSimCost to set the initial default value
+		Renamed MaxAllowableSimCost to DefaultMaxAllowableSimCost
+		Moved cfg files into PluginData folder
+
+0.5.17.1
+		Recompile for 1.1.3

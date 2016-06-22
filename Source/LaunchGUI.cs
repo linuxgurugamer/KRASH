@@ -267,7 +267,7 @@ namespace KRASH
 		bool bTerminateAtAtmoWithoutData;
 
 		bool bContinueIfNoCash;
-		string strMaxAllowableSimCost;
+		string strDefaultMaxAllowableSimCost;
 		string strDefaultSimTime;
 
 		//string strselectedCosts = KRASHShelter.instance.cfg.selectedCosts;
@@ -304,7 +304,7 @@ namespace KRASH
 			bTerminateAtAtmoWithoutData = KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData;
 
 			bContinueIfNoCash = KRASHShelter.instance.cfg.ContinueIfNoCash;
-			strMaxAllowableSimCost = KRASHShelter.instance.cfg.MaxAllowableSimCost.ToString ();
+			strDefaultMaxAllowableSimCost = KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost.ToString ();
 			strDefaultSimTime = KRASHShelter.instance.cfg.DefaultSimTime.ToString ();
 
 		//	strselectedCosts = KRASH.cfg.selectedCosts;
@@ -335,7 +335,7 @@ namespace KRASH
 			KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData = bTerminateAtAtmoWithoutData  ;
 
 			KRASHShelter.instance.cfg.ContinueIfNoCash = bContinueIfNoCash;
-			KRASHShelter.instance.cfg.MaxAllowableSimCost =  Convert.ToSingle(Convert.ToDouble (strMaxAllowableSimCost));
+			KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost =  Convert.ToSingle(Convert.ToDouble (strDefaultMaxAllowableSimCost));
 			KRASHShelter.instance.cfg.DefaultSimTime = Convert.ToUInt16(strDefaultSimTime);
 
 			KRASHShelter.persistent.selectedCostsCfg = strConfigName;
@@ -563,7 +563,7 @@ namespace KRASH
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Default Max Sim Cost: ");
 			GUILayout.FlexibleSpace ();
-			strMaxAllowableSimCost = GUILayout.TextField (strMaxAllowableSimCost, GUILayout.MinWidth (60.0F), GUILayout.MaxWidth (60.0F));
+			strDefaultMaxAllowableSimCost = GUILayout.TextField (strDefaultMaxAllowableSimCost, GUILayout.MinWidth (60.0F), GUILayout.MaxWidth (60.0F));
 			GUILayout.EndHorizontal ();
 
 			GUILayout.Space (10);
@@ -1136,7 +1136,15 @@ namespace KRASH
 					startSim += "\nPart limit: " + getPartLimit().ToString();
 					flyable = false;
 				}
+				if (KRASHShelter.simSetupCost > Funding.Instance.Funds && !KRASHShelter.instance.cfg.ContinueIfNoCash) {
+					startSim += "\nNot enough money to start sim";
+					flyable = false;
+				}
 
+				if (KRASHShelter.simSetupCost > KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0) {
+					startSim += "\nSim cost exceeds limit";
+					flyable = false;
+				}
 			}
 			if (flyable) {
 				startSim = "Start simulation";
@@ -1360,7 +1368,10 @@ namespace KRASH
 				GUILayout.EndHorizontal ();
 				if (limitMaxCosts) {
 					if (KRASHShelter.LimitSimCost == 0) {
-						KRASHShelter.LimitSimCost = Math.Round (KRASHShelter.simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin, 1);
+						if (KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost > 0)
+							KRASHShelter.LimitSimCost = KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost;
+						else
+							KRASHShelter.LimitSimCost = Math.Round (KRASHShelter.simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin, 1);
 					}
 					GUILayout.BeginHorizontal ();
 					GUILayout.Label ("Limit: ");
@@ -1373,11 +1384,12 @@ namespace KRASH
 						f = KRASHShelter.LimitSimCost;
 					} finally {
 					}
-					if (f < KRASHShelter.simSetupCost)
-						f = KRASHShelter.simSetupCost;
+					if (f < KRASHShelter.simSetupCost && f < KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost)
+						f = Math.Min (KRASHShelter.simSetupCost, KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost);
 					KRASHShelter.LimitSimCost = f;
 					GUILayout.EndHorizontal ();
-				}
+				} else
+					KRASHShelter.LimitSimCost = 0;
 			}
 
 			GUILayout.FlexibleSpace ();

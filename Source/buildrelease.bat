@@ -45,6 +45,7 @@ mkdir %d%
 :five
 del /y %HOMEDIR%\install\Gamedata\KRASH\*.*
 del /y %HOMEDIR%\install\Gamedata\KRASH\Plugins\*.*
+del /y %HOMEDIR%\install\Gamedata\KRASH\PluginData\*.*
 del /y %HOMEDIR%\install\Gamedata\KRASH\Textures\*.*
 
 xcopy Textures\KRASH*.png   %HOMEDIR%\install\GameData\KRASH\Textures /Y
@@ -56,7 +57,7 @@ copy README4Modders.txt  %HOMEDIR%\install\Gamedata\KRASH
 copy KRASHWrapper.cs  %HOMEDIR%\install\Gamedata\KRASH
 copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
 copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH
-copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH
+rem copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH
 
 %HOMEDRIVE%
 cd %HOMEDIR%\install

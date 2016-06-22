@@ -15,6 +15,5 @@ Configurable settings:
 
 Timed events, called every second or so
 
-show dialog after vessel has touched down 
-Dialog to create custom costs, & select which custom costs to use
+
 

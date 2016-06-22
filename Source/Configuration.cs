@@ -24,8 +24,8 @@ namespace KRASH
 		private static String KRASH_BASE_FOLDER = CONFIG_BASE_FOLDER + "KRASH/";
 		private static String KRASH_NODE = "KRASH";
 		private static String KRASH_CUSTOM_NODE = "KRASHCustom";
-		private static String KRASH_CFG_FILE = KRASH_BASE_FOLDER + "KRASH.cfg";
-		private static String KRASH_CUSTOM_CFG_FILE = KRASH_BASE_FOLDER + "KRASHCustom.cfg";
+		private static String KRASH_CFG_FILE = KRASH_BASE_FOLDER + "PluginData/KRASH.cfg";
+		private static String KRASH_CUSTOM_CFG_FILE = KRASH_BASE_FOLDER + "PluginData/KRASHCustom.cfg";
 
 		public string overrideNode { get; private set;  }
  	
@@ -57,10 +57,10 @@ namespace KRASH
 		public bool		TerminateAtLandWithoutData{ get; set; }
 		public bool		TerminateAtAtmoWithoutData{ get; set; }
 
-		public float	MaxAllowableSimCost { get; set; }
+		public float	DefaultMaxAllowableSimCost { get; set; }
 		public int		DefaultSimTime { get; set; }
 
-		public string	selectedCosts {get; set; }
+	//	public string	selectedCosts {get; set; }
 		public bool		showRunningSimCosts{ get; set; }
 		public int		horizontalPos {get; set; }
 		public int		verticalPos{ get; set;}
@@ -94,10 +94,10 @@ namespace KRASH
 			TerminateAtAtmoWithoutData = false;
 
 			ContinueIfNoCash = false;
-			MaxAllowableSimCost = 0.0F;
+			DefaultMaxAllowableSimCost = 0.0F;
 			DefaultSimTime = 5;
 
-			selectedCosts = "default";
+			//selectedCosts = "default";
 
 			showRunningSimCosts = true;
 			horizontalPos = 10;
@@ -171,7 +171,7 @@ namespace KRASH
 			TerminateAtAtmoWithoutData = bool.Parse(SafeLoad(node.GetValue("TerminateAtAtmoWithoutData"), TerminateAtAtmoWithoutData));
 
 			ContinueIfNoCash = bool.Parse (SafeLoad (node.GetValue ("ContinueIfNoCash"), ContinueIfNoCash));
-			MaxAllowableSimCost = float.Parse (SafeLoad (node.GetValue ("MaxAllowableSimCost"), MaxAllowableSimCost));
+			DefaultMaxAllowableSimCost = float.Parse (SafeLoad (node.GetValue ("DefaultMaxAllowableSimCost"), DefaultMaxAllowableSimCost));
 			DefaultSimTime = int.Parse (SafeLoad (node.GetValue ("DefaultSimTime"), DefaultSimTime));
 
 			KRASHShelter.persistent.selectedCostsCfg = nodename;
@@ -183,12 +183,19 @@ namespace KRASH
 		{
 			Log.Info ("setDisplayValues");
 			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
-			ConfigNode node = configFile.GetNode (KRASH_CUSTOM_NODE);
+			if (configFile != null) {
+				ConfigNode node = configFile.GetNode (KRASH_CUSTOM_NODE);
 
-			showRunningSimCosts = bool.Parse (SafeLoad (node.GetValue ("showRunningSimCosts"), showRunningSimCosts));
-			horizontalPos = int.Parse (SafeLoad (node.GetValue ("horizontalPos"), horizontalPos));
-			verticalPos = int.Parse (SafeLoad (node.GetValue ("verticalPos"), verticalPos));
+				showRunningSimCosts = bool.Parse (SafeLoad (node.GetValue ("showRunningSimCosts"), showRunningSimCosts));
+				horizontalPos = int.Parse (SafeLoad (node.GetValue ("horizontalPos"), horizontalPos));
+				verticalPos = int.Parse (SafeLoad (node.GetValue ("verticalPos"), verticalPos));
 
+			} else {
+				showRunningSimCosts = true;
+				horizontalPos = 10;
+				verticalPos = 50;
+
+			}
 			//Log.Info ("horizontalPos: " + horizontalPos.ToString ());
 			//Log.Info ("verticalpos: " + verticalPos.ToString ());
 			//LogConfiguration(nodename);
@@ -255,7 +262,7 @@ namespace KRASH
 					cfgNode.SetValue ("TerminateAtLandWithoutData", TerminateAtLandWithoutData.ToString (), true);
 					cfgNode.SetValue ("TerminateAtAtmoWithoutData", TerminateAtAtmoWithoutData.ToString (), true);
 					cfgNode.SetValue ("ContinueIfNoCash", ContinueIfNoCash.ToString (), true);
-					cfgNode.SetValue ("MaxAllowableSimCost", MaxAllowableSimCost.ToString (), true);
+					cfgNode.SetValue ("DefaultMaxAllowableSimCost", DefaultMaxAllowableSimCost.ToString (), true);
 					cfgNode.SetValue ("DefaultSimTime", DefaultSimTime.ToString (), true);
 
 					//configFileNode.SetValue ("selectedCosts", selectedCosts.ToString (), true);
