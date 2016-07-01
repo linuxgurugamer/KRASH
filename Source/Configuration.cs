@@ -64,6 +64,7 @@ namespace KRASH
 		public bool		showRunningSimCosts{ get; set; }
 		public int		horizontalPos {get; set; }
 		public int		verticalPos{ get; set;}
+        public bool     showAllInCareer { get; set; }
 
 		public int cnt;
 
@@ -189,9 +190,11 @@ namespace KRASH
 				showRunningSimCosts = bool.Parse (SafeLoad (node.GetValue ("showRunningSimCosts"), showRunningSimCosts));
 				horizontalPos = int.Parse (SafeLoad (node.GetValue ("horizontalPos"), horizontalPos));
 				verticalPos = int.Parse (SafeLoad (node.GetValue ("verticalPos"), verticalPos));
+                showAllInCareer = bool.Parse(SafeLoad(node.GetValue("showAllInCareer"), showAllInCareer));
 
-			} else {
+            } else {
 				showRunningSimCosts = true;
+                showAllInCareer = false;
 				horizontalPos = 10;
 				verticalPos = 50;
 
@@ -209,8 +212,11 @@ namespace KRASH
 			node.SetValue ("showRunningSimCosts", showRunningSimCosts.ToString());
 			node.SetValue("horizontalPos", horizontalPos.ToString());
 			node.SetValue("verticalPos", verticalPos.ToString());
+            node.SetValue("showAllInCareer", showAllInCareer.ToString());
+            
 
-			configFileNode.RemoveNode (KRASH_CUSTOM_NODE);
+
+            configFileNode.RemoveNode (KRASH_CUSTOM_NODE);
 			configFileNode.AddNode (KRASH_CUSTOM_NODE, node);
 
 			configFile.Save(KRASH_CUSTOM_CFG_FILE);
@@ -265,9 +271,11 @@ namespace KRASH
 					cfgNode.SetValue ("DefaultMaxAllowableSimCost", DefaultMaxAllowableSimCost.ToString (), true);
 					cfgNode.SetValue ("DefaultSimTime", DefaultSimTime.ToString (), true);
 
-					//configFileNode.SetValue ("selectedCosts", selectedCosts.ToString (), true);
-					configFileNode.SetValue ("showRunningSimCosts", showRunningSimCosts.ToString (), true);
-					configFileNode.SetValue ("horizontalPos", horizontalPos.ToString (), true);
+                    //configFileNode.SetValue ("selectedCosts", selectedCosts.ToString (), true);
+                    configFileNode.SetValue("showRunningSimCosts", showRunningSimCosts.ToString(), true);
+                    configFileNode.SetValue("showAllInCareer", showAllInCareer.ToString(), true);
+
+                    configFileNode.SetValue ("horizontalPos", horizontalPos.ToString (), true);
 					configFileNode.SetValue ("verticalPos", verticalPos.ToString (), true);
 
 					configFileNode.RemoveNode (configName);

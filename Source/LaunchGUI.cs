@@ -275,8 +275,9 @@ namespace KRASH
 		bool bshowRunningSimCosts;
 		string strhorizontalPos;
 		string strverticalPos;
+        bool bshowAllInCareer;
 
-		string currentConfigName;
+        string currentConfigName;
 
 		void initCfgWinData ()
 		{
@@ -312,8 +313,8 @@ namespace KRASH
 			bshowRunningSimCosts = KRASHShelter.instance.cfg.showRunningSimCosts;
 			strhorizontalPos = KRASHShelter.instance.cfg.horizontalPos.ToString ();
 			strverticalPos = KRASHShelter.instance.cfg.verticalPos.ToString ();
-
-		}
+            bshowAllInCareer = KRASHShelter.instance.cfg.showAllInCareer;
+        }
 
 		void saveCfgData(bool saveToFile, string strConfigName)
 		{
@@ -343,7 +344,10 @@ namespace KRASH
 			KRASHShelter.instance.cfg.showRunningSimCosts = bshowRunningSimCosts;
 			KRASHShelter.instance.cfg.horizontalPos = Convert.ToUInt16( strhorizontalPos);
 			KRASHShelter.instance.cfg.verticalPos = Convert.ToUInt16( strverticalPos);
-			if (saveToFile)
+            KRASHShelter.instance.cfg.showAllInCareer = bshowAllInCareer;
+
+
+            if (saveToFile)
 				KRASHShelter.instance.cfg.SaveConfiguration (strConfigName);
 			KRASHShelter.instance.cfg.saveDisplayValues ();
 		}
@@ -580,8 +584,13 @@ namespace KRASH
 			Log.Info ("drawCfgWindow 9");
 
 			GUILayout.BeginHorizontal ();
-			bshowRunningSimCosts = GUILayout.Toggle (bshowRunningSimCosts, "Show Running Sim Costs");
-			GUILayout.FlexibleSpace ();
+            bshowRunningSimCosts = GUILayout.Toggle(bshowRunningSimCosts, "Show Running Sim Costs");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            bshowAllInCareer = GUILayout.Toggle(bshowAllInCareer, "Show all bodies in career");
+            
+
+            GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
 
 			if (bshowRunningSimCosts) {
@@ -963,12 +972,12 @@ namespace KRASH
 					KSPAchievements.CelestialBodySubtree tree = ProgressTracking.Instance.celestialBodyNodes.Where (node => node.Body == body).FirstOrDefault ();
 
 					bool scienceOrbit;
-					if (!isCareerGame())
+					if (!isCareerGame() || KRASHShelter.instance.cfg.showAllInCareer)
 						scienceOrbit = true;
 					else
 						scienceOrbit = ResearchAndDevelopment.GetSubjects ().Where (ss => ss.science > 0.0f && ss.IsFromBody (body) && ss.id.Contains ("InSpace")).Any ();
-
-					if (!isCareerGame () || scienceOrbit || body.isHomeWorld  || (simType == SimType.LANDED && tree != null && tree.landing.IsComplete )) {
+                   
+                    if (!isCareerGame () || KRASHShelter.instance.cfg.showAllInCareer || scienceOrbit || body.isHomeWorld  || (simType == SimType.LANDED && tree != null && tree.landing.IsComplete )) {
 						
 //						Log.Info ("body: " + body.name + "  is reached: " + tree.IsReached);
 							GUI.enabled = !(selectedBody == body);
@@ -1052,6 +1061,7 @@ namespace KRASH
 			}
 			return GameVariables.Instance.GetCraftSizeLimit (editorNormLevel, isPad);
 		}
+
 		int getPartLimit() 
 		{
 //			if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
