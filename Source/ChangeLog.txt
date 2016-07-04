@@ -112,3 +112,6 @@
 
 0.5.18
 		Added option to show all bodies in career mode
+
+0.5.18.1
+		Fixed build script to create the PluginData directory

@@ -43,6 +43,13 @@ set d=%HOMEDIR%\install\Gamedata\KRASH\Textures
 if exist %d% goto five
 mkdir %d%
 :five
+set d=%HOMEDIR%\install\Gamedata\KRASH\PluginData
+if exist %d% goto six
+mkdir %d%
+:six
+
+
+
 del /y %HOMEDIR%\install\Gamedata\KRASH\*.*
 del /y %HOMEDIR%\install\Gamedata\KRASH\Plugins\*.*
 del /y %HOMEDIR%\install\Gamedata\KRASH\PluginData\*.*
@@ -56,7 +63,8 @@ copy ..\README.md %HOMEDIR%\install\Gamedata\KRASH
 copy README4Modders.txt  %HOMEDIR%\install\Gamedata\KRASH
 copy KRASHWrapper.cs  %HOMEDIR%\install\Gamedata\KRASH
 copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
-copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH
+copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH\PluginData
+
 rem copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH
 
 %HOMEDRIVE%
