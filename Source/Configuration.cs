@@ -24,8 +24,8 @@ namespace KRASH
 		private static String KRASH_BASE_FOLDER = CONFIG_BASE_FOLDER + "KRASH/";
 		private static String KRASH_NODE = "KRASH";
 		private static String KRASH_CUSTOM_NODE = "KRASHCustom";
-		private static String KRASH_CFG_FILE = KRASH_BASE_FOLDER + "PluginData/KRASH.cfg";
-		private static String KRASH_CUSTOM_CFG_FILE = KRASH_BASE_FOLDER + "PluginData/KRASHCustom.cfg";
+		private static String KRASH_CFG_FILE = KRASH_BASE_FOLDER + "KRASH.cfg";
+		private static String KRASH_CUSTOM_CFG_FILE = KRASH_BASE_FOLDER + "KRASHCustom.cfg";
 
 		public string overrideNode { get; private set;  }
  	
