@@ -115,3 +115,9 @@
 
 0.5.18.1
 		Fixed build script to create the PluginData directory
+
+0.5.19
+		Fixed issue where exiting KSP after never having used KRASH gets an exception and KSP never exits
+
+0.5.20
+		Fixed  nullref when KRASHCustom.cfg is missing

@@ -164,7 +164,8 @@ namespace KRASH
 		public void OnDestroy ()
 		{
 			Log.Info ("OnDestroy");
-			KRASHShelter.instance.simPauseMenuInstance.OnDestroy ();
+            if (KRASHShelter.instance.simPauseMenuInstance != null)
+			    KRASHShelter.instance.simPauseMenuInstance.OnDestroy ();
 			KRASHShelter.instance.simPauseMenuInstance = null;
 		}
 	}

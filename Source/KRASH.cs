@@ -98,7 +98,7 @@ namespace KRASH
 			}
 
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
-				Log.Info ("Update 3");
+				//Log.Info ("Update 3");
 				if (Funding.Instance != null) {
 					Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
 

@@ -206,20 +206,31 @@ namespace KRASH
 
 		public void saveDisplayValues()
 		{
-			Log.Info ("saveDisplayValues");
+ //           ConfigNode node;
+
+            Log.Info ("saveDisplayValues");
 			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
-			ConfigNode node = configFile.GetNode (KRASH_CUSTOM_NODE);
-			node.SetValue ("showRunningSimCosts", showRunningSimCosts.ToString());
-			node.SetValue("horizontalPos", horizontalPos.ToString());
-			node.SetValue("verticalPos", verticalPos.ToString());
-            node.SetValue("showAllInCareer", showAllInCareer.ToString());
-            
+            if (configFile == null)
+            {
+                configFile = new ConfigNode();
+                configFileNode = new ConfigNode(KRASH_CUSTOM_NODE);
+            }
+            else
+            {
+                configFileNode = configFile.GetNode(KRASH_CUSTOM_NODE);
+               
+                configFile.RemoveNode(KRASH_CUSTOM_NODE);
+                //configFile.SetNode(KRASH_CUSTOM_NODE, configFileNode, true);
+            }
+            Log.Info("saveDisplayValues 1");
+            configFileNode.SetValue ("showRunningSimCosts", showRunningSimCosts.ToString(), true);
+            configFileNode.SetValue("horizontalPos", horizontalPos.ToString(), true);
+            configFileNode.SetValue("verticalPos", verticalPos.ToString(), true);
+            configFileNode.SetValue("showAllInCareer", showAllInCareer.ToString(), true);
 
-
-            configFileNode.RemoveNode (KRASH_CUSTOM_NODE);
-			configFileNode.AddNode (KRASH_CUSTOM_NODE, node);
-
-			configFile.Save(KRASH_CUSTOM_CFG_FILE);
+            configFile.SetNode(KRASH_CUSTOM_NODE, configFileNode, true);
+            //configFile.AddNode (KRASH_CUSTOM_NODE, configFileNode);
+            configFile.Save(KRASH_CUSTOM_CFG_FILE);
 		}
 
 		public void DeleteConfiguration (string strConfigName)
@@ -253,8 +264,6 @@ namespace KRASH
 			if (configFile != null) {
 				configFileNode = configFile.GetNode (KRASH_CUSTOM_NODE);
 				if (configFileNode != null) {
-					
-				
 					cfgNode.SetValue ("flatSetupCost", flatSetupCost.ToString (), true);
 					cfgNode.SetValue ("flatPerMinCost", flatPerMinCost.ToString (), true);
 					cfgNode.SetValue ("perPartSetupCost", perPartSetupCost.ToString (), true);
