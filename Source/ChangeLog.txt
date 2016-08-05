@@ -120,4 +120,6 @@
 		Fixed issue where exiting KSP after never having used KRASH gets an exception and KSP never exits
 
 0.5.20
-		Fixed  nullref when KRASHCustom.cfg is missing
+		Fixed nullref when KRASHCustom.cfg is missing
+0.5.21
+		Fixed harmless nullref when starting sim

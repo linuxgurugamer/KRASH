@@ -380,6 +380,9 @@ namespace KRASH
 				return;
 			//	Log.Info ("lastUpdate: " + lastUpdate.ToString () + "     Planetarium.GetUniversalTime: " + Planetarium.GetUniversalTime ().ToString ());
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
+                if (FlightGlobals.fetch.activeVessel == null)
+                    return;
+
 				float m = 1.0F;
 				if (Planetarium.GetUniversalTime () - lastUpdate >= 1) {
 					// Determine atmospheric multiplier, if any
