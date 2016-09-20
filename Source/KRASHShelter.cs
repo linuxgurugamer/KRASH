@@ -78,9 +78,10 @@ namespace KRASH
 		public static float simSetupCost { get; set; } = 0;
 		public static UICLASS uiVisiblity;
 
+        public static float dryMass { get; set; }
+        public static float fuelMass { get; set; }
 
-
-		void Awake()
+        void Awake()
 		{
 			Log.Info ("KRASHShelter.Awake");
 			uiVisiblity = new UICLASS ();
