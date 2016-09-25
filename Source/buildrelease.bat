@@ -8,7 +8,7 @@ set RELEASEDIR=d:\Users\jbb\release
 set ZIP="c:\Program Files\7-zip\7z.exe"
 echo Default homedir: %DEFHOMEDIR%
 
-set /p HOMEDIR= "Enter Home directory, or <CR> for default: "
+rem set /p HOMEDIR= "Enter Home directory, or <CR> for default: "
 
 if "%HOMEDIR%" == "" (
 set HOMEDIR=%DEFHOMEDIR%
@@ -64,6 +64,7 @@ copy README4Modders.txt  %HOMEDIR%\install\Gamedata\KRASH
 copy KRASHWrapper.cs  %HOMEDIR%\install\Gamedata\KRASH
 copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
 copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH\PluginData
+copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH\PluginData
 
 rem copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH
 

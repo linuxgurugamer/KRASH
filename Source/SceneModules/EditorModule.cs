@@ -1,4 +1,4 @@
-﻿#if true
+﻿#if false
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,10 +14,13 @@ namespace KRASH.SceneModules
 
 		void Start() {
 			Log.Info ("EditorModule.Start");
-		}
+            lastUpdate = System.DateTime.Now.AddSeconds(1);
+        }
+
 		void Awake() {
 			Log.Info ("EditorModule.Awake");
 		}
+
 		void LateUpdate() {
 			Log.Info ("EditorModule.LateUpdate, shelterSimulationActive: " + KRASHShelter.persistent.shelterSimulationActive.ToString());
 

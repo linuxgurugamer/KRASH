@@ -231,6 +231,8 @@ namespace KRASH
 
         void CalcStartingSimCost()
         {
+            if (HighLogic.CurrentGame.Mode != Game.Modes.CAREER)
+                return;
             Log.Info("SimulationPauseMenu.CalcStartingSimCost 1");
             if (KRASHShelter.instance == null || KRASHShelter.instance.cfg == null || FlightGlobals.ActiveVessel == null)
             {
@@ -428,20 +430,17 @@ namespace KRASH
                     int cnt = parts.Count();
 
                     KRASHShelter.simCost = KRASHShelter.simCost +
-                    (KRASHShelter.instance.cfg.flatPerMinCost +
-                    cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
-                    mass * KRASHShelter.instance.cfg.perTonPerMinCost +
-                    KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
+                        (KRASHShelter.instance.cfg.flatPerMinCost +
+                        cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
+                        mass * KRASHShelter.instance.cfg.perTonPerMinCost +
+                        KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
                 }
-
+                Log.Info("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString());
                 if (Funding.Instance.Funds < KRASHShelter.simCost + KRASHShelter.simSetupCost)
-                {
-                    // First make sure that funds won't go negative
-
-                    KRASHShelter.simCost = Funding.Instance.Funds - KRASHShelter.simSetupCost;
-
-                    if (!KRASHShelter.instance.cfg.ContinueIfNoCash)
+                {                   
+                    if (!KRASHShelter.instance.cfg.ContinueIfNoCash && !KRASHShelter.persistent.shelterSimulationActive && !HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().AllowNegativeCurrency)
                     {
+                        KRASHShelter.simCost = Funding.Instance.Funds - KRASHShelter.simSetupCost;
                         Log.Info("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString());
                         Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
                         Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
@@ -803,7 +802,7 @@ namespace KRASH
             {
                 simTermination = true;
                 simTerminationMsg = msg;
-
+//                KRASHShelter.persistent.SetSuspendUpdate(false);
                 Display();
             }
         }
@@ -849,14 +848,13 @@ namespace KRASH
                 GameEvents.onVesselWillDestroy.Remove(this.CallbackWillDestroy);
                 GameEvents.VesselSituation.onLand.Remove(this.CallbackOnLand);
             }
+            Log.Info("FlightModule.WaitForFlightResultsDialog, before SimulationNotification");
             KRASHShelter.instance.SimulationNotification(false);
 
             HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = true;
             HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = true;
-            Log.Info("Close 6");
-            Close();
-            Log.Info("Close 7");
 
+            Close();
             Close();
 
             APIManager.ApiInstance.SimTerminationEvent.Fire((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost + KRASHShelter.simSetupCost);

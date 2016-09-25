@@ -123,3 +123,19 @@
 		Fixed nullref when KRASHCustom.cfg is missing
 0.5.21
 		Fixed harmless nullref when starting sim
+
+0.5.22	This will be the Three_Pounds release, in honor of all the test work done by Three_Pounds and the new icon
+		Updated for 1.2
+		New toolbar icon provided by @Three_Pounds, thanks
+		Fixed bug where Career-Only: List of available alternative parent bodies comes up empty, despite having reached such a body (example: The Mun). 
+		Fixed bug where Career-Only: When Terminate at SOI option is active in KRASH Config Window, Simulation is not terminated upon SOI switch to undiscovered body
+		Fixed bug where Career-Only: When attempting to simulate a vessel that costs more than the current available funds, the simulation is not started giving an error message "Not enough Funds! You can't afford to launch the vessel." even though simulation costs could be paid for. "Simulation Active" is then stuck blinking on screen.
+		Fixed bug where if the KRASHCustom.cfg was missing, the log would get spammed with missing messages while in the config screen
+		Added missing KRASHCustom.cfg to release
+		Fixed issue where initial sim cost exceeds available funds, and not allowed to go over was getting a GUI exception
+		Fixed issue where config name with spaces wasn't being saved, replacing spaces with underscores fixed this
+		Added code to deal with negative funding
+		Now properly checks for locked parts
+		Fixed Science mode
+		Removed kludge for when editor would refuse to fly because of no crew, etc.  Added code to detect in KRASH
+		Fixed issue where editor controls wouldn't lock 

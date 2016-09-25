@@ -101,8 +101,20 @@ namespace KRASH
 				//Log.Info ("Update 3");
 				if (Funding.Instance != null) {
 					Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
+                    Log.Info("KRASHShelter.startingFunds: " + KRASHShelter.startingFunds.ToString());
+                    Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
+                    Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
 
-					if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && KRASHShelter.startingFunds == Funding.Instance.Funds && !KRASHShelter.persistent.shelterSimulationActive) {
+                    if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 
+                        && KRASHShelter.startingFunds == Funding.Instance.Funds && 
+                        !KRASHShelter.persistent.shelterSimulationActive)
+                    
+
+
+                    if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && 
+                        KRASHShelter.startingFunds == Funding.Instance.Funds && 
+                        !KRASHShelter.persistent.shelterSimulationActive ) {
+
 						Log.Info ("Deducting 1 from funds");
 						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
 						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
@@ -363,15 +375,17 @@ namespace KRASH
 			//if (HighLogic.LoadedScene == GameScenes.FLIGHT) 
 			if (state != simNotificationActive)
 			{
-				Log.Info ("SimulationNotification     HighLogic.LoadedScene: " + HighLogic.LoadedScene.ToString());
+				Log.Info ("SimulationNotification, state: " + state.ToString() + "     HighLogic.LoadedScene: " + HighLogic.LoadedScene.ToString());
 				simNotificationActive = state;
 				switch (state) {
 				case true:
 					SetSimActiveNotification ();
+                        Log.Info("Invoke repeating");
 					InvokeRepeating ("DoSimulationNotification", 1.0f, 2.0f);
 					break;
 
 				case false:
+                        Log.Info("CancelInvoke");
 					CancelInvoke ("DoSimulationNotification");
 					break;
 				}

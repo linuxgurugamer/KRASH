@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,12 @@ using UnityEngine;
 
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
+using KSPAchievements;
+using System.Reflection;
+
+//using System.Diagnostics;
+using Upgradeables;
+
 
 namespace KRASH
 {
@@ -25,18 +32,86 @@ namespace KRASH
 		[KSPField (isPersistant = true)]
 		public string selectedCostsCfg = "";
 
-		override public void  OnAwake()
+        public static CelestialBodySubtree[] celestialBodyNodes;
+        static bool suspendUpdate = false;
+
+        public void SetSuspendUpdate(bool s)
+        {
+            suspendUpdate = s;
+        }
+
+        override public void  OnAwake()
 		{
-			//Log.Info ("KRASHPersistent.Awake");
+			Log.Info ("KRASHPersistent.Awake");
 			KRASHShelter.persistent = this;
 			inited = true;
 		}
 
-		public void Start()
+        public static void initialize()
+        {
+            Log.Info("KRASHPersistent.initialize");
+            if (suspendUpdate)
+                return;
+            if (KRASHShelter.persistent != null)
+                KRASHShelter.persistent.StartCoroutine(getCelestialBodyNodes());
+            else
+                Log.Info("KRASHPersistent.initialize KRASHShelter.persistent is null");
+        }
+
+       // private static bool loaded;
+        private static IEnumerator getCelestialBodyNodes()
+        {
+           // loaded = false;
+
+            int timer = 0;
+
+            while (ProgressTracking.Instance == null && timer < 500)
+            {
+                timer++;
+                yield return null;
+            }
+
+            if (timer >= 500)
+            {
+                Log.Error("[KRASHPersistent] Progress Parser Timed Out");
+                //loaded = false;
+                yield break;
+            }
+
+            while (timer < 10)
+            {
+                timer++;
+                yield return null;
+            }
+            if (ProgressTracking.Instance != null)
+            {
+                Log.Info("ProgressTracking found");
+                KRASHPersistent.celestialBodyNodes = ProgressTracking.Instance.celestialBodyNodes;
+#if false
+                foreach (var cbn in KRASHPersistent.celestialBodyNodes)
+                {
+                    Log.Info("body: " + cbn.Body.name + "  IsReached: " + cbn.IsReached.ToString());
+                    foreach (var cbnchild in cbn.childTrees)
+                    {
+                        Log.Info("moon: " + cbnchild.Body.name + "  IsReached: " + cbnchild.IsReached.ToString());
+                    }
+                }
+#endif
+            }
+
+
+            
+            Log.Info("[KRASHPersistent] Progress Nodes Loaded...");
+        }
+
+        public void Start()
 		{
-			//Log.Info ("KRASHPersistent.Start");
-			//KRASHShelter.persistent = this;
-		}
+			Log.Info ("KRASHPersistent.Start");
+            //KRASHShelter.persistent = this;
+
+            initialize();
+
+        }
 	}
 
 
@@ -91,9 +166,9 @@ namespace KRASH
 		void Start()
         {
 			Log.Info ("KRASHShelter.Start");
-		
 
-
+            GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
+            GameEvents.onGameSceneSwitchRequested.Add(onGameSceneSwitchRequested);
             DontDestroyOnLoad(this);
         }
 
@@ -101,12 +176,43 @@ namespace KRASH
 		{
 
 		}
-		void RotateGizmoSpawnedSpawned(AltimeterSliderButtons asb) {
-			Log.Info ("RotateGizmoSpawnedSpawned");
-		}
+
+		//void RotateGizmoSpawnedSpawned(AltimeterSliderButtons asb) {
+		//	Log.Info ("RotateGizmoSpawnedSpawned");
+		//}
+        void CallbackLevelWasLoaded(GameScenes scene)
+        {
+            Log.Info("KRASHShelter CallbackLevelWasLoaded");
+            //[KSPScenario(ScenarioCreationOptions.AddToNewGames, new[] { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER })]
+            if (scene == GameScenes.FLIGHT || scene == GameScenes.TRACKSTATION || scene == GameScenes.SPACECENTER)
+            {
+                KRASHPersistent.initialize();
+                Log.Info("CallbackLevelWasLoaded loaded for " + scene.ToString());
+            }
+            else
+            {
+                Log.Info("No call at CallbackLevelWasLoaded for " + scene.ToString());
+            }
+        }
+        // public static EventData<FromToAction<GameScenes, GameScenes>> onGameSceneSwitchRequested;
+        void onGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> fromtoaction)
+        {
+            Log.Info("KRASHShelter OnSceneLoadRequested");
+            //[KSPScenario(ScenarioCreationOptions.AddToNewGames, new[] { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER })]
+            if ((GameScenes)fromtoaction.from == GameScenes.FLIGHT || (GameScenes)fromtoaction.from == GameScenes.TRACKSTATION || (GameScenes)fromtoaction.from == GameScenes.SPACECENTER)
+            {
+                KRASHPersistent.initialize();
+                Log.Info("OnSceneLoadRequested for " + ((GameScenes)fromtoaction.from).ToString());
+            }
+            else
+            {
+                Log.Info("No call at onGameSceneSwitchRequested for " + ((GameScenes)fromtoaction.from).ToString());
+            }
+        }
+
     }
 
-	#if false
+#if false
 	[KSPAddon(KSPAddon.Startup.Flight, true)]
 	class GizmoEvents : MonoBehaviour
 	{
@@ -161,9 +267,9 @@ namespace KRASH
 
 			prefab.AddOrGetComponent<GizmoCreationListener>();
 
-			#if DEBUG
+#if DEBUG
 			Debug.Log("Added listener to " + prefabName);
-			#endif
+#endif
 		}
 	}
 #endif

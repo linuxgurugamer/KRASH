@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -183,7 +184,10 @@ namespace KRASH
 		public void setDisplayValues()
 		{
 			Log.Info ("setDisplayValues");
-			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                configFile = ConfigNode.Load(KRASH_CUSTOM_CFG_FILE);
+            else
+                configFile = null;
 			if (configFile != null) {
 				ConfigNode node = configFile.GetNode (KRASH_CUSTOM_NODE);
 
@@ -209,7 +213,10 @@ namespace KRASH
  //           ConfigNode node;
 
             Log.Info ("saveDisplayValues");
-			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            else
+                configFile = null;
             if (configFile == null)
             {
                 configFile = new ConfigNode();
@@ -237,10 +244,13 @@ namespace KRASH
 		{
 			if (strConfigName [0] == '*') {
 				return;
-			} 
-			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+			}
+            if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            else
+                configFile = null;
 
-			if (configFile != null) {
+            if (configFile != null) {
 				configFileNode = configFile.GetNode (KRASH_CUSTOM_NODE);
 				if (configFileNode != null) {
 					Log.Info ("Deleting node: " + strConfigName);
@@ -257,40 +267,45 @@ namespace KRASH
 
 			if (configName [0] == '*') {
 				configName = configName.Substring (2);
+			}
+            configName = configName.Replace(' ', '_');
 
-			} 
-			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            else
+                configFile = null;
 
-			if (configFile != null) {
+            if (configFile != null) {
 				configFileNode = configFile.GetNode (KRASH_CUSTOM_NODE);
-				if (configFileNode != null) {
-					cfgNode.SetValue ("flatSetupCost", flatSetupCost.ToString (), true);
-					cfgNode.SetValue ("flatPerMinCost", flatPerMinCost.ToString (), true);
-					cfgNode.SetValue ("perPartSetupCost", perPartSetupCost.ToString (), true);
-					cfgNode.SetValue ("perPartPerMinCost", perPartPerMinCost.ToString (), true);
-					cfgNode.SetValue ("perTonSetupCost", perTonSetupCost.ToString (), true);
-					cfgNode.SetValue ("perTonPerMinCost", perTonPerMinCost.ToString (), true);
-					cfgNode.SetValue ("percentSetupCost", (100*percentSetupCost).ToString (), true);
-						cfgNode.SetValue ("percentPerMinCost", (100*percentPerMinCost).ToString (), true);
-					cfgNode.SetValue ("AtmoMultipler", AtmoMultipler.ToString (), true);
-					cfgNode.SetValue ("TerminateAtSoiWithoutData", TerminateAtSoiWithoutData.ToString (), true);
-					cfgNode.SetValue ("TerminateAtLandWithoutData", TerminateAtLandWithoutData.ToString (), true);
-					cfgNode.SetValue ("TerminateAtAtmoWithoutData", TerminateAtAtmoWithoutData.ToString (), true);
-					cfgNode.SetValue ("ContinueIfNoCash", ContinueIfNoCash.ToString (), true);
-					cfgNode.SetValue ("DefaultMaxAllowableSimCost", DefaultMaxAllowableSimCost.ToString (), true);
-					cfgNode.SetValue ("DefaultSimTime", DefaultSimTime.ToString (), true);
+                if (configFileNode != null)
+                {
+                    cfgNode.SetValue("flatSetupCost", flatSetupCost.ToString(), true);
+                    cfgNode.SetValue("flatPerMinCost", flatPerMinCost.ToString(), true);
+                    cfgNode.SetValue("perPartSetupCost", perPartSetupCost.ToString(), true);
+                    cfgNode.SetValue("perPartPerMinCost", perPartPerMinCost.ToString(), true);
+                    cfgNode.SetValue("perTonSetupCost", perTonSetupCost.ToString(), true);
+                    cfgNode.SetValue("perTonPerMinCost", perTonPerMinCost.ToString(), true);
+                    cfgNode.SetValue("percentSetupCost", (100 * percentSetupCost).ToString(), true);
+                    cfgNode.SetValue("percentPerMinCost", (100 * percentPerMinCost).ToString(), true);
+                    cfgNode.SetValue("AtmoMultipler", AtmoMultipler.ToString(), true);
+                    cfgNode.SetValue("TerminateAtSoiWithoutData", TerminateAtSoiWithoutData.ToString(), true);
+                    cfgNode.SetValue("TerminateAtLandWithoutData", TerminateAtLandWithoutData.ToString(), true);
+                    cfgNode.SetValue("TerminateAtAtmoWithoutData", TerminateAtAtmoWithoutData.ToString(), true);
+                    cfgNode.SetValue("ContinueIfNoCash", ContinueIfNoCash.ToString(), true);
+                    cfgNode.SetValue("DefaultMaxAllowableSimCost", DefaultMaxAllowableSimCost.ToString(), true);
+                    cfgNode.SetValue("DefaultSimTime", DefaultSimTime.ToString(), true);
+                }
+                //configFileNode.SetValue ("selectedCosts", selectedCosts.ToString (), true);
+                configFileNode.SetValue("showRunningSimCosts", showRunningSimCosts.ToString(), true);
+                configFileNode.SetValue("showAllInCareer", showAllInCareer.ToString(), true);
 
-                    //configFileNode.SetValue ("selectedCosts", selectedCosts.ToString (), true);
-                    configFileNode.SetValue("showRunningSimCosts", showRunningSimCosts.ToString(), true);
-                    configFileNode.SetValue("showAllInCareer", showAllInCareer.ToString(), true);
+                configFileNode.SetValue ("horizontalPos", horizontalPos.ToString (), true);
+				configFileNode.SetValue ("verticalPos", verticalPos.ToString (), true);
 
-                    configFileNode.SetValue ("horizontalPos", horizontalPos.ToString (), true);
-					configFileNode.SetValue ("verticalPos", verticalPos.ToString (), true);
-
-					configFileNode.RemoveNode (configName);
-					configFileNode.AddNode (configName, cfgNode);
-					configFile.Save (KRASH_CUSTOM_CFG_FILE);
-				}
+				configFileNode.RemoveNode (configName);
+				configFileNode.AddNode (configName, cfgNode);
+				configFile.Save (KRASH_CUSTOM_CFG_FILE);
+				
 			}
 			saveDisplayValues ();
 		}
@@ -305,8 +320,11 @@ namespace KRASH
 				configFile = ConfigNode.Load (KRASH_CFG_FILE);
 				node = KRASH_NODE;
 			} else {
-				configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
-				node = KRASH_CUSTOM_NODE;
+                if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                    configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+                else
+                    configFile = null;
+                node = KRASH_CUSTOM_NODE;
 			}
 
 			if (configFile != null) {
@@ -347,9 +365,12 @@ namespace KRASH
 				}
 			}
 
-			configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            if (File.Exists(KRASH_CUSTOM_CFG_FILE))
+                configFile = ConfigNode.Load (KRASH_CUSTOM_CFG_FILE);
+            else
+                configFile = null;
 
-			if (configFile != null) {
+            if (configFile != null) {
 				configFileNode = configFile.GetNode (KRASH_CUSTOM_NODE);
 				if (configFileNode != null) {
 					ConfigNode[] l = configFileNode.GetNodes ();
