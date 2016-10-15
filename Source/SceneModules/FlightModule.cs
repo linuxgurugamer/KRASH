@@ -83,6 +83,7 @@ namespace KRASH
          */
 
         int pauseCnt = 0;
+        int closeCnt = 0;
 
         void Update()
         {
@@ -143,31 +144,55 @@ namespace KRASH
                 if (PauseMenu.isOpen)
                 {
                     PauseMenu.Close();
-                    pauseCnt = 0;
+                    pauseCnt = 1;
                 }
 
                 // Check for pause keypress
-                pauseCnt++;
-                if (GameSettings.PAUSE.GetKeyDown() && pauseCnt == 1)
+                //pauseCnt++;
+                if (/* GameSettings.PAUSE.GetKeyDown() && */ pauseCnt != 0 && closeCnt == 0)
                 {
                     Log.Info("GetKeyDown    menu.isOpen: " + KRASHShelter.instance.simPauseMenuInstance.isOpen);
+                    if (GameSettings.PAUSE.GetKeyDown())
+                    {
+                        pauseCnt = 0;
+                        Log.Info("GameSettings.PAUSE.GetKeyDown");
+                    }
                     switch (KRASHShelter.instance.simPauseMenuInstance.isOpen)
                     {
                         case false:
-                            KRASHShelter.instance.simPauseMenuInstance.Display();
+                            if (pauseCnt == 1)
+                            {
+                                KRASHShelter.instance.simPauseMenuInstance.Display();
+                                pauseCnt = 2;
+                            }
                             break;
                         case true:
-                            Log.Info("menu.Close");
-                            KRASHShelter.instance.simPauseMenuInstance.Close();
+                            if (pauseCnt == 0)
+                            {
+                                Log.Info("menu.Close");
+                                KRASHShelter.instance.simPauseMenuInstance.Close();
+                                Log.Info("After close simPauseMenuInstance, PauseMenu.isOpen: " + PauseMenu.isOpen.ToString());
+                                pauseCnt = 0;
+                                closeCnt = 1;
+                            }
                             break;
                     }
                 }
                 else
                 {
+                    // The wierd issue changed from 1.1.3 to 1.2, now, it pauses for 7-10 tics after unpausing
+                    if (closeCnt > 0 && closeCnt++ < 20)
+                    {
+                        FlightDriver.SetPause(false);
+                        PauseMenu.Close();
+                        pauseCnt = 0;
+                    }
+                    else
+                        closeCnt = 0;
                     // This is to get around a wierd issue where the game unpauses
                     // for about 7-10 tics after PauseMenu.Close() is called.
-                    if (KRASHShelter.instance.simPauseMenuInstance.isOpen && pauseCnt < 20 /*&& FlightDriver.Pause */)
-                        FlightDriver.SetPause(true);
+                   // if (KRASHShelter.instance.simPauseMenuInstance.isOpen && pauseCnt < 20 /*&& FlightDriver.Pause */)
+                   //     FlightDriver.SetPause(true);
                 }
             }
         }
@@ -325,8 +350,8 @@ namespace KRASH
             }
             else
             {
+
                 isOpen = false;
-                Log.Info("Close _display set to false");
                 //_display = false;
                 InputLockManager.RemoveControlLock("KRASHSimPauseMenu");
                 Log.Info("Close:  FlightDriver.SetPause (false)");

@@ -1429,7 +1429,6 @@ namespace KRASH
                 //				GUILayout.Label (startSim, "TextField");
                 GUILayout.Label(startSim, t);
             }
-            Log.Info("drawRightSelectorWindow 3");
 
 
             GUI.backgroundColor = oldColor;
@@ -1560,7 +1559,6 @@ namespace KRASH
 				break;
 #endif
             }
-            Log.Info("drawRightSelectorWindow 4");
 
             GUILayout.Space(10);
             GUIStyle fontColorYellow = new GUIStyle(GUI.skin.label);
