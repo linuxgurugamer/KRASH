@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections;
 using UnityEngine;
-using System.Threading;
+//using System.Threading;
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
 
@@ -517,7 +517,7 @@ namespace KRASH
 
                     string costs = Math.Round(KRASHShelter.simCost + KRASHShelter.simSetupCost, 1).ToString();
 
-                    Log.Info("current thread id: " + Thread.CurrentThread.GetHashCode().ToString());
+                    //Log.Info("current thread id: " + Thread.CurrentThread.GetHashCode().ToString());
                     Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
                     Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
 
