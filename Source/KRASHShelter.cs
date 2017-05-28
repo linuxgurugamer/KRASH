@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
@@ -167,12 +168,23 @@ namespace KRASH
         {
 			Log.Info ("KRASHShelter.Start");
 
-            GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
+            //GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
             GameEvents.onGameSceneSwitchRequested.Add(onGameSceneSwitchRequested);
             DontDestroyOnLoad(this);
         }
 
-		void OnDestroy()
+        void OnEnable()
+        {
+            //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+            SceneManager.sceneLoaded += CallbackLevelWasLoaded;
+        }
+
+        void OnDisable()
+        {
+            //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+            SceneManager.sceneLoaded -= CallbackLevelWasLoaded;
+        }
+        void OnDestroy()
 		{
 
 		}
@@ -180,18 +192,18 @@ namespace KRASH
 		//void RotateGizmoSpawnedSpawned(AltimeterSliderButtons asb) {
 		//	Log.Info ("RotateGizmoSpawnedSpawned");
 		//}
-        void CallbackLevelWasLoaded(GameScenes scene)
+        void CallbackLevelWasLoaded(Scene scene, LoadSceneMode mode)
         {
             Log.Info("KRASHShelter CallbackLevelWasLoaded");
             //[KSPScenario(ScenarioCreationOptions.AddToNewGames, new[] { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER })]
-            if (scene == GameScenes.FLIGHT || scene == GameScenes.TRACKSTATION || scene == GameScenes.SPACECENTER)
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
                 KRASHPersistent.initialize();
-                Log.Info("CallbackLevelWasLoaded loaded for " + scene.ToString());
+                Log.Info("CallbackLevelWasLoaded loaded for " + scene.ToString() + "   " + HighLogic.LoadedScene.ToString());
             }
             else
             {
-                Log.Info("No call at CallbackLevelWasLoaded for " + scene.ToString());
+                Log.Info("No call at CallbackLevelWasLoaded for " + scene.ToString() + "   " + HighLogic.LoadedScene.ToString());
             }
         }
         // public static EventData<FromToAction<GameScenes, GameScenes>> onGameSceneSwitchRequested;

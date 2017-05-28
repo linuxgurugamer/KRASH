@@ -15,5 +15,47 @@ Configurable settings:
 
 Timed events, called every second or so
 
+Add Wireframe:  https://github.com/LGhassen/Scatterer/blob/master/scatterer/Core.cs
+
+if (farCamera)
+				{
+					if (nearCamera.gameObject.GetComponent (typeof(Wireframe)))
+						Component.Destroy (nearCamera.gameObject.GetComponent (typeof(Wireframe)));
+					
+					
+					if (farCamera.gameObject.GetComponent (typeof(Wireframe)))
+						Component.Destroy (farCamera.gameObject.GetComponent (typeof(Wireframe)));
+					
+					
+					if (scaledSpaceCamera.gameObject.GetComponent (typeof(Wireframe)))
+						Component.Destroy (scaledSpaceCamera.gameObject.GetComponent (typeof(Wireframe)));
+				}
 
 
+
+
+if (GUILayout.Button ("Toggle WireFrame"))
+						{
+							if (wireFrame)
+							{
+								if (nearCamera.gameObject.GetComponent (typeof(Wireframe)))
+									Component.Destroy(nearCamera.gameObject.GetComponent (typeof(Wireframe)));
+								
+								if (farCamera.gameObject.GetComponent (typeof(Wireframe)))
+									Component.Destroy(farCamera.gameObject.GetComponent (typeof(Wireframe)));
+								
+								if (scaledSpaceCamera.gameObject.GetComponent (typeof(Wireframe)))
+									Component.Destroy(scaledSpaceCamera.gameObject.GetComponent (typeof(Wireframe)));
+								
+								wireFrame=false;
+							}
+							
+							else
+							{
+								nearCamera.gameObject.AddComponent (typeof(Wireframe));
+								farCamera.gameObject.AddComponent (typeof(Wireframe));
+								scaledSpaceCamera.gameObject.AddComponent (typeof(Wireframe));
+								
+								wireFrame=true;
+							}
+						}

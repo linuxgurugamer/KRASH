@@ -1,0 +1,10 @@
+﻿KRASHCustom
+{
+	selectedCosts = default
+
+	showRunningSimCosts = true
+	showAllInCareer = false
+	horizontalPos = 10
+	verticalPos = 50
+
+}

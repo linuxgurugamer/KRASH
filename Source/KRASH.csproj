@@ -46,6 +46,7 @@
     <Compile Include="SceneModules\EditorModule.cs" />
     <Compile Include="SceneModules\FlightModule.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="View\OrbitEditor.cs" />
     <Compile Include="View\Core.cs" />
     <Compile Include="View\View.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="KRASHWrapper.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="UIClass.cs" />
+    <Compile Include="wireFrame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -75,38 +77,28 @@
     <None Include="..\README.md">
       <Link>README.md</Link>
     </None>
-    <None Include="buildrelease.bat" />
-    <None Include="krash.version" />
-    <None Include="TODO.txt" />
     <None Include="KRASH.cfg" />
-    <None Include="README4Modders.txt" />
-    <None Include="ChangeLog.txt" />
     <None Include="KRASHCustom.cfg" />
-    <None Include="deploy.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>R:\KSP_1.3.0_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPAssets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+      <HintPath>R:\KSP_1.3.0_dev\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System">
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\System.dll</HintPath>
+      <HintPath>R:\KSP_1.3.0_dev\KSP_x64_Data\Managed\System.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>R:\KSP_1.3.0_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.1.4_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>R:\KSP_1.3.0_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup>

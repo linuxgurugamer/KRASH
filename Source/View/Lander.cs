@@ -128,7 +128,7 @@ namespace KRASH.Hyperedit
 						pausebeforestarting = true;
 						FlightDriver.SetPause (true);
 						//PopupDialog.SpawnPopupDialog ("Vessel has landed", "Vessel has landed.  Click the OK button to continue", "OK", true, HighLogic.Skin);
-						var dialog = new MultiOptionDialog ("Vessel has landed.  Click the OK button to continue", "", HighLogic.UISkin, new DialogGUIBase[] {
+						var dialog = new MultiOptionDialog ("krash4", "Vessel has landed.  Click the OK button to continue", "", HighLogic.UISkin, new DialogGUIBase[] {
 							new DialogGUIButton ("OK", () => {
 								FlightDriver.SetPause (false);
 								KRASHShelter.instance.SetSimActiveNotification ();

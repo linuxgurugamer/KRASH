@@ -1,76 +1,46 @@
 ﻿@echo off
-set DEFHOMEDRIVE=d:
-set DEFHOMEDIR=%DEFHOMEDRIVE%%HOMEPATH%
-set HOMEDIR=
-set HOMEDRIVE=%CD:~0,2%
+cd
 
 set RELEASEDIR=d:\Users\jbb\release
 set ZIP="c:\Program Files\7-zip\7z.exe"
-echo Default homedir: %DEFHOMEDIR%
 
-rem set /p HOMEDIR= "Enter Home directory, or <CR> for default: "
 
-if "%HOMEDIR%" == "" (
-set HOMEDIR=%DEFHOMEDIR%
-)
-echo %HOMEDIR%
+set VERSIONFILE=krash.version
+rem The following requires the JQ program, available here: https://stedolan.github.io/jq/download/
+c:\local\jq-win64  ".VERSION.MAJOR" %VERSIONFILE% >tmpfile
+set /P major=<tmpfile
 
-SET _test=%HOMEDIR:~1,1%
-if "%_test%" == ":" (
-set HOMEDRIVE=%HOMEDIR:~0,2%
-)
+c:\local\jq-win64  ".VERSION.MINOR"  %VERSIONFILE% >tmpfile
+set /P minor=<tmpfile
 
-type krash.version
-set /p VERSION= "Enter version: "
+c:\local\jq-win64  ".VERSION.PATCH"  %VERSIONFILE% >tmpfile
+set /P patch=<tmpfile
 
-set d=%HOMEDIR\install
-if exist %d% goto one
-mkdir %d%
-:one
-set d=%HOMEDIR%\install\Gamedata
-if exist %d% goto two
-mkdir %d%
-:two
-set d=%HOMEDIR%\install\Gamedata\KRASH
-if exist %d% goto three
-mkdir %d%
-:three
-set d=%HOMEDIR%\install\Gamedata\KRASH\Plugins
-if exist %d% goto four
-mkdir %d%
-:four
-set d=%HOMEDIR%\install\Gamedata\KRASH\Textures
-if exist %d% goto five
-mkdir %d%
-:five
-set d=%HOMEDIR%\install\Gamedata\KRASH\PluginData
-if exist %d% goto six
-mkdir %d%
-:six
+c:\local\jq-win64  ".VERSION.BUILD"  %VERSIONFILE% >tmpfile
+set /P build=<tmpfile
+del tmpfile
+set VERSION=%major%.%minor%.%patch%
+if "%build%" NEQ "0"  set VERSION=%VERSION%.%build%
 
 
 
-del /y %HOMEDIR%\install\Gamedata\KRASH\*.*
-del /y %HOMEDIR%\install\Gamedata\KRASH\Plugins\*.*
-del /y %HOMEDIR%\install\Gamedata\KRASH\PluginData\*.*
-del /y %HOMEDIR%\install\Gamedata\KRASH\Textures\*.*
+xcopy Textures\KRASH*.png   ..\GameData\KRASH\Textures /Y
+copy MiniAVC.dll ..\Gamedata\KRASH
+copy bin\Release\KRASH.dll ..\Gamedata\KRASH\Plugins
+copy  KRASH.version ..\Gamedata\KRASH\KRASH.version
+copy ..\README.md ..\Gamedata\KRASH
+copy README4Modders.txt  ..\Gamedata\KRASH
+copy KRASHWrapper.cs  ..\Gamedata\KRASH
+copy ChangeLog.txt ..\Gamedata\KRASH
+copy KRASH.cfg ..\Gamedata\KRASH\PluginData
+copy KRASHCustom.cfg ..\Gamedata\KRASH\PluginData
 
-xcopy Textures\KRASH*.png   %HOMEDIR%\install\GameData\KRASH\Textures /Y
-copy MiniAVC.dll %HOMEDIR%\install\Gamedata\KRASH
-copy bin\Release\KRASH.dll %HOMEDIR%\install\Gamedata\KRASH\Plugins
-copy  KRASH.version %HOMEDIR%\install\Gamedata\KRASH\KRASH.version
-copy ..\README.md %HOMEDIR%\install\Gamedata\KRASH
-copy README4Modders.txt  %HOMEDIR%\install\Gamedata\KRASH
-copy KRASHWrapper.cs  %HOMEDIR%\install\Gamedata\KRASH
-copy ChangeLog.txt %HOMEDIR%\install\Gamedata\KRASH
-copy KRASH.cfg %HOMEDIR%\install\Gamedata\KRASH\PluginData
-copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH\PluginData
+rem copy KRASHCustom.cfg ..\Gamedata\KRASH
 
-rem copy KRASHCustom.cfg %HOMEDIR%\install\Gamedata\KRASH
-
-%HOMEDRIVE%
-cd %HOMEDIR%\install
+cd ..
 
 set FILE="%RELEASEDIR%\KRASH-%VERSION%.zip"
 IF EXIST %FILE% del /F %FILE%
 %ZIP% a -tzip %FILE% Gamedata\KRASH
+
+pause

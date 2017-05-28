@@ -29,7 +29,7 @@ namespace KRASH.Hyperedit
 		public static void ErrorPopup(string message)
 		{
 			//PopupDialog.SpawnPopupDialog("Error", message, "Close", true, HighLogic.Skin);
-			PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), "Error", message, "Close", true, HighLogic.UISkin);
+			PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), "krash1", "Error", message, "Close", true, HighLogic.UISkin);
 		}
 		public static void PrepVesselTeleport(this Vessel vessel)
 		{

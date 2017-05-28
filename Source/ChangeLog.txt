@@ -139,3 +139,9 @@
 		Fixed Science mode
 		Removed kludge for when editor would refuse to fly because of no crew, etc.  Added code to detect in KRASH
 		Fixed issue where editor controls wouldn't lock 
+
+0.5.23
+		Replaced depreciated call to GameEvents.onLevelWasLoaded with Unity SceneManagment calls
+		Added Settings page
+		Added Wireframe mode (on settings page)
+		Updated for 1.3

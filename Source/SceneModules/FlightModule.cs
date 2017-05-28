@@ -6,6 +6,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //using System.Threading;
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
@@ -23,7 +24,7 @@ namespace KRASH
         public static AltimeterSliderButtons _Recovery_button = null;
 
 
-        private void CallbackLevelWasLoaded(GameScenes scene)
+        private void CallbackLevelWasLoaded(Scene scene, LoadSceneMode mode)
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
@@ -39,6 +40,8 @@ namespace KRASH
             Log.Info("FlightModule.Awake");
 
         }
+        Camera nearCamera, farCamera, scaledSpaceCamera;
+        Camera[] cams;
 
         // Entry Point
         void Start()
@@ -54,13 +57,26 @@ namespace KRASH
             //		KRASHShelter.instance.simPauseMenuInstance = new SimulationPauseMenu();
             // KSP isn't calling Start for the simpausemenu, so we do it here
             //		KRASHShelter.instance.simPauseMenuInstance.Start ();
-            GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
+           // GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
 
             //	}
             //			GameEvents.onLevelWasLoaded.Add (CallbackLevelWasLoaded);
-            // DontDestroyOnLoad (this);  
+            // DontDestroyOnLoad (this);
+
+            
         }
 
+        void OnEnable()
+        {
+            //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+            SceneManager.sceneLoaded += CallbackLevelWasLoaded;
+        }
+
+        void OnDisable()
+        {
+            //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+            SceneManager.sceneLoaded -= CallbackLevelWasLoaded;
+        }
 #if false
 		void OnLevelWasLoaded (int i)
 		{
@@ -85,12 +101,72 @@ namespace KRASH
         int pauseCnt = 0;
         int closeCnt = 0;
 
+        bool wireFrameAdded = false;
+
+
         void Update()
         {
             // We don't want to do anything if we aren't simming
             if (KRASHShelter.persistent.shelterSimulationActive)
             {
+#if true
+                if (HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().wireframes)
+                {
+                    if (!wireFrameAdded)
+                    {
+                        wireFrameAdded = true;
+                        Log.Info("Adding wireframe");
+                        cams = Camera.allCameras;
 
+                        for (int i = 0; i < cams.Length; i++)
+                        {
+                            if (cams[i].name == "Camera 00")
+                            {
+                                nearCamera = cams[i];
+                            }
+                            if (cams[i].name == "Camera 01")
+                            {
+                                //cams [i].renderingPath=RenderingPath.DeferredShading;
+                                farCamera = cams[i];
+                                //cams [i].enabled=false;
+
+                            }
+                            if (cams[i].name == "Camera ScaledSpace")
+                            {
+                                //cams [i].renderingPath=RenderingPath.DeferredShading;
+                                scaledSpaceCamera = cams[i];
+                            }
+                        }
+                        nearCamera.gameObject.AddComponent(typeof(WireFrame));
+                        // farCamera.gameObject.AddComponent(typeof(WireFrame));
+                        // scaledSpaceCamera.gameObject.AddComponent(typeof(WireFrame));
+#if false
+                        // Camera.main.gameObject.AddComponent(typeof(Wireframe));
+                      
+                    var v = FlightGlobals.ActiveVessel;
+
+                    foreach (var p in v.parts)
+                    {
+                        
+                        var mf = p.FindModelComponents<MeshFilter>();
+                        var smr = p.FindModelComponents<SkinnedMeshRenderer>();
+
+                        //  if (p.partTransform.GetComponent<MeshFilter>() || p.partTransform.GetComponent<SkinnedMeshRenderer>())
+                        if ((mf != null && mf.Count > 0) || (smr != null && smr.Count > 0))
+                        {
+                            Log.Info("Wireframe added to part: " + p.partInfo.name);
+                            // Add a WireFrame object to it.
+                           // WireFrame added = p.gameObject.AddComponent<WireFrame>();
+
+                          
+
+                        }
+
+                    }
+#endif
+                    }
+#endif
+                }
                 // Don't allow any of the recovery buttons to be used
                 //	AltimeterSliderButtons _Recovery_button = (AltimeterSliderButtons)GameObject.FindObjectOfType (typeof(AltimeterSliderButtons));
                 if (_Recovery_button == null)
@@ -191,8 +267,8 @@ namespace KRASH
                         closeCnt = 0;
                     // This is to get around a wierd issue where the game unpauses
                     // for about 7-10 tics after PauseMenu.Close() is called.
-                   // if (KRASHShelter.instance.simPauseMenuInstance.isOpen && pauseCnt < 20 /*&& FlightDriver.Pause */)
-                   //     FlightDriver.SetPause(true);
+                    // if (KRASHShelter.instance.simPauseMenuInstance.isOpen && pauseCnt < 20 /*&& FlightDriver.Pause */)
+                    //     FlightDriver.SetPause(true);
                 }
             }
         }
@@ -206,6 +282,20 @@ namespace KRASH
             Log.Info("FlightModule.OnDestroy");
             //if (KRASHShelter.instance.simPauseMenuInstance != null)
             //    KRASHShelter.instance.simPauseMenuInstance.OnDestroy ();
+            //       if (Camera.main.gameObject.GetComponent(typeof(Wireframe)))
+            //         Component.Destroy(Camera.main.gameObject.GetComponent(typeof(Wireframe)));
+            var v = FlightGlobals.ActiveVessel;
+
+            foreach (var p in v.parts)
+            {
+                // Try to remove any WireFrame components found.
+                try
+                {
+                    Destroy(p.partTransform.gameObject.GetComponent<WireFrame>());
+                }
+                catch { }
+            }
+
             KRASHShelter.instance.simPauseMenuInstance = null;
         }
     }
@@ -247,10 +337,10 @@ namespace KRASH
 
         }
 
-//        public void test(string s)
-//        {
-//            Log.Info("SimulationPauseMenu.test s: " + s);
-//        }
+        //        public void test(string s)
+        //        {
+        //            Log.Info("SimulationPauseMenu.test s: " + s);
+        //        }
 
         double lastUpdate = 0.0F;
 
@@ -269,7 +359,7 @@ namespace KRASH
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
-               // float dryMass, fuelMass;
+                // float dryMass, fuelMass;
 
                 //KRASHShelter.simCost = KRASHShelter.instance.cfg.flatSetupCost +
                 //	EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
@@ -462,7 +552,7 @@ namespace KRASH
                 }
                 Log.Info("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString());
                 if (Funding.Instance.Funds < KRASHShelter.simCost + KRASHShelter.simSetupCost)
-                {                   
+                {
                     if (!KRASHShelter.instance.cfg.ContinueIfNoCash && !KRASHShelter.persistent.shelterSimulationActive && !HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().AllowNegativeCurrency)
                     {
                         KRASHShelter.simCost = Funding.Instance.Funds - KRASHShelter.simSetupCost;
@@ -746,7 +836,7 @@ namespace KRASH
 
                     Close();
                 });
-                var multidialog = new MultiOptionDialog("Terminating will set the game back to an earlier state. Are you sure you want to continue?", "Terminating Simulation",
+                var multidialog = new MultiOptionDialog("krash2", "Terminating will set the game back to an earlier state. Are you sure you want to continue?", "Terminating Simulation",
                                       HighLogic.UISkin, 450, options);
 
                 _activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
@@ -782,7 +872,7 @@ namespace KRASH
                     });
 
 
-                    var multidialog = new MultiOptionDialog("Reverting will set the game back to an earlier state. Are you sure you want to continue?", "Reverting Simulation",
+                    var multidialog = new MultiOptionDialog("krash3", "Reverting will set the game back to an earlier state. Are you sure you want to continue?", "Reverting Simulation",
                                           HighLogic.UISkin, 450, options);
 
 
@@ -827,7 +917,7 @@ namespace KRASH
             {
                 simTermination = true;
                 simTerminationMsg = msg;
-//                KRASHShelter.persistent.SetSuspendUpdate(false);
+                //                KRASHShelter.persistent.SetSuspendUpdate(false);
                 Display();
             }
         }
