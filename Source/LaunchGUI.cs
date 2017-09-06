@@ -33,7 +33,7 @@ namespace KRASH
         //private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
         private bool visible = false;
         private static ApplicationLauncherButton button = null;
-        private int INITORBIT = 10000;
+       
 
         bool limitMaxCosts = false;
         public static LaunchGUI LaunchGuiInstance = null;
@@ -769,11 +769,12 @@ namespace KRASH
             {
                 if (selectedBody.atmosphereDepth <= 1)
                 {
-                    newAltitude = INITORBIT;
+                    newAltitude = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().defaultNoAtmoStartingAltitude;
                 }
                 else
                 {
-                    newAltitude = selectedBody.atmosphereDepth + 100;
+                    //newAltitude = selectedBody.atmosphereDepth + 100;
+                    newAltitude = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().defaultAtmoStartingAltitude;
                 }
                 altitude = newAltitude.ToString();
             }

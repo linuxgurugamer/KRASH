@@ -27,6 +27,14 @@ namespace KRASH
         [GameParameters.CustomParameterUI("Wireframes")]
         public bool wireframes = false;
 
+        [GameParameters.CustomFloatParameterUI("Starting Orbital Altitude (atmo)", minValue = 10000.0f, maxValue = 250000.0f, 
+            toolTip = "For planets and moons with atmosphere")]
+        public double defaultAtmoStartingAltitude = 75000f;
+
+        [GameParameters.CustomFloatParameterUI("Starting Orbital Altitude (no atmo)", minValue = 1000.0f, maxValue = 250000.0f,
+            toolTip = "For planets and moons without any atmosphere")]
+        public double defaultNoAtmoStartingAltitude = 10000f;
+
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
             return true; //otherwise return true
