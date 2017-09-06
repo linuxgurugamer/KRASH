@@ -1,0 +1,31 @@
+﻿{
+	"NAME":"KRASH",
+	"URL":"http://ksp-avc.cybutek.net/version.php?id=253",
+	"DOWNLOAD":"http://spacedock.info/mod/302/KRASH%20-%20Kerbal%20Ramification%20Artifical%20Simulation%20Hub%20%28simulation%20mod%20for%20KSP%29",
+	"CHANGE_LOG_URL":"http://spacedock.info/mod/302/KRASH%20-%20Kerbal%20Ramification%20Artifical%20Simulation%20Hub%20%28simulation%20mod%20for%20KSP%29#changelog",
+	"VERSION":
+	{
+		"MAJOR":0,
+		"MINOR":5,
+		"PATCH":24,
+		"BUILD":0
+	},
+	"KSP_VERSION":
+	{
+		"MAJOR":1,
+		"MINOR":3,
+		"PATCH":0
+	},
+	"KSP_VERSION_MIN":
+	{
+		"MAJOR":1,
+		"MINOR":3,
+		"PATCH":0
+	},
+	"KSP_VERSION_MAX":
+	{
+		"MAJOR":1,
+		"MINOR":3,
+		"PATCH":99
+	}
+}

@@ -102,10 +102,10 @@
     </Reference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>start /D D:\Users\jbb\github\KRASH\Source /WAIT deploy.bat
+    <PostBuildEvent>start /D D:\Users\jbb\github\KRASH\ /WAIT deploy.bat
 
 if $(ConfigurationName) == Release (
-start /D  D:\Users\jbb\github\KRASH\Source /WAIT buildRelease.bat
+start /D  D:\Users\jbb\github\KRASH\ /WAIT buildRelease.bat
 )
 </PostBuildEvent>
   </PropertyGroup>
