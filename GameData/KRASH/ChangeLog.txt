@@ -147,3 +147,6 @@
 		Updated for 1.3
 0.5.24
 		Added default starting altitude setting, one for planets with atmosphere, one for planets without atmosphere
+
+0.5.25
+		Updated for KSP 1.3.1
