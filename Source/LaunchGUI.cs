@@ -765,8 +765,15 @@ namespace KRASH
 
         void setOrbit(CelestialBody selectedBody)
         {
+            
             if (simType != SimType.LANDED)
             {
+                if (!selectedBody)
+                {
+                    newAltitude = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().defaultAtmoStartingAltitude;
+                    altitude = newAltitude.ToString();
+                    return;
+                }
                 if (selectedBody.atmosphereDepth <= 1)
                 {
                     newAltitude = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().defaultNoAtmoStartingAltitude;

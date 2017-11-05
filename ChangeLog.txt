@@ -1,0 +1,155 @@
+﻿0.2.0	Initial release
+		Simple simulation, no costs or termination
+
+0.3.0	Bugs fixed:
+		Fixed Cancel button to cancen the sim
+		Fixed "Simulation Active" message not being displayed during sim
+		Disabled Quicksave and Quickload functions
+
+		New Features:
+		Simulation costs added for career mode
+		Configuration file added. See the config file for explanations:
+			flatSetupCost
+			flatPerMinCost
+			flatSetupCost 
+			flatPerMinCost 
+			perTonSetupCost 
+			perTonPerMinCost 
+			AtmoPerMinMultipler
+			ContinueIfNoCash
+			TerminateAtSoiWithoutData
+			TerminateAtLandWithoutData 
+			TerminateAtAtmoWithoutData 
+			DefaultMaxAllowableSimCost 
+			DefaultSimTime 
+
+		Config file enhanced with with nodes for each career type.  Top of 
+		the config file are the basic values, the values in the nodes override
+		the basic values (if present).
+
+		API added for modders
+		Ability to limit total simulation costs
+		Termination modes added for career:
+			Simulation terminated due to lack of funds
+			Simulation terminated due to cost limit reached
+			Simulation terminated due to lack of science data
+			Simulation terminated due to entering unknown SOI
+			Simulation terminated due to landing on unknown body
+			Simulation terminated due to vessel destruction
+
+0.3.1	Bug fix:
+		Disable view of costs when not in career mode
+		Fix sandbox & science mode (wasn't starting at all)
+
+0.3.2	Bug fix:
+		When in Pause menu, game is not paused even though menu is up
+		Switching to another craft causes Pause menu to fail
+		In sandbox, go to another planet, then return and start career game, that last planet is still available
+		Make simcosts text larger
+		Decimal points not being accepted at end of number for lat/long
+
+0.4.0
+		Reduced starting costs by 90% based on feedback
+		Added % of initial ship cost to cost structure
+		Added description to cfg file
+		Added new cfg file for custom settings
+		Added abililty to relocate running costs during sim, or not display altogether
+		Added dialog to pause when ship lands
+0.5.2
+		Updated for 1.1
+		Fixed bug where funds weren't being deducted at end of simulation from current funcs
+0.5.3
+		Added Changed estimated calcs of cost from Floor to Round, to 1 decimal place
+0.5.4
+		Added code to ensure that no latitude or longitude of 0.0 will be passed to Unity, this to work
+		around a Unity bug.
+0.5.5
+		Added code to hide costs if UI is hidden
+		Fixed issue when in career mode, if sim terminated in crash, unable to restart sim
+		Fixed issu e where Flight results dialog would show up multiple times
+0.5.6
+		Added some code to check for a null value from the ProgressTracking when launching a sim
+0.5.7
+		Fixed issue where a ship could be recovered when landed, or return to space center when landed, and then 
+		recover ship from space center.  Recovery tab disabled
+0.5.8
+		Fixed constant exceptions when in flight from KSP.UI.Screens.AltimeterSliderButtons.LateUpdate
+0.5.9
+		Fixed slowdown during simulation mode 
+0.5.10
+		Fixed bug where a ship too big or heavy for the launchpad/runway would be allowed to launch, but the game
+		would then stop it, leaving the sim enabled until a real launch was done
+		Fixed inability to hide sim costs during sim
+		Fixed NullReferenceException when first opening a career game from the main menu
+0.5.11
+		Fixed issue where you couldn't start a sim in orbit or landed
+0.5.12
+		Fixed checks for size, mass & part count for orbital & landed sims to properly check against facility being used
+0.5.13
+		Fixed bug where ships length & width were being added together when checking for a ship too wide
+		Added display of reasons for inability to start sim, along with the limit being exceeded
+0.5.14
+		Fixed exploding ships after teleport
+0.5.15
+		Fixed exploding ships after teleport to landed state
+		Fixed issue where if flight can't be entered due to some reason, simulation mode will be exited.
+			This can happen in the following two (known) scenarios:
+				1.  Try to launch, no kerbals available, cancel launch
+				2.  In career mode, if you try to simulate a vessel for which you haven't researched the parts, 
+					the simulation does not start but the game remains in simulation mode. Obviously can happen only 
+					if you import a ship design from another save. 
+0.5.16
+		The previous fix wasn't good, and it was still staying in sim mode, now fixed
+
+0.5.17
+		Added check for enough funds in Editor
+		Now uses the MaxAllowableSimCost to set the initial default value
+		Renamed MaxAllowableSimCost to DefaultMaxAllowableSimCost
+		Moved cfg files into PluginData folder
+
+0.5.17.1
+		Recompile for 1.1.3
+
+0.5.18
+		Added option to show all bodies in career mode
+
+0.5.18.1
+		Fixed build script to create the PluginData directory
+
+0.5.19
+		Fixed issue where exiting KSP after never having used KRASH gets an exception and KSP never exits
+
+0.5.20
+		Fixed nullref when KRASHCustom.cfg is missing
+0.5.21
+		Fixed harmless nullref when starting sim
+
+0.5.22	This will be the Three_Pounds release, in honor of all the test work done by Three_Pounds and the new icon
+		Updated for 1.2
+		New toolbar icon provided by @Three_Pounds, thanks
+		Fixed bug where Career-Only: List of available alternative parent bodies comes up empty, despite having reached such a body (example: The Mun). 
+		Fixed bug where Career-Only: When Terminate at SOI option is active in KRASH Config Window, Simulation is not terminated upon SOI switch to undiscovered body
+		Fixed bug where Career-Only: When attempting to simulate a vessel that costs more than the current available funds, the simulation is not started giving an error message "Not enough Funds! You can't afford to launch the vessel." even though simulation costs could be paid for. "Simulation Active" is then stuck blinking on screen.
+		Fixed bug where if the KRASHCustom.cfg was missing, the log would get spammed with missing messages while in the config screen
+		Added missing KRASHCustom.cfg to release
+		Fixed issue where initial sim cost exceeds available funds, and not allowed to go over was getting a GUI exception
+		Fixed issue where config name with spaces wasn't being saved, replacing spaces with underscores fixed this
+		Added code to deal with negative funding
+		Now properly checks for locked parts
+		Fixed Science mode
+		Removed kludge for when editor would refuse to fly because of no crew, etc.  Added code to detect in KRASH
+		Fixed issue where editor controls wouldn't lock 
+
+0.5.23
+		Replaced depreciated call to GameEvents.onLevelWasLoaded with Unity SceneManagment calls
+		Added Settings page
+		Added Wireframe mode (on settings page)
+		Updated for 1.3
+0.5.24
+		Added default starting altitude setting, one for planets with atmosphere, one for planets without atmosphere
+
+0.5.25
+		Updated for KSP 1.3.1
+
+0.5.x
+		Added check for null body when selecting a test scenario location
