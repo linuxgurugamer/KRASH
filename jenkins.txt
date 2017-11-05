@@ -20,7 +20,7 @@
 1:KRASH, KRASH.version
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
-2:KRASH,KRASH/KRASH.csproj,KRASH.version,GameData/KRASH/Plugins
+2:KRASH,Source/KRASH.csproj,KRASH.version,GameData/KRASH/Plugins
 
 # 3:SOURCEFILE, DESTDIR
 3:KRASH.version,GameData/KRASH
