@@ -151,5 +151,7 @@
 0.5.25
 		Updated for KSP 1.3.1
 
-0.5.x
+0.5.26
 		Added check for null body when selecting a test scenario location
+		Updated file locations
+		Added jenkins
