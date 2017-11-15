@@ -1648,6 +1648,14 @@ namespace KRASH
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
 
+            if (KRASH.testFlightLoaded)
+            {
+                GUILayout.BeginHorizontal();
+                KRASHShelter.instance.disableTestFlightForSim = GUILayout.Toggle(KRASHShelter.instance.disableTestFlightForSim, "Disable TestFlight");
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
 
