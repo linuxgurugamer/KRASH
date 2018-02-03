@@ -157,6 +157,72 @@ namespace KRASH
         public static float dryMass { get; set; }
         public static float fuelMass { get; set; }
 
+        private delegate float GetToolingCostDelegate(ShipConstruct sc);
+        private readonly static GetToolingCostDelegate getToolingCost;
+
+        private class RP0Helper<T> where T : PartModule, IPartCostModifier
+        {
+            private delegate bool ToolingUnlockedDelegate(T module);
+            private readonly static ToolingUnlockedDelegate toolingUnlocked;
+            static RP0Helper()
+            {
+                var isUnlockedMI = typeof(T).GetMethod("IsUnlocked");
+                toolingUnlocked = (ToolingUnlockedDelegate)Delegate.CreateDelegate(typeof(ToolingUnlockedDelegate), isUnlockedMI);
+            }
+            public static float getToolingCost(ShipConstruct sc)
+            {
+                float totalCost = 0.0f;
+                var parts = sc.parts;
+                var partCount = parts.Count();
+                for (int i = 0; i < partCount; ++i)
+                {
+                    var part = parts[i];
+                    var modules = part.Modules;
+                    var moduleCount = modules.Count;
+                    for (int j = 0; j < moduleCount; ++j)
+                    {
+                        var module = modules[j];
+                        if (module is T moduleTooling)
+                        {
+                            if (!toolingUnlocked(moduleTooling))
+                            {
+                                totalCost += moduleTooling.GetModuleCost(part.partInfo.cost, ModifierStagingSituation.CURRENT);
+                            }
+                        }
+                    }
+                }
+                return totalCost;
+            }
+        }
+
+        static KRASHShelter()
+        {
+            Log.Info("[KRASH-RP0] Attempting to load RP-0");
+            var rp0Assembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name == "RP0");
+            if (rp0Assembly == null)
+            {
+                Log.Info("[KRASH-RP0] RP-0 assembly not found");
+                return;
+            }
+            try
+            {
+                var fullRP0AssemblyName = rp0Assembly.assembly.FullName;
+                var moduleToolingTypeString = "RP0.ModuleTooling, " + fullRP0AssemblyName;
+                var moduleToolingType = Type.GetType(moduleToolingTypeString);
+                    var rp0HelperType = typeof(RP0Helper<>).MakeGenericType(moduleToolingType);
+                var getToolingCostMI = rp0HelperType.GetMethod("getToolingCost", new Type[] {typeof(ShipConstruct)});
+                getToolingCost = (GetToolingCostDelegate)Delegate.CreateDelegate(typeof(GetToolingCostDelegate), getToolingCostMI);
+            }
+            catch (Exception e)
+            {
+                Log.Info("[KRASH-RP0] RP-0 integration failed");
+                Log.Info("[KRASH-RP0] Stack trace:");
+                Log.Info(e.ToString());
+                return;
+            }
+            Log.Info("[KRASH-RP0] RP-0 integration successful");
+        }
+
         void Awake()
 		{
 			Log.Info ("KRASHShelter.Awake");
@@ -229,6 +295,10 @@ namespace KRASH
             {
                 float drycost, fuelcost;
                 KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
+                if (getToolingCost != null)
+                {
+                    KRASHShelter.shipCost -= getToolingCost(EditorLogic.fetch.ship);
+                }
             }
         }
 
