@@ -1373,9 +1373,6 @@ namespace KRASH
 
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 {
-                    float drycost, fuelcost;
-                    KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
-
                     EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
                     KRASHShelter.simSetupCost = (float)Math.Round(KRASHShelter.instance.cfg.flatSetupCost +
                         EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
@@ -1661,8 +1658,6 @@ namespace KRASH
                 GUILayout.Label("Sim setup cost:");
                 GUILayout.FlexibleSpace();
 
-                float drycost, fuelcost;
-                KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
                 EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
                 KRASHShelter.dryMass = dryMass;
                 KRASHShelter.fuelMass = fuelMass;

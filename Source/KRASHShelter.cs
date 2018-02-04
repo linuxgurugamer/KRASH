@@ -150,7 +150,7 @@ namespace KRASH
 		public static List<PreSimStatus> preSimStatus;
 		public static double LimitSimCost { get; set; }
 		public static KRASH instance = null;
-		public static float shipCost {get; set; }
+		public static float shipCost {get; private set;}
 		public static float simSetupCost { get; set; } = 0;
 		public static UICLASS uiVisiblity;
 
@@ -170,6 +170,7 @@ namespace KRASH
 
             //GameEvents.onLevelWasLoaded.Add(CallbackLevelWasLoaded);
             GameEvents.onGameSceneSwitchRequested.Add(onGameSceneSwitchRequested);
+            GameEvents.onEditorShipModified.Add(updateShipCost);
             DontDestroyOnLoad(this);
         }
 
@@ -186,7 +187,7 @@ namespace KRASH
         }
         void OnDestroy()
 		{
-
+            GameEvents.onEditorShipModified.Remove(updateShipCost);
 		}
 
 		//void RotateGizmoSpawnedSpawned(AltimeterSliderButtons asb) {
@@ -219,6 +220,15 @@ namespace KRASH
             else
             {
                 Log.Info("No call at onGameSceneSwitchRequested for " + ((GameScenes)fromtoaction.from).ToString());
+            }
+        }
+
+        void updateShipCost(ShipConstruct sc)
+        {
+            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+            {
+                float drycost, fuelcost;
+                KRASHShelter.shipCost = EditorLogic.fetch.ship.GetShipCosts(out drycost, out fuelcost);
             }
         }
 
