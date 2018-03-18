@@ -6,6 +6,8 @@ using System.Diagnostics;
 using KSP.UI;
 using KSP.UI.Screens;
 using Upgradeables;
+using ClickThroughFix;
+using ToolbarControl_NS;
 
 namespace KRASH
 {
@@ -32,7 +34,7 @@ namespace KRASH
         //private const int HEIGHT = 425;
         //private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
         private bool visible = false;
-        private static ApplicationLauncherButton button = null;
+        //private static ApplicationLauncherButton button = null;
        
 
         bool limitMaxCosts = false;
@@ -57,11 +59,15 @@ namespace KRASH
         public void Start()
         {
             Log.Info("LaunchGUI.Start");
+            AddToolbarButtons();
+#if false
             if (LaunchGUI.button == null)
             {
                 OnGuiAppLauncherReady();
             }
+#endif
             DontDestroyOnLoad(this);
+
         }
 
         public void Awake()
@@ -69,7 +75,10 @@ namespace KRASH
             Log.Info("LaunchGUI.Awake");
             if (LaunchGUI.LaunchGuiInstance == null)
             {
+#if false
                 GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
+#endif
+                AddToolbarButtons();
                 LaunchGuiInstance = this;
             }
 
@@ -89,7 +98,7 @@ namespace KRASH
             //			Log.Info ("ApplicationLauncher on" + state.ToString ());
 
         }
-
+#if false
         private void OnGuiAppLauncherReady()
         {
             if (LaunchGUI.button == null)
@@ -110,6 +119,25 @@ namespace KRASH
                 }
             }
         }
+#endif
+
+        static internal ToolbarControl toolbarControl = null;
+        void AddToolbarButtons()
+        {
+            if (toolbarControl == null)
+            {
+                toolbarControl = gameObject.AddComponent<ToolbarControl>();
+                toolbarControl.AddToAllToolbars(GUIButtonToggle, GUIButtonToggle,
+                    ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
+                    "KRASH_NS",
+                    "krashButton",
+                    "KRASH/Textures/KRASH",
+                    "KRASH/Textures/KRASH_24",
+                    "KRASH"
+                );
+                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().useBlizzy);
+            }
+        }
 
 
         //
@@ -120,14 +148,14 @@ namespace KRASH
         {
             try
             {
-                if (LaunchGUI.button == null)
+                if (LaunchGUI.toolbarControl == null)
                 {
                     return;
                 }
 
                 if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.RootPart != null)
                 {
-
+#if false
                     if (LaunchGUI.button.enabled == false)
                     {
                         Log.Info("Enabling button");
@@ -135,13 +163,21 @@ namespace KRASH
                         //		LaunchGUI.button.SetTrue();
                         LaunchGUI.button.enabled = true;
                     }
+#endif
+                    if (toolbarControl.Enabled == false)
+                    {
+                        toolbarControl.Enabled = true;
+                    }
                 }
-                else if (LaunchGUI.button.enabled)
+                else if (toolbarControl.Enabled)
                 {
                     Log.Info("Disabling button");
+#if false
                     LaunchGUI.button.Disable();
                     //		LaunchGUI.button.SetFalse();
                     LaunchGUI.button.enabled = false;
+#endif
+                    toolbarControl.Enabled = false;
                 }
             }
             catch (Exception ex)
@@ -168,7 +204,9 @@ namespace KRASH
         //bool isEditorLocked = false;
         private void EditorLock(bool state, string from="")
         {
-
+            return;
+            // This isn't needed since the ClickThroughBlocker is taking care of everything
+#if false
             //Log.Info("EditorLock: state: " + state.ToString());
             if (state)
             {
@@ -185,13 +223,15 @@ namespace KRASH
                 if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
                     EditorLogic.fetch.Unlock("KRASH_Editor");
             }
+#endif
         }
 
         public void GUIButtonToggle()
         {
-            if (!configDisplayActive || HighLogic.LoadedScene != GameScenes.SPACECENTER)
+            //if (!configDisplayActive || HighLogic.LoadedScene != GameScenes.SPACECENTER)
                 GUIToggle();
         }
+
         bool configDisplayActive = false;
         public void GUIToggle()
         {
@@ -205,6 +245,7 @@ namespace KRASH
             if (Input.GetMouseButtonUp(1) || HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
                 configDisplayActive = !configDisplayActive;
+
                 EditorLock(configDisplayActive, "GUIToggle 1");
                 //cfgWinData = false;
                 //onRightButtonStockClick ();
@@ -241,6 +282,8 @@ namespace KRASH
 
         public void OnGUI()
         {
+            if (LaunchGUI.toolbarControl != null)
+                LaunchGUI.toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().useBlizzy);
             if (Camera.main == null)
                 return;
 
@@ -253,7 +296,7 @@ namespace KRASH
 
             if (configDisplayActive)
             {
-                cfgWindowRect = GUI.Window(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
+                cfgWindowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
 
             }
             else
@@ -263,7 +306,7 @@ namespace KRASH
                     if (this.Visible())
                     {
                         drawSelector();
-                        //					windowRect = GUI.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
+                        //					windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
                         //					this.bounds = GUILayout.Window (this.GetInstanceID (), this.bounds, this.Window, TITLE, HighLogic.Skin.window);
                     }
                 }
@@ -842,7 +885,7 @@ namespace KRASH
             // Camera.main is null when first loading a scene
             if (Camera.main != null)
             {
-                windowRect = GUI.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
+                windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
             }
 #if false
             if (windowRect.Contains(Event.current.mousePosition))

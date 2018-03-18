@@ -155,3 +155,8 @@
 		Added check for null body when selecting a test scenario location
 		Updated file locations
 		Added jenkins
+
+0.5.27
+		Updated for 1.4.1
+		Added support for ClickThroughBlocker
+		Added support for ToolbarController

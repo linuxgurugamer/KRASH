@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 //using System.Threading;
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
+using ClickThroughFix;
 
 namespace KRASH
 {
@@ -404,6 +405,9 @@ namespace KRASH
 
         private void OnGUI()
         {
+            if (LaunchGUI.toolbarControl != null)
+                LaunchGUI.toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().useBlizzy);
+
             DrawGUI();
         }
 

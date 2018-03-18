@@ -1,39 +1,20 @@
 ﻿
-@ech off
-set H=R:\KSP_1.3.1_dev
-echo %H%
+@echo off
 
-set d=%H%
-if exist %d% goto one
-mkdir %d%
-:one
-set d=%H%\Gamedata
-if exist %d% goto two
-mkdir %d%
-:two
-set d=%H%\Gamedata\KRASH
-if exist %d% goto three
-mkdir %d%
-:three
-set d=%H%\Gamedata\KRASH\Plugins
-if exist %d% goto four
-mkdir %d%
-:four
-set d=%H%\Gamedata\KRASH\Textures
-if exist %d% goto five
-mkdir %d%
-:five
-set d=%H%\Gamedata\KRASH\PluginData
-if exist %d% goto six
-mkdir %d%
-:six
+rem H is the destination game folder
+rem GAMEDIR is the name of the mod folder (usually the mod name)
+rem GAMEDATA is the name of the local GameData
+rem VERSIONFILE is the name of the version file, usually the same as GAMEDATA,
+rem    but not always
 
+set H=R:\KSP_1.4.1_dev
+set GAMEDIR=KRASH
+set GAMEDATA="GameData\"
+set VERSIONFILE=%GAMEDIR%.version
 
+copy /Y "%1%2" "%GAMEDATA%\%GAMEDIR%\Plugins"
+copy /Y %VERSIONFILE% %GAMEDATA%\%GAMEDIR%
 
-xcopy Source\Textures\KRASH*.png   %H%\GameData\KRASH\Textures /Y
-copy ..\MiniAVC.dll %H%\Gamedata\KRASH
-copy Source\bin\Debug\KRASH.dll %H%\Gamedata\KRASH\Plugins
-copy KRASH.version %H%\Gamedata\KRASH\KRASH.version
-copy Source\KRASH.cfg %H%\Gamedata\KRASH\PluginData
-copy Source\KRASHCustom.cfg %H%\Gamedata\KRASH\PluginData
+xcopy /y /s /I %GAMEDATA%\%GAMEDIR% "%H%\GameData\%GAMEDIR%"
 
+pause
