@@ -160,3 +160,7 @@
 		Updated for 1.4.1
 		Added support for ClickThroughBlocker
 		Added support for ToolbarController
+
+0.5.28
+	Thanks to forum user @jebs_sy for this fix
+		Fixed teleport position due to a change made in KSP in 1.3.1

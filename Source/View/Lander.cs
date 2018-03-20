@@ -175,8 +175,10 @@ namespace KRASH.Hyperedit
 				Log.Info("alt: " + alt.ToString() + "   Altitude: " + Altitude.ToString());
 				Log.Info ("Latitude: " + Latitude.ToString () + "   Longitude: " + Longitude.ToString ());
 
-				var teleportPosition = Body.GetRelSurfacePosition(Latitude, Longitude, alt + Altitude);
-				var teleportVelocity = Body.getRFrmVel(teleportPosition + Body.position);
+                //var teleportPosition = Body.GetRelSurfacePosition(Latitude, Longitude, alt + Altitude);
+                var teleportPosition = Body.GetWorldSurfacePosition(Latitude, Longitude, alt + Altitude) - Body.position;
+
+                var teleportVelocity = Body.getRFrmVel(teleportPosition + Body.position);
 				// convert from world space to orbit space
 				teleportPosition = teleportPosition.xzy;
 				teleportVelocity = teleportVelocity.xzy;
