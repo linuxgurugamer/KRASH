@@ -65,6 +65,47 @@ namespace KRASH
 		public Configuration cfg = null;
 		private static bool componentsLoaded = false;
 
+		internal static bool testFlightLoaded = false;
+		internal bool disableTestFlightForSim = true;
+		private bool testFlightEnabled {
+			get => (bool)tfmsSettingsEnabled.GetValue(tfmsInstance.GetValue(null, null), null);
+			set => tfmsSettingsEnabled.SetValue(tfmsInstance.GetValue(null, null), value, null);
+		}
+		private bool testFlightStateBeforeSim;
+		private static PropertyInfo tfmsInstance;
+		private static PropertyInfo tfmsSettingsEnabled;
+
+		static KRASH()
+		{
+			Log.Info("[KRASH-TF] Attempting to load TF");
+			var tfAssembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name == "TestFlightCore");
+			if (tfAssembly == null)
+			{
+				Log.Warning("[KRASH-TF] Failed to load TestFlightCore assembly");
+				return;
+			}
+			var tfManagerScenarioType = Type.GetType("TestFlightCore.TestFlightManagerScenario, TestFlightCore");
+			if (tfManagerScenarioType == null)
+			{
+				Log.Warning("[KRASH-TF] TestFlightCore assembly was loaded, but TestFlightCore.TestFlightManagerScenario was not found");
+				return;
+			}
+			tfmsInstance = tfManagerScenarioType.GetProperty("Instance");
+			if (tfmsInstance == null)
+			{
+				Log.Warning("[KRASH-TF] TestFlightManagerScenario.Instance was not found");
+				return;
+			}
+			tfmsSettingsEnabled = tfManagerScenarioType.GetProperty("SettingsEnabled");
+			if (tfmsSettingsEnabled == null)
+			{
+				Log.Warning("[KRASH-TF] TestFlightManagerScenario.SettingsEnabled was not found");
+				return;
+			}
+			Log.Info("[KRASH-TF] TestFlight integration successful");
+			testFlightLoaded = true;
+		}
+
 
 		#if false
 		public void simStart(Vessel v, double f)
@@ -250,6 +291,10 @@ namespace KRASH
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickSave = false;
 			HighLogic.CurrentGame.Parameters.Flight.CanQuickLoad = false;
 			Log.Info ("Activate returning: " + (save != null ? true : false).ToString ());
+			if (testFlightLoaded && disableTestFlightForSim) {
+				testFlightStateBeforeSim = testFlightEnabled;
+				testFlightEnabled = false;
+			}
 			return save != null ? true : false;
 		}
 
@@ -325,6 +370,9 @@ namespace KRASH
 				if (targetScene == GameScenes.EDITOR) {
 					EditorDriver.StartupBehaviour = EditorDriver.StartupBehaviours.LOAD_FROM_CACHE;
 					ShipConstruction.ShipConfig = KRASHShelter.lastShip;
+				}
+				if (testFlightLoaded && disableTestFlightForSim) {
+					testFlightEnabled = testFlightStateBeforeSim;
 				}
 			}
 			//Log.Info ("Total sim cost: " + KRASHShelter.simCost.ToString ());
