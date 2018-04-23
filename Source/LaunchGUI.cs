@@ -121,6 +121,9 @@ namespace KRASH
         }
 #endif
 
+        internal const string MODID = "KRASH_NS";
+        internal const string MODNAME = "KRASH";
+
         static internal ToolbarControl toolbarControl = null;
         void AddToolbarButtons()
         {
@@ -129,13 +132,12 @@ namespace KRASH
                 toolbarControl = gameObject.AddComponent<ToolbarControl>();
                 toolbarControl.AddToAllToolbars(GUIButtonToggle, GUIButtonToggle,
                     ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
-                    "KRASH_NS",
+                    MODID,
                     "krashButton",
                     "KRASH/Textures/KRASH",
                     "KRASH/Textures/KRASH_24",
-                    "KRASH"
+                    MODNAME
                 );
-                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().useBlizzy);
             }
         }
 
@@ -149,9 +151,8 @@ namespace KRASH
             try
             {
                 if (LaunchGUI.toolbarControl == null)
-                {
                     return;
-                }
+                
 
                 if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.RootPart != null)
                 {
@@ -165,9 +166,8 @@ namespace KRASH
                     }
 #endif
                     if (toolbarControl.Enabled == false)
-                    {
                         toolbarControl.Enabled = true;
-                    }
+
                 }
                 else if (toolbarControl.Enabled)
                 {
@@ -282,8 +282,6 @@ namespace KRASH
 
         public void OnGUI()
         {
-            if (LaunchGUI.toolbarControl != null)
-                LaunchGUI.toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().useBlizzy);
             if (Camera.main == null)
                 return;
 

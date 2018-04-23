@@ -164,3 +164,14 @@
 0.5.28
 	Thanks to forum user @jebs_sy for this fix
 		Fixed teleport position due to a change made in KSP in 1.3.1
+
+0.5.29
+	Thanks to github user @a21621107
+		Rp-0 tooling integration
+		Disable TestFlight during simulations
+		Ignore RP-0 tooling costs in sim cost calculation
+		Only update ship cost on editor modifications
+
+	Removed Blizzy option from settings page
+	Updated to latest ToolbarController, now registers with the toolbar
+

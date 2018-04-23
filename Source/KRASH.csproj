@@ -48,10 +48,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneModules\EditorModule.cs" />
     <Compile Include="SceneModules\FlightModule.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ToolbarRegistration.cs" />
     <Compile Include="View\OrbitEditor.cs" />
     <Compile Include="View\Core.cs" />
     <Compile Include="View\View.cs" />

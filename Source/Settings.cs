@@ -21,9 +21,6 @@ namespace KRASH
         public override bool HasPresets { get { return false; } }
 
 
-        [GameParameters.CustomParameterUI("Use Blizzy toolbar, if available")]
-        public bool useBlizzy = false;
-
         [GameParameters.CustomParameterUI("Wireframes")]
         public bool wireframes = false;
 

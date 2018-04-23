@@ -1,8 +1,6 @@
 ﻿{
 	"NAME":"KRASH",
-	"URL":"https://raw.githubusercontent.com/linuxgurugamer/KRASH/master/KRASH.version",
-	"DOWNLOAD":"http://spacedock.info/mod/302/KRASH%20-%20Kerbal%20Ramification%20Artifical%20Simulation%20Hub%20%28simulation%20mod%20for%20KSP%29",
-	"CHANGE_LOG_URL":"http://spacedock.info/mod/302/KRASH%20-%20Kerbal%20Ramification%20Artifical%20Simulation%20Hub%20%28simulation%20mod%20for%20KSP%29#changelog",
+	"URL":"https://raw.githubusercontent.com/linuxgurugamer/KRASH/master/KRASH.version",	
     "DOWNLOAD" : "https://github.com/linuxgurugamer/KRASH/releases",
     "GITHUB" :
     {
@@ -13,13 +11,22 @@
 	{
 		"MAJOR":0,
 		"MINOR":5,
-		"PATCH":28,
+		"PATCH":29,
 		"BUILD":0
 	},
-	"KSP_VERSION":
-	{
-		"MAJOR":1,
-		"MINOR":4,
-		"PATCH":1
-	}
+  "KSP_VERSION": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 1
+  },
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 1
+  },
+  "KSP_VERSION_MAX": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 99
+  }
 }
