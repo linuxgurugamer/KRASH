@@ -1,32 +1,30 @@
 ﻿{
-	"NAME":"KRASH",
-	"URL":"https://raw.githubusercontent.com/linuxgurugamer/KRASH/master/KRASH.version",	
-    "DOWNLOAD" : "https://github.com/linuxgurugamer/KRASH/releases",
-    "GITHUB" :
-    {
-        "USERNAME" : "linuxgurugamer",
-        "REPOSITORY" : "KRASH"
+    "NAME": "KRASH",
+    "URL": "https://raw.githubusercontent.com/linuxgurugamer/KRASH/master/KRASH.version",
+    "DOWNLOAD": "https://github.com/linuxgurugamer/KRASH/releases",
+    "GITHUB": {
+        "USERNAME": "linuxgurugamer",
+        "REPOSITORY": "KRASH"
     },
-	"VERSION":
-	{
-		"MAJOR":0,
-		"MINOR":5,
-		"PATCH":29,
-		"BUILD":0
-	},
-  "KSP_VERSION": {
-    "MAJOR": 1,
-    "MINOR": 4,
-    "PATCH": 1
-  },
-  "KSP_VERSION_MIN": {
-    "MAJOR": 1,
-    "MINOR": 4,
-    "PATCH": 1
-  },
-  "KSP_VERSION_MAX": {
-    "MAJOR": 1,
-    "MINOR": 4,
-    "PATCH": 99
-  }
+    "VERSION": {
+        "MAJOR": 0,
+        "MINOR": 5,
+        "PATCH": 29,
+        "BUILD": 1
+    },
+    "KSP_VERSION": {
+        "MAJOR": 1,
+        "MINOR": 4,
+        "PATCH": 1
+    },
+    "KSP_VERSION_MIN": {
+        "MAJOR": 1,
+        "MINOR": 4,
+        "PATCH": 1
+    },
+    "KSP_VERSION_MAX": {
+        "MAJOR": 1,
+        "MINOR": 4,
+        "PATCH": 99
+    }
 }

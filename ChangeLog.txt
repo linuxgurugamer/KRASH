@@ -175,3 +175,6 @@
 	Removed Blizzy option from settings page
 	Updated to latest ToolbarController, now registers with the toolbar
 
+0.5.29.1
+	Added dependency checking
+
