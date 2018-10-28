@@ -178,3 +178,6 @@
 0.5.29.1
 	Added dependency checking
 
+0.5.29.2
+	Version bump for 1.5 rebuild
+
