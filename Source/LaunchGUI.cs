@@ -6,8 +6,10 @@ using System.Diagnostics;
 using KSP.UI;
 using KSP.UI.Screens;
 using Upgradeables;
+#if !USING_TOOLBAR
 using ClickThroughFix;
 using ToolbarControl_NS;
+#endif
 
 namespace KRASH
 {
@@ -34,8 +36,9 @@ namespace KRASH
         //private const int HEIGHT = 425;
         //private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
         private bool visible = false;
-        //private static ApplicationLauncherButton button = null;
-       
+#if USING_TOOLBAR
+        private static ApplicationLauncherButton button = null;
+#endif
 
         bool limitMaxCosts = false;
         public static LaunchGUI LaunchGuiInstance = null;
@@ -59,8 +62,9 @@ namespace KRASH
         public void Start()
         {
             Log.Info("LaunchGUI.Start");
+#if !USING_TOOLBAR
             AddToolbarButtons();
-#if false
+#else
             if (LaunchGUI.button == null)
             {
                 OnGuiAppLauncherReady();
@@ -75,10 +79,11 @@ namespace KRASH
             Log.Info("LaunchGUI.Awake");
             if (LaunchGUI.LaunchGuiInstance == null)
             {
-#if false
+#if USING_TOOLBAR
                 GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
-#endif
+#else
                 AddToolbarButtons();
+#endif
                 LaunchGuiInstance = this;
             }
 
@@ -87,10 +92,12 @@ namespace KRASH
         private void OnDestroy()
         {
             Log.Info("LaunchGUI.OnDestroy");
-            //			GameEvents.onGUIApplicationLauncherReady.Remove (this.OnGuiAppLauncherReady);
-            //			if (this.button != null) {
-            //				ApplicationLauncher.Instance.RemoveModApplication (this.button);
-            //			}
+#if USING_TOOLBAR
+            GameEvents.onGUIApplicationLauncherReady.Remove (this.OnGuiAppLauncherReady);
+           	if (LaunchGUI.button != null) {
+            	ApplicationLauncher.Instance.RemoveModApplication (LaunchGUI.button);
+            }
+#endif
         }
 
         private void ButtonState(bool state)
@@ -98,9 +105,10 @@ namespace KRASH
             //			Log.Info ("ApplicationLauncher on" + state.ToString ());
 
         }
-#if false
+#if USING_TOOLBAR
         private void OnGuiAppLauncherReady()
         {
+            Log.Info("OnGuiAppLauncherReady");
             if (LaunchGUI.button == null)
             {
                 try
@@ -119,7 +127,7 @@ namespace KRASH
                 }
             }
         }
-#endif
+#else
 
         internal const string MODID = "KRASH_NS";
         internal const string MODNAME = "KRASH";
@@ -140,7 +148,7 @@ namespace KRASH
                 );
             }
         }
-
+#endif
 
         //
         // The following function (only) is from KerbalEngineer
@@ -150,13 +158,14 @@ namespace KRASH
         {
             try
             {
+#if !USING_TOOLBAR
                 if (LaunchGUI.toolbarControl == null)
                     return;
-                
+#endif
 
                 if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.RootPart != null)
                 {
-#if false
+#if USING_TOOLBAR
                     if (LaunchGUI.button.enabled == false)
                     {
                         Log.Info("Enabling button");
@@ -164,20 +173,25 @@ namespace KRASH
                         //		LaunchGUI.button.SetTrue();
                         LaunchGUI.button.enabled = true;
                     }
-#endif
+#else
                     if (toolbarControl.Enabled == false)
                         toolbarControl.Enabled = true;
-
+#endif
                 }
+#if USING_TOOLBAR
+                else if (LaunchGUI.button.enabled)
+#else
                 else if (toolbarControl.Enabled)
+#endif
                 {
                     Log.Info("Disabling button");
-#if false
+#if USING_TOOLBAR
                     LaunchGUI.button.Disable();
                     //		LaunchGUI.button.SetFalse();
                     LaunchGUI.button.enabled = false;
-#endif
+#else
                     toolbarControl.Enabled = false;
+#endif
                 }
             }
             catch (Exception ex)
@@ -197,7 +211,7 @@ namespace KRASH
 
         public void SetVisible(bool visible)
         {
-
+            Log.Info("SetVisible");
             this.visible = visible;
         }
 
@@ -228,6 +242,7 @@ namespace KRASH
 
         public void GUIButtonToggle()
         {
+            Log.Info("GUIButtonToggle");
             //if (!configDisplayActive || HighLogic.LoadedScene != GameScenes.SPACECENTER)
                 GUIToggle();
         }
@@ -244,7 +259,7 @@ namespace KRASH
             // Check for right mouse click
             if (Input.GetMouseButtonUp(1) || HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
-                configDisplayActive = !configDisplayActive;
+                //configDisplayActive = !configDisplayActive;
 
                 EditorLock(configDisplayActive, "GUIToggle 1");
                 //cfgWinData = false;
@@ -253,6 +268,7 @@ namespace KRASH
             }
             else
             {
+                Log.Info("GUIToggle");
                 // Only go into sim mode if cfg screen not being shown
                 if (!configDisplayActive)
                 {
@@ -287,6 +303,7 @@ namespace KRASH
 
             if (!rectConfigured)
             {
+                Log.Info("OnGUI, rectConfigured");
                 windowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
                 cfgWindowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 350, (Screen.height / 2 - 300), 700, 525);
                 rectConfigured = true;
@@ -294,15 +311,22 @@ namespace KRASH
 
             if (configDisplayActive)
             {
+#if USING_TOOLBAR
+                Log.Info("cfgWindowRect: " + cfgWindowRect);
+                cfgWindowRect = GUILayout.Window(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
+#else
                 cfgWindowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
 
+#endif
             }
             else
+
             {
                 try
                 {
                     if (this.Visible())
                     {
+                        Log.Info("OnGUI");
                         drawSelector();
                         //					windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
                         //					this.bounds = GUILayout.Window (this.GetInstanceID (), this.bounds, this.Window, TITLE, HighLogic.Skin.window);
@@ -881,11 +905,17 @@ namespace KRASH
             }
 
             // Camera.main is null when first loading a scene
+
             if (Camera.main != null)
             {
+#if USING_TOOLBAR
+                Log.Info("windowRect: " + windowRect);
+                windowRect = GUILayout.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
+#else
                 windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
+#endif
             }
-#if false
+#if USING_TOOLBAR
             if (windowRect.Contains(Event.current.mousePosition))
             {
                 EditorLock(true);
@@ -963,7 +993,9 @@ namespace KRASH
             GUI.skin = HighLogic.Skin;
             //string smessage = "";
             //ScreenMessageStyle smsStyle = ScreenMessageStyle.UPPER_RIGHT;
-
+#if USING_TOOLBAR
+            GUILayout.Label("");
+#endif
             // ASH 28102014 Category filter handling added.
             // ASH 07112014 Disabling of restricted categories added.
             //GUILayout.BeginArea (new Rect (10, 25, 415, 550));
@@ -1763,7 +1795,7 @@ namespace KRASH
         }
 #endif
 
-        public void setLaunchSite(LaunchSite site)
+                public void setLaunchSite(LaunchSite site)
         {
             Log.Info("setLaunchSite");
             Log.Info("simType: " + simType.ToString());

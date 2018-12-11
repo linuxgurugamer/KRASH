@@ -10,8 +10,9 @@ using UnityEngine.SceneManagement;
 //using System.Threading;
 using KSP.UI.Screens;
 using KSP.UI.Dialogs;
+#if !USING_TOOLBAR
 using ClickThroughFix;
-
+#endif
 namespace KRASH
 {
     /*

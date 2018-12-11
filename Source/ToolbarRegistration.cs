@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if !USING_TOOLBAR
+using UnityEngine;
 using ToolbarControl_NS;
 
 namespace KRASH
@@ -12,3 +13,4 @@ namespace KRASH
         }
     }
 }
+#endif

@@ -141,11 +141,12 @@ namespace KRASH
 			if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 				//Log.Info ("Update 3");
 				if (Funding.Instance != null) {
-					Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
+#if false
+                    Log.Info ("Current funds: " + Funding.Instance.Funds.ToString ());
                     Log.Info("KRASHShelter.startingFunds: " + KRASHShelter.startingFunds.ToString());
                     Log.Info("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString());
                     Log.Info("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString());
-
+#endif
                     if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 
                         && KRASHShelter.startingFunds == Funding.Instance.Funds && 
                         !KRASHShelter.persistent.shelterSimulationActive)
@@ -155,18 +156,21 @@ namespace KRASH
                     if (KRASHShelter.simCost + KRASHShelter.simSetupCost != 0 && 
                         KRASHShelter.startingFunds == Funding.Instance.Funds && 
                         !KRASHShelter.persistent.shelterSimulationActive ) {
-
-						Log.Info ("Deducting 1 from funds");
+#if false
+                            Log.Info ("Deducting 1 from funds");
 						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
 						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+#endif
 						Funding.Instance.AddFunds (-1.0F * KRASHShelter.simSetupCost, TransactionReasons.Any);
 						Funding.Instance.AddFunds (-1.0F * KRASHShelter.simCost, TransactionReasons.Any);
 						KRASHShelter.startingFunds = 0;
 						KRASHShelter.simCost = 0;
 						KRASHShelter.simSetupCost = 0;
 					} else {
-						Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
+#if false
+                            Log.Info ("KRASHShelter.simCost: " + KRASHShelter.simCost.ToString ());
 						Log.Info ("KRASHShelter.simSetupCost: " + KRASHShelter.simSetupCost.ToString ());
+#endif
 					}
 				}
 			}
@@ -352,7 +356,7 @@ namespace KRASH
 				newGame.Start ();
 				//HoloDeck.instance.SimulationActive = false;
 
-				#if false
+#if false
 				if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) {
 					if (KRASHShelter.simCost + KRASHShelter.simSetupCost > 0) {
 						// Need to subtract the funds here, after the save has been loaded
@@ -364,7 +368,7 @@ namespace KRASH
 						KRASHShelter.simSetupCost = 0;
 					}
 				}
-				#endif
+#endif
 
 				// ... And this has to be after. <3 KSP
 				if (targetScene == GameScenes.EDITOR) {
