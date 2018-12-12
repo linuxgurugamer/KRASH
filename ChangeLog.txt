@@ -192,3 +192,6 @@
 0.5.29.3
 	Rebuild to get correct version in Spacedock as latest
 	Removed max_version from .version file
+
+0.5.29.4
+	Fixed cfg window not showing up

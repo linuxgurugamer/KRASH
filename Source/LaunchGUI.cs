@@ -259,7 +259,7 @@ namespace KRASH
             // Check for right mouse click
             if (Input.GetMouseButtonUp(1) || HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
-                //configDisplayActive = !configDisplayActive;
+                configDisplayActive = !configDisplayActive;
 
                 EditorLock(configDisplayActive, "GUIToggle 1");
                 //cfgWinData = false;
