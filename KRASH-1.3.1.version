@@ -1,6 +1,6 @@
 ﻿{
     "NAME": "KRASH",
-    "URL": "http://ksp.spacetux.net/avc/KRASH",
+    "URL": "http://ksp.spacetux.net/avc/KRASH-1.3.1",
     "DOWNLOAD": "https://github.com/linuxgurugamer/KRASH/releases",
     "GITHUB": {
         "USERNAME": "linuxgurugamer",
@@ -9,22 +9,17 @@
     "VERSION": {
         "MAJOR": 0,
         "MINOR": 5,
-        "PATCH": 29,
+        "PATCH": 26,
         "BUILD": 2
     },
     "KSP_VERSION": {
         "MAJOR": 1,
-        "MINOR": 5,
+        "MINOR": 3,
         "PATCH": 1
     },
     "KSP_VERSION_MIN": {
         "MAJOR": 1,
-        "MINOR": 5,
+        "MINOR": 3,
         "PATCH": 1
-    },
-    "KSP_VERSION_MAX": {
-        "MAJOR": 1,
-        "MINOR": 5,
-        "PATCH": 99
     }
 }

@@ -1,4 +1,4 @@
-﻿#if !USING_TOOLBAR
+﻿#if !RP_1_131
 using UnityEngine;
 using ToolbarControl_NS;
 

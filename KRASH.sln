@@ -4,19 +4,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KRASH", "Source\KRASH.csproj", "{8C5539DD-396B-4084-892E-8F1901E51584}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87B8D2BE-7BC3-4712-9816-084DAAFD24A1} = {87B8D2BE-7BC3-4712-9816-084DAAFD24A1}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{8CBA63F7-E895-4EC1-AFCE-FD0E98C69047}"
 	ProjectSection(SolutionItems) = preProject
+		buildrelease-1.3.1.bat = buildrelease-1.3.1.bat
 		buildrelease.bat = buildrelease.bat
 		ChangeLog.txt = ChangeLog.txt
+		deploy-1.3.1.bat = deploy-1.3.1.bat
 		deploy.bat = deploy.bat
 		jenkins.txt = jenkins.txt
+		KRASH-1.3.1.version = KRASH-1.3.1.version
 		KRASH.version = KRASH.version
 		License.txt = License.txt
 		README.md = README.md
 		README4Modders.txt = README4Modders.txt
 		TODO.txt = TODO.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KRASH - 1.3.1", "Source\KRASH - 1.3.1.csproj", "{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB2A0585-6D5E-46A3-B164-0FCF3CE643CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +38,10 @@ Global
 		{8C5539DD-396B-4084-892E-8F1901E51584}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C5539DD-396B-4084-892E-8F1901E51584}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C5539DD-396B-4084-892E-8F1901E51584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

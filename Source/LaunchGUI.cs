@@ -6,7 +6,7 @@ using System.Diagnostics;
 using KSP.UI;
 using KSP.UI.Screens;
 using Upgradeables;
-#if !USING_TOOLBAR
+#if !RP_1_131
 using ClickThroughFix;
 using ToolbarControl_NS;
 #endif
@@ -36,7 +36,7 @@ namespace KRASH
         //private const int HEIGHT = 425;
         //private Rect bounds = new Rect (Screen.width / 2 - WIDTH / 2, Screen.height / 2 - HEIGHT / 2, WIDTH, HEIGHT);
         private bool visible = false;
-#if USING_TOOLBAR
+#if RP_1_131
         private static ApplicationLauncherButton button = null;
 #endif
 
@@ -62,7 +62,7 @@ namespace KRASH
         public void Start()
         {
             Log.Info("LaunchGUI.Start");
-#if !USING_TOOLBAR
+#if !RP_1_131
             AddToolbarButtons();
 #else
             if (LaunchGUI.button == null)
@@ -79,7 +79,7 @@ namespace KRASH
             Log.Info("LaunchGUI.Awake");
             if (LaunchGUI.LaunchGuiInstance == null)
             {
-#if USING_TOOLBAR
+#if RP_1_131
                 GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
 #else
                 AddToolbarButtons();
@@ -92,7 +92,7 @@ namespace KRASH
         private void OnDestroy()
         {
             Log.Info("LaunchGUI.OnDestroy");
-#if USING_TOOLBAR
+#if RP_1_131
             GameEvents.onGUIApplicationLauncherReady.Remove (this.OnGuiAppLauncherReady);
            	if (LaunchGUI.button != null) {
             	ApplicationLauncher.Instance.RemoveModApplication (LaunchGUI.button);
@@ -105,7 +105,7 @@ namespace KRASH
             //			Log.Info ("ApplicationLauncher on" + state.ToString ());
 
         }
-#if USING_TOOLBAR
+#if RP_1_131
         private void OnGuiAppLauncherReady()
         {
             Log.Info("OnGuiAppLauncherReady");
@@ -158,14 +158,14 @@ namespace KRASH
         {
             try
             {
-#if !USING_TOOLBAR
+#if !RP_1_131
                 if (LaunchGUI.toolbarControl == null)
                     return;
 #endif
 
                 if (HighLogic.LoadedScene == GameScenes.SPACECENTER || EditorLogic.RootPart != null)
                 {
-#if USING_TOOLBAR
+#if RP_1_131
                     if (LaunchGUI.button.enabled == false)
                     {
                         Log.Info("Enabling button");
@@ -178,14 +178,14 @@ namespace KRASH
                         toolbarControl.Enabled = true;
 #endif
                 }
-#if USING_TOOLBAR
+#if RP_1_131
                 else if (LaunchGUI.button.enabled)
 #else
                 else if (toolbarControl.Enabled)
 #endif
                 {
                     Log.Info("Disabling button");
-#if USING_TOOLBAR
+#if RP_1_131
                     LaunchGUI.button.Disable();
                     //		LaunchGUI.button.SetFalse();
                     LaunchGUI.button.enabled = false;
@@ -311,7 +311,7 @@ namespace KRASH
 
             if (configDisplayActive)
             {
-#if USING_TOOLBAR
+#if RP_1_131
                 Log.Info("cfgWindowRect: " + cfgWindowRect);
                 cfgWindowRect = GUILayout.Window(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
 #else
@@ -466,7 +466,9 @@ namespace KRASH
                 currentConfigName = KRASHShelter.persistent.selectedCostsCfg;
             }
             GUI.skin = HighLogic.Skin;
-
+#if RP_1_131
+            GUILayout.Label("");
+#endif
             List<string> cfgs = KRASHShelter.instance.cfg.GetAvailableCfgs();
 
             GUILayout.BeginArea(new Rect(5, 50, 170, 465));
@@ -908,14 +910,14 @@ namespace KRASH
 
             if (Camera.main != null)
             {
-#if USING_TOOLBAR
+#if RP_1_131
                 Log.Info("windowRect: " + windowRect);
                 windowRect = GUILayout.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
 #else
                 windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
 #endif
             }
-#if USING_TOOLBAR
+#if RP_1_131
             if (windowRect.Contains(Event.current.mousePosition))
             {
                 EditorLock(true);
@@ -993,7 +995,7 @@ namespace KRASH
             GUI.skin = HighLogic.Skin;
             //string smessage = "";
             //ScreenMessageStyle smsStyle = ScreenMessageStyle.UPPER_RIGHT;
-#if USING_TOOLBAR
+#if RP_1_131
             GUILayout.Label("");
 #endif
             // ASH 28102014 Category filter handling added.

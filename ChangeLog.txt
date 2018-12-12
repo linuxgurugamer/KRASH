@@ -184,7 +184,7 @@
 0.5.26.1
 	Rebuilt current version for 1.3.1, added compile-time var to avoid needing the ToolbarController or ClickthroughBlocker
 	To recompile for 1.3.1:
-		1. Add:  ;USING_TOOLBAR   to the Conditional Compilation Symbols to recompile for 1.3.1
+		1. Add:  ;RP_1_131   to the Conditional Compilation Symbols to recompile for 1.3.1
 		2. Update deploy.bat to copy to correct folder
 		3. Update references to use a 1.3.1 install
 		4. Remove references to the ToolbarController and ClickThroughFix from the References tab
@@ -195,3 +195,9 @@
 
 0.5.29.4
 	Fixed cfg window not showing up
+
+0.5.26.2
+	Fixed cfg window for the RP-0 aka KSP 1.3.1 build
+
+0.5.29.5
+	Version bump for current
