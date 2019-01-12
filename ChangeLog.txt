@@ -201,3 +201,6 @@
 
 0.5.29.5
 	Version bump for current
+
+0.5.29.7
+	Removed KRASHCustom.cfg from release directory
