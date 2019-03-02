@@ -287,17 +287,31 @@ namespace KRASH
             //       if (Camera.main.gameObject.GetComponent(typeof(Wireframe)))
             //         Component.Destroy(Camera.main.gameObject.GetComponent(typeof(Wireframe)));
             var v = FlightGlobals.ActiveVessel;
-
-            foreach (var p in v.parts)
+            if (wireFrameAdded)
             {
-                // Try to remove any WireFrame components found.
-                try
+#if false
+                foreach (var p in v.parts)
                 {
-                    Destroy(p.partTransform.gameObject.GetComponent<WireFrame>());
+                    // Try to remove any WireFrame components found.
+                    try
+                    {
+                        Destroy(p.partTransform.gameObject.GetComponent<WireFrame>());
+                    }
+                    catch { }
                 }
-                catch { }
+#endif
+                for (int i = 0; i < cams.Length; i++)
+                {
+                    if (cams[i].name == "Camera 00")
+                    {
+                        nearCamera = cams[i];
+                        Destroy(nearCamera.gameObject.GetComponent<WireFrame>());
+                        break;
+                    }
+                 
+                }
+                
             }
-
             KRASHShelter.instance.simPauseMenuInstance = null;
         }
     }

@@ -204,3 +204,6 @@
 
 0.5.29.7
 	Removed KRASHCustom.cfg from release directory
+
+0.5.29.8
+	Fixed wireframe not being removed from the camera
