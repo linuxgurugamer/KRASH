@@ -16,6 +16,7 @@ del %GAMEDATA%\%GAMEDIR%\*.version
 del %H%\GameData\%GAMEDIR%\*.version
 
 copy /Y "%1%2" "%GAMEDATA%\%GAMEDIR%\Plugins"
+copy /y "%1\*.pdb" "%GAMEDATA%\%GAMEDIR%\Plugins"
 
 copy /Y %VERSIONFILE% %GAMEDATA%\%GAMEDIR%
 

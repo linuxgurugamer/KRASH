@@ -118,11 +118,23 @@
     </Reference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>
+    <PostBuildEvent>d:\Users\jbb\github\pdb2mdb.exe $(TargetPath)
+
+
+
+
+
+
 start /D D:\Users\jbb\github\KRASH/WAIT deploy.bat  $(TargetDir) $(TargetFileName)
 
+
+
 if $(ConfigurationName) == Release (
+
+
 	start /D D:\Users\jbb\github\KRASH/WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
