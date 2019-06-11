@@ -75,7 +75,16 @@ namespace KRASH
 		private static PropertyInfo tfmsInstance;
 		private static PropertyInfo tfmsSettingsEnabled;
 
-		static KRASH()
+        internal static bool testLiteLoaded = false;
+        private bool testLiteEnabled
+        {
+            get => (bool)tlSettingsType.GetField("disabled").GetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType));
+            set => tlSettingsType.GetField("disabled").SetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType), value);
+        }
+        private bool testLiteStateBeforeSim;
+        private static System.Type tlSettingsType;
+
+        static void LoadTestFlight()
 		{
 			Log.Info("[KRASH-TF] Attempting to load TF");
 			var tfAssembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name == "TestFlightCore");
@@ -106,8 +115,32 @@ namespace KRASH
 			testFlightLoaded = true;
 		}
 
+        static void LoadTestLite()
+        {
+            Log.Info("[KRASH-TL] Attempting to load TestLite");
+            var tlAssembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name == "TestLite");
+            if (tlAssembly == null)
+            {
+                Log.Warning("[KRASH-TL] Failed to load TestLite assembly");
+                return;
+            }
+            tlSettingsType = Type.GetType("TestLite.TestLiteGameSettings, TestLite");
+            if (tlSettingsType == null)
+            {
+                Log.Warning("[KRASH-TL] TestLite assembly was loaded, but TestLite.TestLiteGameSettings was not found");
+                return;
+            }
+            Log.Info("[KRASH-TF] TestLite integration successful");
+            testLiteLoaded = true;
+        }
 
-		#if false
+        static KRASH()
+        {
+            LoadTestFlight();
+            LoadTestLite();
+        }
+
+#if false
 		public void simStart(Vessel v, double f)
 		{
 			Log.Info ("simStart");
@@ -120,8 +153,8 @@ namespace KRASH
 			//KRASHWrapper.AddSimStartEvent (simStart);
 
 		}
-		#endif
-		void Awake ()
+#endif
+            void Awake ()
 		{
 			Log.Info ("KRASH.Awake");
 		}
@@ -299,7 +332,13 @@ namespace KRASH
 				testFlightStateBeforeSim = testFlightEnabled;
 				testFlightEnabled = false;
 			}
-			return save != null ? true : false;
+            if (testLiteLoaded && disableTestFlightForSim)
+            {
+                Log.Warning("Disabling TestLite");
+                testLiteStateBeforeSim = testLiteEnabled;
+                testLiteEnabled = false;
+            }
+            return save != null ? true : false;
 		}
 
 		public void DestroyModules ()
@@ -377,6 +416,9 @@ namespace KRASH
 				}
 				if (testFlightLoaded && disableTestFlightForSim) {
 					testFlightEnabled = testFlightStateBeforeSim;
+				}
+				if (testLiteLoaded && disableTestFlightForSim) {
+					testLiteEnabled = testLiteStateBeforeSim;
 				}
 			}
 			//Log.Info ("Total sim cost: " + KRASHShelter.simCost.ToString ());
