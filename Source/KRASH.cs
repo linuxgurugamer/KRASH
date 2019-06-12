@@ -78,8 +78,8 @@ namespace KRASH
         internal static bool testLiteLoaded = false;
         private bool testLiteEnabled
         {
-            get => (bool)tlSettingsType.GetField("disabled").GetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType));
-            set => tlSettingsType.GetField("disabled").SetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType), value);
+            get => !(bool)tlSettingsType.GetField("disabled").GetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType));
+            set => tlSettingsType.GetField("disabled").SetValue(HighLogic.CurrentGame.Parameters.CustomParams(tlSettingsType), !value);
         }
         private bool testLiteStateBeforeSim;
         private static System.Type tlSettingsType;
@@ -334,7 +334,6 @@ namespace KRASH
 			}
             if (testLiteLoaded && disableTestFlightForSim)
             {
-                Log.Warning("Disabling TestLite");
                 testLiteStateBeforeSim = testLiteEnabled;
                 testLiteEnabled = false;
             }
