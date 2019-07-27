@@ -5,6 +5,7 @@ using System.Linq;
 using System.Diagnostics;
 using KSP.UI;
 using KSP.UI.Screens;
+using PreFlightTests;
 using Upgradeables;
 #if !RP_1_131
 using ClickThroughFix;
@@ -1422,16 +1423,9 @@ namespace KRASH
                         flyable = false;
                     }
                 }
-                bool lockedparts = false;
-                foreach (var part in EditorLogic.fetch.ship.parts)
-                {
-                    AvailablePart ap = PartLoader.getPartInfoByName(part.name);                   
-                    if (!ResearchAndDevelopment.PartTechAvailable(ap))
-                    {                            
-                        lockedparts = true;
-                        break;
-                    }
-                }
+
+                var partCheck = new ExperimentalPartsAvailable(EditorLogic.fetch.ship);
+                bool lockedparts = !partCheck.Test();
                 if (lockedparts)
                 {
                     startSim += "\nVessel has locked parts";
