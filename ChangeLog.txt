@@ -189,6 +189,13 @@
 		3. Update references to use a 1.3.1 install
 		4. Remove references to the ToolbarController and ClickThroughFix from the References tab
 
+0.5.30.1
+	Thanks to @siimav for this:
+		Check the unlock status of all parts before allowing to start a sim
+		Previously the code only checked whether the tech for the part was researched but was missing the entry cost check. This had a nasty side effect of marking the current save as being a sim whereas the sim itself couldn't actually be started because stock VAB checks failed.
+	Thanks to @RCrockford for this:
+		Added integration for disabling Testlite as well as TestFlight.
+
 0.5.30
 	Added InstallChecker.cs
 	Updated AssemblyVersion.tt
