@@ -27,8 +27,15 @@
 	int i = 0;
 	int i2 = 0;
 	string s;
+	
+	// For Visual Studio / MSBuild Build-Time Template Resolution
+	string RootDirectory = System.IO.Path.GetDirectoryName(Host.TemplateFile) + @"\..\";
 
-	string versionfile =  @"D:\Users\jbb\github\KRASH\KRASH.version";
+	//
+	// Update the following with the name of the .version file which is in the root directory
+	//
+	string versionfile = RootDirectory + "KRASH.version";
+
 	if (!File.Exists(versionfile))
 	{
 		Write("File: " + versionfile + " missing\n");		
