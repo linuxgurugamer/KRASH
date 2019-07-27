@@ -1677,10 +1677,10 @@ namespace KRASH
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
 
-            if (KRASH.testFlightLoaded)
+            if (KRASH.testFlightLoaded || KRASH.testLiteLoaded)
             {
                 GUILayout.BeginHorizontal();
-                KRASHShelter.instance.disableTestFlightForSim = GUILayout.Toggle(KRASHShelter.instance.disableTestFlightForSim, "Disable TestFlight");
+                KRASHShelter.instance.disableTestFlightForSim = GUILayout.Toggle(KRASHShelter.instance.disableTestFlightForSim, KRASH.testFlightLoaded ? "Disable TestFlight" : "Disable TestLite");
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
