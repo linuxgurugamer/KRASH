@@ -218,3 +218,6 @@
 
 0.5.29.8
 	Fixed wireframe not being removed from the camera
+
+0.5.30.2
+	Fixed numerous nullrefs when returning to the main menu

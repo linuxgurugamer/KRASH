@@ -165,7 +165,8 @@ namespace KRASH
 
 		void Update ()
 		{
-
+            if (HighLogic.LoadedScene == GameScenes.MAINMENU || HighLogic.CurrentGame ==null)
+                return;
 			if (!inited && KRASHPersistent.inited) {
 				Start ();
 				inited = true;

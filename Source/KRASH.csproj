@@ -130,10 +130,16 @@ start /D D:\Users\jbb\github\KRASH/WAIT deploy.bat  $(TargetDir) $(TargetFileNam
 
 
 
+
+
 if $(ConfigurationName) == Release (
 
 
+
+
 	start /D D:\Users\jbb\github\KRASH/WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 
 
 )</PostBuildEvent>
@@ -141,6 +147,8 @@ if $(ConfigurationName) == Release (
   <PropertyGroup>
     <PreBuildEvent>
 set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Community\Common7\IDE \texttransform.exe"
+
+
 
 
 
