@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KRASH</RootNamespace>
     <AssemblyName>KRASH</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,7 +20,6 @@
     <DefineConstants>TRACE;DEBUG;KRASH;RP_1_131</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="deploy.bat" externalConsole="True" pauseExternalConsole="True" />
@@ -33,7 +32,6 @@
     <DefineConstants>TRACE;KRASH;RP_1_131</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.1.2_dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />

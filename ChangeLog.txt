@@ -1,4 +1,6 @@
-﻿0.2.0	Initial release
+﻿ChangeLog
+
+0.2.0	Initial release
 		Simple simulation, no costs or termination
 
 0.3.0	Bugs fixed:
@@ -221,3 +223,6 @@
 
 0.5.30.2
 	Fixed numerous nullrefs when returning to the main menu
+
+0.5.31
+	Updated for KSP 1.8

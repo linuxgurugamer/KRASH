@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{87B8D2BE-7BC3-4712-9816-084DAAFD24A1}</ProjectGuid>
+    <ProjectGuid>{8C5539DD-396B-4084-892E-8F1901E51584}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KRASH</RootNamespace>
     <AssemblyName>KRASH</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,10 +17,9 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;KRASH;RP_1_131</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;KRASH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="deploy.bat" externalConsole="True" pauseExternalConsole="True" />
@@ -30,10 +29,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;KRASH;RP_1_131</DefineConstants>
+    <DefineConstants>TRACE;KRASH</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="xcopy ${TargetFile}  R:\KSP_1.1.2_dev\GameData\KRASH\Plugins\  /Y" externalConsole="True" />
@@ -45,11 +43,12 @@
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyVersion-1.3.1.cs">
+    <Compile Include="AssemblyVersion.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AssemblyVersion-1.3.1.tt</DependentUpon>
+      <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="InstallChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneModules\EditorModule.cs" />
     <Compile Include="SceneModules\FlightModule.cs" />
@@ -90,41 +89,57 @@
     <None Include="KRASHCustom.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AssemblyVersion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AssemblyVersion.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.3.1_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>R:\KSP_1.7.3_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="System">
-      <HintPath>R:\KSP_1.3.1_dev\KSP_x64_Data\Managed\System.dll</HintPath>
+    <Reference Include="ClickThroughBlocker">
+      <HintPath>R:\KSP_1.7.3_dev\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="ToolbarControl">
+      <HintPath>R:\KSP_1.7.3_dev\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.3.1_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>R:\KSP_1.7.3_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.3.1_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>R:\KSP_1.7.3_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="AssemblyVersion-1.3.1.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AssemblyVersion-1.3.1.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-start /D D:\Users\jbb\github\KRASH/WAIT deploy-1.3.1.bat  $(TargetDir) $(TargetFileName)
+    <PostBuildEvent>d:\Users\jbb\github\pdb2mdb.exe $(TargetPath)
+
+
+
+
+
+
+start /D D:\Users\jbb\github\KRASH/WAIT deploy.bat  $(TargetDir) $(TargetFileName)
+
+
 
 
 
 if $(ConfigurationName) == Release (
 
 
-	start /D D:\Users\jbb\github\KRASH/WAIT buildRelease-1.3.1.bat $(TargetDir) $(TargetFileName)
+
+
+	start /D D:\Users\jbb\github\KRASH/WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 
 
 )</PostBuildEvent>
@@ -135,6 +150,8 @@ set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Com
 
 
 
-%25textTemplatingPath%25 "$(ProjectDir)AssemblyVersion-1.3.1.tt"</PreBuildEvent>
+
+
+%25textTemplatingPath%25 "$(ProjectDir)AssemblyVersion.tt"</PreBuildEvent>
   </PropertyGroup>
 </Project>
