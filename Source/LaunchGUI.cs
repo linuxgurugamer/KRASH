@@ -78,6 +78,10 @@ namespace KRASH
         public void Awake()
         {
             Log.Info("LaunchGUI.Awake");
+            sites = new List<LaunchSite>();
+            runway = new LaunchSite("Runway", "Squad", SiteType.SPH, SpaceCenter.Instance.gameObject/*, new PSystemSetup.SpaceCenterFacility()*/);
+            launchpad = new LaunchSite("LaunchPad", "Squad", SiteType.VAB, SpaceCenter.Instance.gameObject/*, new PSystemSetup.SpaceCenterFacility()*/);
+
             if (LaunchGUI.LaunchGuiInstance == null)
             {
 #if RP_1_131
@@ -136,6 +140,7 @@ namespace KRASH
         static internal ToolbarControl toolbarControl = null;
         void AddToolbarButtons()
         {
+            Log.Info("LaunchGUI.AddToolbarButtons");
             if (toolbarControl == null)
             {
                 toolbarControl = gameObject.AddComponent<ToolbarControl>();
@@ -217,7 +222,7 @@ namespace KRASH
         }
 
         //bool isEditorLocked = false;
-        private void EditorLock(bool state, string from="")
+        private void EditorLock(bool state, string from = "")
         {
             return;
             // This isn't needed since the ClickThroughBlocker is taking care of everything
@@ -245,7 +250,7 @@ namespace KRASH
         {
             Log.Info("GUIButtonToggle");
             //if (!configDisplayActive || HighLogic.LoadedScene != GameScenes.SPACECENTER)
-                GUIToggle();
+            GUIToggle();
         }
 
         bool configDisplayActive = false;
@@ -282,7 +287,7 @@ namespace KRASH
                         bodiesList = getAllowableBodies();
                         selectType = SelectionType.launchsites;
                         selectedBody = FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault();
-                       // EditorLock(true, "GUIToggle 3");
+                        // EditorLock(true, "GUIToggle 3");
                         APIManager.ApiInstance.SimMenuEvent.Fire((Vessel)FlightGlobals.ActiveVessel, KRASHShelter.simCost);
                     }
                 }
@@ -347,6 +352,7 @@ namespace KRASH
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
+
         bool cfgWinData = false;
         string strConfigName;
         string strflatSetupCost;
@@ -807,7 +813,7 @@ namespace KRASH
         //		Rect windowRect = new Rect(((Screen.width - Camera.main.rect.x) / 2) + Camera.main.rect.x - 125, (Screen.height / 2 - 250), 570, 580);
         //		private SiteType editorType = SiteType.Any;
         //		private bool orbitSelection = false;
-        public static List<LaunchSite> sites = new List<LaunchSite>();
+        public static List<LaunchSite> sites;
 
         public Boolean isCareerGame()
         {
@@ -828,12 +834,12 @@ namespace KRASH
         }
 
         public bool inited = false;
-        public static LaunchSite runway = new LaunchSite("Runway", "Squad", SiteType.SPH, SpaceCenter.Instance.gameObject/*, new PSystemSetup.SpaceCenterFacility()*/);
-        public static LaunchSite launchpad = new LaunchSite("LaunchPad", "Squad", SiteType.VAB, SpaceCenter.Instance.gameObject/*, new PSystemSetup.SpaceCenterFacility()*/);
+        public static LaunchSite runway;
+        public static LaunchSite launchpad;
 
         void setOrbit(CelestialBody selectedBody)
         {
-            
+
             if (simType != SimType.LANDED)
             {
                 if (!selectedBody)
@@ -1329,7 +1335,7 @@ namespace KRASH
         // ======================================================================================
         bool checkForCrew(VesselCrewManifest dialogVessel)
         {
-            
+
             List<PartCrewManifest> dialogParts = dialogVessel.GetCrewableParts();
             for (int partIndex = 0; partIndex < dialogParts.Count; ++partIndex)
             {
@@ -1460,7 +1466,7 @@ namespace KRASH
                 }
 
                 if (!controllable)
-                { 
+                {
                     startSim += "\nVessel is not controllable";
                     flyable = false;
                 }
@@ -1470,10 +1476,10 @@ namespace KRASH
                 //                Log.Info("KRASHShelter.LimitSimCost: " + KRASHShelter.LimitSimCost.ToString());
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                     if (KRASHShelter.simSetupCost > KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0)
-                {
-                    startSim += "\nSim cost exceeds limit";
-                    flyable = false;
-                }
+                    {
+                        startSim += "\nSim cost exceeds limit";
+                        flyable = false;
+                    }
             }
             Log.Info("flyable 3: " + flyable.ToString());
             if (flyable)
@@ -1791,7 +1797,7 @@ namespace KRASH
         }
 #endif
 
-                public void setLaunchSite(LaunchSite site)
+        public void setLaunchSite(LaunchSite site)
         {
             Log.Info("setLaunchSite");
             Log.Info("simType: " + simType.ToString());
@@ -1848,7 +1854,7 @@ namespace KRASH
 
             KRASHShelter.persistent.SetSuspendUpdate(true);
             KRASHShelter.instance.Activate();
-            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)                
+            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 Funding.Instance.AddFunds(KRASHShelter.shipCost, TransactionReasons.Any);
             EditorLogic.fetch.launchVessel();
         }

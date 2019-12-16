@@ -226,3 +226,9 @@
 
 0.5.31
 	Updated for KSP 1.8
+
+0.5.31.1
+	Fixed initialization of vars
+
+0.5.31.2
+	Found another instance field initializer which was calling gameObject when not in Awake or Start
