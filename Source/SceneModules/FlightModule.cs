@@ -316,7 +316,6 @@ namespace KRASH
         }
     }
 
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
     /*
      * This menu is very similar to the squad PauseMenu.
      * 
@@ -325,8 +324,10 @@ namespace KRASH
      * Display() - makes this menu active
      * Close() - closes one ui layer. 
      */
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class SimulationPauseMenu : MonoBehaviour
     {
+        public static SimulationPauseMenu instance;
         private const float SPACER = 5.0f;
         private const string TAG = "KRASH.FlightModule.SimulationPauseMenu";
 
@@ -342,15 +343,17 @@ namespace KRASH
 
         public bool isOpen = false;
 
-        public SimulationPauseMenu()
-        {
-            Log.Info("SimulationPauseMenu instantiated");
-        }
 
         public void Awake()
         {
             Log.Info("SimulationPauseMenu.Awake");
+            instance = this;
+        }
 
+
+        public void TerminateSimNoDialog()
+        {
+            StartCoroutine(WaitForFlightResultsDialog());
         }
 
         //        public void test(string s)
@@ -924,6 +927,7 @@ namespace KRASH
 				}
 			}
 #endif
+            GUI.DragWindow();
         }
 
 

@@ -232,3 +232,7 @@
 
 0.5.31.2
 	Found another instance field initializer which was calling gameObject when not in Awake or Start
+
+0.5.31.3 
+	Made the game pause window draggable
+	Added additional functionality to API to support  next release of the FlightEditSaver

@@ -5,9 +5,7 @@
 // If you wish to use your own logging functions, you can replace the function Infolog with a call
 // to your functions
 
-// KRASH is defined when compiling KRASH, to avoid this module from being included.  
-#if KRASH
-//#if !KRASH
+
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +18,7 @@ using UnityEngine;
 
 namespace KRASH
 {
-	public class KRASHWrapper
+	public class KRASHWrapper: MonoBehaviour
 	{
 
 
@@ -480,5 +478,3 @@ namespace KRASH
 		}
 	}
 }
-
-#endif

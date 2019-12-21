@@ -9,7 +9,7 @@ using KSP;
 namespace KRASH
 {
 
-	public class APIManager : MonoBehaviour
+	public class APIManager:MonoBehaviour
 	{
 
 		//This is the actual instance. It gets instantiated when someone calls for it, below.
@@ -44,6 +44,11 @@ namespace KRASH
 				Log.Info ("TerminateSim called");
 				KRASHShelter.instance.simPauseMenuInstance.DisplayTerminationMessage (msg);
 			}
+            public void TerminateSimNoDialog()
+            {
+                SimulationPauseMenu.instance.TerminateSimNoDialog();
+
+            }
 
 			public void SetSetupCosts(float flatSetupCost, float perPartSetupCost, float perTonSetupCost)
 			{
