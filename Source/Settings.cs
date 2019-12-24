@@ -32,6 +32,22 @@ namespace KRASH
             toolTip = "For planets and moons without any atmosphere")]
         public double defaultNoAtmoStartingAltitude = 10000f;
 
+
+        public float costAdjustment = 1.0f;
+        [GameParameters.CustomFloatParameterUI("Cost Adjustment (%)", minValue = 25f, maxValue = 200.0f,
+                 toolTip = "Adjusts the costs by this value ")]
+        public float CostAdj
+        {
+            get { return costAdjustment * 100; }
+            set { costAdjustment = value / 100.0f; }
+        }
+        public float CostAdjustment
+        {
+            get { return costAdjustment; }
+            set { costAdjustment = value; }
+        }
+
+
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
             return true; //otherwise return true

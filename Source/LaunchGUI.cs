@@ -330,13 +330,15 @@ namespace KRASH
             {
                 try
                 {
-                    if (this.Visible())
+                    if (this.Visible() && HighLogic.LoadedSceneIsEditor)
                     {
                         Log.Info("OnGUI");
                         drawSelector();
                         //					windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector");
                         //					this.bounds = GUILayout.Window (this.GetInstanceID (), this.bounds, this.Window, TITLE, HighLogic.Skin.window);
                     }
+                    else
+                        SetVisible(false);
                 }
                 catch (Exception e)
                 {
@@ -1413,7 +1415,8 @@ namespace KRASH
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 {
                     EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
-                    KRASHShelter.simSetupCost = (float)Math.Round(KRASHShelter.instance.cfg.flatSetupCost +
+                    KRASHShelter.simSetupCost = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().CostAdjustment *
+                        (float)Math.Round(KRASHShelter.instance.cfg.flatSetupCost +
                         EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
                         (dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost, 1);
 
@@ -1702,7 +1705,8 @@ namespace KRASH
                 KRASHShelter.dryMass = dryMass;
                 KRASHShelter.fuelMass = fuelMass;
 
-                KRASHShelter.simSetupCost = (float)Math.Round(KRASHShelter.instance.cfg.flatSetupCost +
+                KRASHShelter.simSetupCost = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().CostAdjustment * 
+                    (float)Math.Round(KRASHShelter.instance.cfg.flatSetupCost +
                     EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartSetupCost +
                     (dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonSetupCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentSetupCost, 1);
 
@@ -1715,9 +1719,10 @@ namespace KRASH
                 GUILayout.Label("Est. Sim/min cost:");
                 GUILayout.FlexibleSpace();
 
-                float estSimPerMin = KRASHShelter.instance.cfg.flatPerMinCost +
+                float estSimPerMin = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().CostAdjustment * (
+                    KRASHShelter.instance.cfg.flatPerMinCost +
                     EditorLogic.fetch.ship.parts.Count * KRASHShelter.instance.cfg.perPartPerMinCost +
-                    (dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonPerMinCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost;
+                    (dryMass + fuelMass) * KRASHShelter.instance.cfg.perTonPerMinCost + KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost);
 
                 GUILayout.Label(Math.Round(estSimPerMin, 1).ToString(), fontColorYellow);
                 GUILayout.EndHorizontal();

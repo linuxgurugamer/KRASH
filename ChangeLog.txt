@@ -236,3 +236,7 @@
 0.5.31.3 
 	Made the game pause window draggable
 	Added additional functionality to API to support  next release of the FlightEditSaver
+
+0.5.31.4
+	Fixed bug which occurred when leaving the editor while the selector window was open
+	Added cost adjustment ability, accessable in stock settings page
