@@ -563,11 +563,15 @@ namespace KRASH
                     List<Part> parts = FlightGlobals.fetch.activeVessel.GetActiveParts();
                     int cnt = parts.Count();
 
-                    KRASHShelter.simCost = KRASHShelter.simCost +
-                        (KRASHShelter.instance.cfg.flatPerMinCost +
-                        cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
-                        mass * KRASHShelter.instance.cfg.perTonPerMinCost +
-                        KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
+                    if (!HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().noChargeDuringTimewarp ||
+                        TimeWarp.CurrentRate == 1)
+                    {
+                        KRASHShelter.simCost = KRASHShelter.simCost +
+                            (KRASHShelter.instance.cfg.flatPerMinCost +
+                            cnt * KRASHShelter.instance.cfg.perPartPerMinCost +
+                            mass * KRASHShelter.instance.cfg.perTonPerMinCost +
+                            KRASHShelter.shipCost * KRASHShelter.instance.cfg.percentPerMinCost) / 60 * m;
+                    }
                 }
                 Log.Info("Funding.Instance.Funds: " + Funding.Instance.Funds.ToString());
                 if (Funding.Instance.Funds < KRASHShelter.simCost + KRASHShelter.simSetupCost)

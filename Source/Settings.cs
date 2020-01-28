@@ -47,6 +47,10 @@ namespace KRASH
             set { costAdjustment = value; }
         }
 
+        [GameParameters.CustomParameterUI("Don't charge during timewarp",
+         toolTip = "If enabled, will not charge any funds while timewarping")]
+        public bool noChargeDuringTimewarp = true;
+
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {

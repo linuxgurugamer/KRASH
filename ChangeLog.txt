@@ -239,4 +239,7 @@
 
 0.5.31.4
 	Fixed bug which occurred when leaving the editor while the selector window was open
-	Added cost adjustment ability, accessable in stock settings page
+	Added cost adjustment ability, accessible  in stock settings page
+
+0.5.32
+	Added setting to not charge costs during timewarp.  Default is to not charge
