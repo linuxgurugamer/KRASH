@@ -54,6 +54,8 @@ namespace KRASH
 
 		public bool		ContinueIfNoCash{ get; set; }
 
+		public bool     ObeyPadLimits { get; set; }
+
 		public bool		TerminateAtSoiWithoutData{ get; set; }
 		public bool		TerminateAtLandWithoutData{ get; set; }
 		public bool		TerminateAtAtmoWithoutData{ get; set; }
@@ -96,6 +98,7 @@ namespace KRASH
 			TerminateAtAtmoWithoutData = false;
 
 			ContinueIfNoCash = false;
+			ObeyPadLimits = false;
 			DefaultMaxAllowableSimCost = 0.0F;
 			DefaultSimTime = 5;
 
@@ -147,6 +150,7 @@ namespace KRASH
 			Log.Info ("TerminateAtSoiWithoutData: " + TerminateAtSoiWithoutData.ToString ());
 			Log.Info ("TerminateAtAtmoWithoutData: " + TerminateAtAtmoWithoutData.ToString ());
 			Log.Info ("ContinueIfNoCash: " + ContinueIfNoCash.ToString());
+			Log.Info ("ObeyPadLimits: " + ObeyPadLimits.ToString());
 			Log.Info ("MaxAllowableSimCost: " + MaxAllowableSimCost.ToString());
 			Log.Info ("DefaultSimTime: " + DefaultSimTime.ToString ());
 		}
@@ -173,6 +177,7 @@ namespace KRASH
 			TerminateAtAtmoWithoutData = bool.Parse(SafeLoad(node.GetValue("TerminateAtAtmoWithoutData"), TerminateAtAtmoWithoutData));
 
 			ContinueIfNoCash = bool.Parse (SafeLoad (node.GetValue ("ContinueIfNoCash"), ContinueIfNoCash));
+			ObeyPadLimits = bool.Parse (SafeLoad (node.GetValue ("ObeyPadLimits"), ObeyPadLimits));
 			DefaultMaxAllowableSimCost = float.Parse (SafeLoad (node.GetValue ("DefaultMaxAllowableSimCost"), DefaultMaxAllowableSimCost));
 			DefaultSimTime = int.Parse (SafeLoad (node.GetValue ("DefaultSimTime"), DefaultSimTime));
 
@@ -292,6 +297,7 @@ namespace KRASH
                     cfgNode.SetValue("TerminateAtLandWithoutData", TerminateAtLandWithoutData.ToString(), true);
                     cfgNode.SetValue("TerminateAtAtmoWithoutData", TerminateAtAtmoWithoutData.ToString(), true);
                     cfgNode.SetValue("ContinueIfNoCash", ContinueIfNoCash.ToString(), true);
+                    cfgNode.SetValue("ObeyPadLimits", ObeyPadLimits.ToString(), true);
                     cfgNode.SetValue("DefaultMaxAllowableSimCost", DefaultMaxAllowableSimCost.ToString(), true);
                     cfgNode.SetValue("DefaultSimTime", DefaultSimTime.ToString(), true);
                 }
