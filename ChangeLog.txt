@@ -243,3 +243,8 @@
 
 0.5.32
 	Added setting to not charge costs during timewarp.  Default is to not charge
+
+0.5.33
+	Thanks to github user @RCrockford for this:
+		Adds an option to allow launching any size, weight, or part count craft for simulation.
+
