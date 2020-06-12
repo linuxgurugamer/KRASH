@@ -383,6 +383,7 @@ namespace KRASH
 				Game newGame = GamePersistence.LoadGame ("KRASHRevert", HighLogic.SaveFolder, true, false);
 				GamePersistence.SaveGame (newGame, "persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
 				System.IO.File.Delete (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/" + "KRASHRevert.sfs");
+				System.IO.File.Delete (KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/Ships/krash_temp.craft");
 
 
 

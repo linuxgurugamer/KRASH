@@ -375,6 +375,7 @@ namespace KRASH
         bool bTerminateAtAtmoWithoutData;
 
         bool bContinueIfNoCash;
+        bool bObeyPadLimits;
         string strDefaultMaxAllowableSimCost;
         string strDefaultSimTime;
 
@@ -413,6 +414,7 @@ namespace KRASH
             bTerminateAtAtmoWithoutData = KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData;
 
             bContinueIfNoCash = KRASHShelter.instance.cfg.ContinueIfNoCash;
+            bObeyPadLimits = KRASHShelter.instance.cfg.ObeyPadLimits;
             strDefaultMaxAllowableSimCost = KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost.ToString();
             strDefaultSimTime = KRASHShelter.instance.cfg.DefaultSimTime.ToString();
 
@@ -446,6 +448,7 @@ namespace KRASH
                 KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData = bTerminateAtAtmoWithoutData;
 
                 KRASHShelter.instance.cfg.ContinueIfNoCash = bContinueIfNoCash;
+                KRASHShelter.instance.cfg.ObeyPadLimits = bObeyPadLimits;
                 KRASHShelter.instance.cfg.DefaultMaxAllowableSimCost = Convert.ToSingle(Convert.ToDouble(strDefaultMaxAllowableSimCost));
                 KRASHShelter.instance.cfg.DefaultSimTime = Convert.ToUInt16(strDefaultSimTime);
 
@@ -681,6 +684,11 @@ namespace KRASH
 
             GUILayout.BeginHorizontal();
             bContinueIfNoCash = GUILayout.Toggle(bContinueIfNoCash, "Continue sim if no cash");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            bObeyPadLimits = GUILayout.Toggle(bObeyPadLimits, "Obey launch pad limits");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -1378,38 +1386,40 @@ namespace KRASH
             bool flyable = true;
             //if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
-
-                float launchMassLimit = getMassLimit();
-
-                //EditorLogic.fetch.ship.GetShipMass (out dryMass, out fuelMass);
-                //if (dryMass + fuelMass > launchMassLimit) {
-                if (EditorLogic.fetch.ship.GetTotalMass() > launchMassLimit)
+                if (bObeyPadLimits)
                 {
-                    flyable = false;
-                    startSim = "Vessel too heavy: " + Math.Round(EditorLogic.fetch.ship.GetTotalMass(), 1).ToString() + "t";
-                    startSim += "\nWeight limit: " + launchMassLimit + "t";
-                }
+                    float launchMassLimit = getMassLimit();
 
-                Vector3 s = EditorLogic.fetch.ship.shipSize;
-                Vector3 sizeLimit = getSizeLimit();
-                if (s.x > sizeLimit.x || s.z > sizeLimit.z)
-                {
-                    startSim += "\nVessel too wide: \n" + Math.Round(s.x, 1).ToString() + "m x" + Math.Round(s.z, 1).ToString() + "m";
-                    startSim += "\nWidth limit: " + sizeLimit.x.ToString() + "m";
-                    flyable = false;
-                }
-                if (s.y > sizeLimit.y)
-                {
-                    startSim += "\nVessel too tall: \n" + Math.Round(s.y, 1).ToString() + "m";
-                    startSim += "\nHeight limit: " + sizeLimit.y.ToString() + "m";
-                    flyable = false;
-                }
+                    //EditorLogic.fetch.ship.GetShipMass (out dryMass, out fuelMass);
+                    //if (dryMass + fuelMass > launchMassLimit) {
+                    if (EditorLogic.fetch.ship.GetTotalMass() > launchMassLimit)
+                    {
+                        flyable = false;
+                        startSim = "Vessel too heavy: " + Math.Round(EditorLogic.fetch.ship.GetTotalMass(), 1).ToString() + "t";
+                        startSim += "\nWeight limit: " + launchMassLimit + "t";
+                    }
 
-                if (EditorLogic.fetch.ship.parts.Count() > getPartLimit())
-                {
-                    startSim += "\nToo many parts: " + EditorLogic.fetch.ship.parts.Count().ToString();
-                    startSim += "\nPart limit: " + getPartLimit().ToString();
-                    flyable = false;
+                    Vector3 s = EditorLogic.fetch.ship.shipSize;
+                    Vector3 sizeLimit = getSizeLimit();
+                    if (s.x > sizeLimit.x || s.z > sizeLimit.z)
+                    {
+                        startSim += "\nVessel too wide: \n" + Math.Round(s.x, 1).ToString() + "m x" + Math.Round(s.z, 1).ToString() + "m";
+                        startSim += "\nWidth limit: " + sizeLimit.x.ToString() + "m";
+                        flyable = false;
+                    }
+                    if (s.y > sizeLimit.y)
+                    {
+                        startSim += "\nVessel too tall: \n" + Math.Round(s.y, 1).ToString() + "m";
+                        startSim += "\nHeight limit: " + sizeLimit.y.ToString() + "m";
+                        flyable = false;
+                    }
+
+                    if (EditorLogic.fetch.ship.parts.Count() > getPartLimit())
+                    {
+                        startSim += "\nToo many parts: " + EditorLogic.fetch.ship.parts.Count().ToString();
+                        startSim += "\nPart limit: " + getPartLimit().ToString();
+                        flyable = false;
+                    }
                 }
 
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
@@ -1861,7 +1871,12 @@ namespace KRASH
             KRASHShelter.instance.Activate();
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 Funding.Instance.AddFunds(KRASHShelter.shipCost, TransactionReasons.Any);
-            EditorLogic.fetch.launchVessel();
+
+            // Logic from KCT to allow launching to bypass site limits.
+            string tempFile = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/Ships/krash_temp.craft";
+            ConfigNode shipNode = EditorLogic.fetch.ship.SaveShip();
+            shipNode.Save(tempFile);
+            FlightDriver.StartWithNewLaunch(tempFile, HighLogic.CurrentGame.flagURL, EditorLogic.fetch.launchSiteName, CrewAssignmentDialog.Instance.GetManifest());
         }
 
     }
