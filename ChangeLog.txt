@@ -248,3 +248,6 @@
 	Thanks to github user @RCrockford for this:
 		Adds an option to allow launching any size, weight, or part count craft for simulation.
 
+
+0.5.33.1
+	Fixed window which didn't use the ClickThroughblocker

@@ -800,7 +800,11 @@ namespace KRASH
                     //					Log.Info ("Displaying draw window");
                     //					GUI.skin = _guiSkin;
                     GUI.backgroundColor = _backgroundColor;
+#if RP_1_131
                     _windowRect = GUILayout.Window(this.GetInstanceID() + 1, _windowRect, new GUI.WindowFunction(draw), "Game Paused", new GUILayoutOption[0]);
+#else
+                    _windowRect = ClickThruBlocker.GUILayoutWindow(this.GetInstanceID() + 1, _windowRect, new GUI.WindowFunction(draw), "Game Paused", new GUILayoutOption[0]);
+#endif
                 }
             }
         }
