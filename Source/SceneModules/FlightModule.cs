@@ -565,7 +565,7 @@ namespace KRASH
 
                     if (!HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().noChargeDuringTimewarp ||
                         TimeWarp.CurrentRate == 1 ||
-						TimeWarp.WarpMode == TimeWarp.Modes.LOW)
+                        TimeWarp.WarpMode == TimeWarp.Modes.LOW)
                     {
                         KRASHShelter.simCost = KRASHShelter.simCost +
                             (KRASHShelter.instance.cfg.flatPerMinCost +
