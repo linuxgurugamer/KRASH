@@ -126,7 +126,7 @@ namespace KRASH
                             {
                                 nearCamera = cams[i];
                             }
-                            if (cams[i].name == "Camera 01")
+                            if (cams[i].name == "UIMainCamera")
                             {
                                 //cams [i].renderingPath=RenderingPath.DeferredShading;
                                 farCamera = cams[i];
@@ -564,7 +564,7 @@ namespace KRASH
                     int cnt = parts.Count();
 
                     if (!HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().noChargeDuringTimewarp ||
-                        TimeWarp.CurrentRate == 1)
+                        TimeWarp.CurrentRate == 1 || TimeWarp.WarpMode == TimeWarp.Modes.LOW )
                     {
                         KRASHShelter.simCost = KRASHShelter.simCost +
                             (KRASHShelter.instance.cfg.flatPerMinCost +
