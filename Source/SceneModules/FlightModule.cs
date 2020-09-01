@@ -600,7 +600,8 @@ namespace KRASH
                 }
 
                 // Check for atmospheric flight
-                if (FlightGlobals.fetch.activeVessel.mainBody.atmosphere &&
+                if (KRASHShelter.instance.cfg.TerminateAtAtmoWithoutData &&
+                    FlightGlobals.fetch.activeVessel.mainBody.atmosphere &&
                     FlightGlobals.fetch.activeVessel.RevealAltitude() <= FlightGlobals.fetch.activeVessel.mainBody.atmosphereDepth &&
                     !FlightGlobals.fetch.activeVessel.mainBody.isHomeWorld)
                 {
@@ -658,6 +659,8 @@ namespace KRASH
 
         private void CallbackSOIChanged(GameEvents.HostedFromToAction<Vessel, CelestialBody> action)
         {
+            Log.Info("CallbackSOIChanged");
+
             if (KRASHShelter.instance.cfg.TerminateAtSoiWithoutData)
             {
                 if (action.to != Sun.Instance.sun && !action.to.isHomeWorld)
@@ -943,6 +946,7 @@ namespace KRASH
         {
             if (!simTermination)
             {
+                Log.Info("DisplayTerminationMessage: " + msg);
                 simTermination = true;
                 simTerminationMsg = msg;
                 //                KRASHShelter.persistent.SetSuspendUpdate(false);
