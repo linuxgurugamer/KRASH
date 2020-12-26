@@ -969,41 +969,30 @@ namespace KRASH
         static public SimType simType = SimType.LANDED;
         Vector3 shipSize;
 
-        List<CelestialBody> getAllowableBodies(String filter = "ALL")
+        List<CelestialBody> getAllowableBodies(BodyTypeFilter filter = BodyTypeFilter.ALL)
         {
-            CelestialBody parent;
-            List<CelestialBody> bodiesList = new List<CelestialBody>();
-            CelestialBody[] tmpBodies = GameObject.FindObjectsOfType(typeof(CelestialBody)) as CelestialBody[];
-            Log.Info("numBodies: " + tmpBodies.Length);
-            foreach (CelestialBody body in GameObject.FindObjectsOfType(typeof(CelestialBody)))
-            {
-                Log.Info("body name: " + body.name);
-                if (body.orbit != null && body.orbit.referenceBody != null)
-                {
-                    parent = body.orbit.referenceBody;
-                }
-                else
-                    parent = null;
+            var allRegisteredBodies = FindObjectsOfType(typeof(CelestialBody)).OfType<CelestialBody>();
+            var allowableBodies = allRegisteredBodies.Where(body => {
+                var parent = body.orbit != null && body.orbit.referenceBody != null ? body.orbit.referenceBody : null;
+                var isPseudoObject = !body.isStar && (body.orbit == null || Double.IsInfinity(body.sphereOfInfluence));
+                if (isPseudoObject)
+                    return false;
+
                 switch (filter)
                 {
-                    case "ALL":
-                        bodiesList.Add(body);
-                        break;
-                    case "PLANETS":
-                        if (parent != null && parent == Sun.Instance.sun)
-                            bodiesList.Add(body);
-                        break;
-                    case "MOONS":
-                        if (parent != null && parent != Sun.Instance.sun)
-                            bodiesList.Add(body);
-                        break;
+                    case BodyTypeFilter.ALL:
+                        return true;
+                    case BodyTypeFilter.PLANETS:
+                        return parent != null && parent.isStar;
+                    case BodyTypeFilter.MOONS:
+                        return parent != null && !parent.isStar;
                     default:
-                        bodiesList.Add(body);
-                        break;
+                        return false;
                 }
-            }
-            Log.Info("allowableBodies: " + bodiesList.Count);
-            return bodiesList;
+            }).ToList();
+
+            Log.Info("allowableBodies: " + allowableBodies.Count);
+            return allowableBodies;
         }
 
         public void drawSelectorWindow(int id)
@@ -1071,20 +1060,20 @@ namespace KRASH
                 if (GUILayout.Button("All", GUILayout.Width(45)))
                 {
                     selectType = SelectionType.celestialbodies;
-                    bodiesList = getAllowableBodies("ALL");
+                    bodiesList = getAllowableBodies(BodyTypeFilter.ALL);
 
                     //bodies = GameObject.FindObjectsOfType (typeof(CelestialBody)) as CelestialBody[]; 
                     //sites = (editorType == SiteType.Any) ? LaunchSiteManager.getLaunchSites() : LaunchSiteManager.getLaunchSites(editorType, true, "RocketPad");
                 }
                 if (GUILayout.Button("Planets", GUILayout.Width(60)))
                 {
-                    bodiesList = getAllowableBodies("PLANETS");
+                    bodiesList = getAllowableBodies(BodyTypeFilter.PLANETS);
                     selectType = SelectionType.celestialbodies;
                     //				sites = (editorType == SiteType.Any) ? LaunchSiteManager.getLaunchSites() : LaunchSiteManager.getLaunchSites(editorType, true, "RocketPad");
                 }
                 if (GUILayout.Button("Moons", GUILayout.Width(60)))
                 {
-                    bodiesList = getAllowableBodies("MOONS");
+                    bodiesList = getAllowableBodies(BodyTypeFilter.MOONS);
                     selectType = SelectionType.celestialbodies;
                     //				sites = (editorType == SiteType.Any) ? LaunchSiteManager.getLaunchSites() : LaunchSiteManager.getLaunchSites(editorType, true, "RocketPad");
                 }
@@ -1155,77 +1144,28 @@ namespace KRASH
             }
             else
             {
-
                 if (bodiesList == null)
+                {
                     Log.Info("bodiesList is null");
+                    return;
+                }
+
                 if (KRASHShelter.instance == null)
+                {
                     Log.Info("KRASHShelter.instance is null");
+                    return;
+                }
+
                 Log.Info("KRASHShelter.instance.cfg.showAllInCareer: " + KRASHShelter.instance.cfg.showAllInCareer.ToString());
                 bodiesScrollPosition = GUILayout.BeginScrollView(bodiesScrollPosition);
-                //                if (ProgressTracking.Instance != null || !isCareerGame() || KRASHShelter.instance.cfg.showAllInCareer)
-                //                if ( !isCareerGame() || KRASHShelter.instance.cfg.showAllInCareer)
-                foreach (CelestialBody body in bodiesList)
+
+                foreach (CelestialBody body in this.GetCelestialBodiesForDisplay(simType))
                 {
-                    KSPAchievements.CelestialBodySubtree tree = null;
-                    //                        if (ProgressTracking.Instance != null)
-                    //                            Log.Info("ProgressTracking.Instance is not null");
-                    //                        else
-                    //                            Log.Info("ProgressTracking.Instance is null");
-
-                    //                            tree = ProgressTracking.Instance.celestialBodyNodes.Where(node => node.Body == body).FirstOrDefault();
-
-                    if (KRASHShelter.persistent == null)
-                        Log.Info("KRASHShelter.persistent is null");
-                    if (KRASHPersistent.celestialBodyNodes == null)
-                        Log.Info("KRASHShelter.persistent.celestialBodyNodes is  null");
-
-
-
-                    tree = KRASHPersistent.celestialBodyNodes.Where(node => node.Body == body).FirstOrDefault();
-
-#if false
-                    Log.Info("Dumping body info");
-                        foreach (var cbn in KRASHPersistent.celestialBodyNodes)
-                        {
-                            Log.Info("body: " + cbn.Body.name + "  IsReached: " + cbn.IsReached.ToString());
-                            foreach (var cbnchild in cbn.childTrees)
-                            {
-                                Log.Info("moon: " + cbnchild.Body.name + "  IsReached: " + cbnchild.IsReached.ToString());
-                            }
-                        }
-#endif
-
-                    Log.Info("isCareerGame: " + isCareerGame().ToString());
-                    bool scienceOrbit;
-
-                    if (!isCareerGame() || KRASHShelter.instance.cfg.showAllInCareer)
-                        scienceOrbit = true;
-                    else
-                        scienceOrbit = ResearchAndDevelopment.GetSubjects().Where(ss => ss.science > 0.0f && ss.IsFromBody(body) && ss.id.Contains("InSpace")).Any();
-
-                    if (!isCareerGame() ||
-                            KRASHShelter.instance.cfg.showAllInCareer ||
-                            scienceOrbit ||
-                            body.isHomeWorld ||
-                            (tree != null && (simType == SimType.LANDED && tree.landing.IsComplete) || (simType == SimType.ORBITING && tree.IsReached)))
+                    GUI.enabled = !(selectedBody == body);
+                    if (GUILayout.Button(body.name, GUILayout.Height(30)))
                     {
-                        if (tree != null)
-                            Log.Info("body: " + body.name + "  is reached: " + tree.IsReached);
-                        else
-                            Log.Info("body: " + body.name + "  is reached: (tree is null) false");
-                        GUI.enabled = !(selectedBody == body);
-                        if (GUILayout.Button(body.name, GUILayout.Height(30)))
-                        {
-                            selectedBody = body;
-
-                            setOrbit(selectedBody);
-
-                            //						LaunchSiteManager.setLaunchSite(site);
-                            //smessage = "Reference body set to " + body.name;
-                            //ScreenMessages.PostScreenMessage (smessage, 10, smsStyle);
-
-
-                        }
+                        selectedBody = body;
+                        setOrbit(selectedBody);
                     }
                 }
                 GUILayout.EndScrollView();
@@ -1238,6 +1178,48 @@ namespace KRASH
             drawRightSelectorWindow(selectType);
             GUI.DragWindow();
         }
+
+        private IEnumerable<CelestialBody> GetCelestialBodiesForDisplay(SimType simulationType)
+        {
+            if (KRASHPersistent.celestialBodyNodes == null)
+            {
+                Log.Error("KRASHShelter.persistent.celestialBodyNodes is null");
+                return Enumerable.Empty<CelestialBody>();
+            }
+
+            var skipProgressChecks = !this.isCareerGame() || KRASHShelter.instance.cfg.showAllInCareer;
+            if (skipProgressChecks)
+                return this.bodiesList;
+
+            return this.bodiesList.Where(body => this.IsBodyAvailableForSimulation(body, simulationType));
+        }
+
+        private bool IsBodyAvailableForSimulation(CelestialBody body, SimType simulationType)
+        {
+            if (body.isHomeWorld)
+                return true;
+
+            var orbitalScienceObtainedForBody = ResearchAndDevelopment.GetSubjects()
+                .Where(subject => subject.IsFromBody(body) && subject.id.Contains("InSpace"));
+
+            if (orbitalScienceObtainedForBody.Any(subject => subject.science > 0.0f))
+                return true;
+
+            var progressTree = KRASHPersistent.celestialBodyNodes.FirstOrDefault(node => node.Body == body);
+            if (progressTree == null)
+                return false;
+
+            switch (simulationType)
+            {
+                case SimType.LANDED:
+                    return progressTree.landing.IsComplete;
+                case SimType.ORBITING:
+                    return progressTree.IsReached;
+                default:
+                    return false;
+            }
+        }
+
         // ======================================================================================
 
 
@@ -1817,7 +1799,7 @@ namespace KRASH
             Log.Info("setLaunchSite");
             Log.Info("simType: " + simType.ToString());
             Log.Info("site.name: " + site.name);
-            KRASHShelter.bodiesListAtSimStart = getAllowableBodies("ALL");
+            KRASHShelter.bodiesListAtSimStart = getAllowableBodies();
 
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
@@ -1879,5 +1861,12 @@ namespace KRASH
             FlightDriver.StartWithNewLaunch(tempFile, HighLogic.CurrentGame.flagURL, EditorLogic.fetch.launchSiteName, CrewAssignmentDialog.Instance.GetManifest());
         }
 
+    }
+
+    internal enum BodyTypeFilter
+    {
+        ALL,
+        PLANETS,
+        MOONS
     }
 }
