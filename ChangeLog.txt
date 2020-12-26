@@ -254,3 +254,9 @@
 
 0.5.33.2
 	Fixed timewarp charges to have charges accumulate during physics warp, but not during non-physics warp
+
+0.5.33.3
+	Thanks to github user JonnyOThan for this:
+		Check TerminateAtAtmoWithoutData option when in atmosphere
+	Thanks to github user MatanShahar for this:
+		Add special handling to pseudo bodies
