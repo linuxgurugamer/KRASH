@@ -88,7 +88,7 @@ namespace KRASH.Hyperedit
 			var vessel = orbit.vessel;
 
 			if (vessel != null)
-				vessel.SetOrbit(newOrbit);
+				SetOrbit(vessel, newOrbit);
 			else
 				HardsetOrbit(orbit, newOrbit);
 		}
@@ -110,7 +110,8 @@ namespace KRASH.Hyperedit
 				return;
 			}
 
-			vessel.PrepVesselTeleport();
+			FlightGlobals.fetch.SetShipOrbit(newOrbit.referenceBody.flightGlobalsIndex, newOrbit.eccentricity, newOrbit.semiMajorAxis, newOrbit.inclination, newOrbit.LAN, newOrbit.meanAnomalyAtEpoch, newOrbit.argumentOfPeriapsis, newOrbit.ObT);
+			FloatingOrigin.ResetTerrainShaderOffset();
 
 			try
 			{
@@ -119,27 +120,6 @@ namespace KRASH.Hyperedit
 			catch (NullReferenceException)
 			{
 				Log.Info("OrbitPhysicsManager.HoldVesselUnpack threw NullReferenceException");
-			}
-
-			var allVessels = FlightGlobals.fetch == null ? (IEnumerable<Vessel>)new[] { vessel } : FlightGlobals.Vessels;
-			foreach (var v in allVessels.Where(v => v.packed == false))
-				v.GoOnRails();
-
-			var oldBody = vessel.orbitDriver.orbit.referenceBody;
-			Log.Info ("oldBody: " + oldBody.ToString ());
-			HardsetOrbit(vessel.orbitDriver, newOrbit);
-
-			vessel.orbitDriver.pos = vessel.orbit.pos.xzy;
-			vessel.orbitDriver.vel = vessel.orbit.vel;
-
-			var newBody = vessel.orbitDriver.orbit.referenceBody;
-			Log.Info ("newBody: " + newBody.ToString ());
-
-
-			if (newBody != oldBody)
-			{
-				var evnt = new GameEvents.HostedFromToAction<Vessel, CelestialBody>(vessel, oldBody, newBody);
-				GameEvents.onVesselSOIChanged.Fire(evnt);
 			}
 		}
 
