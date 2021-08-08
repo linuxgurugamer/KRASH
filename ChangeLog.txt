@@ -260,3 +260,7 @@
 		Check TerminateAtAtmoWithoutData option when in atmosphere
 	Thanks to github user MatanShahar for this:
 		Add special handling to pseudo bodies
+
+0.5.33.4
+	Added AssemblyFileVersion
+	Updated version file for 1.12

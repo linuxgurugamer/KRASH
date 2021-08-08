@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 //[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+//[assembly: AssemblyFileVersion("1.0.0.0")]
 
 #if !RP_1_131
 [assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]
