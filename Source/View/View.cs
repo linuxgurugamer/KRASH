@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Linq;
+using KSP.Localization;
 
 namespace KRASH
 {
@@ -268,7 +269,7 @@ namespace KRASH
 			GUILayout.Label(prefix + (currentlySelected == null ? "<none>" : toString(currentlySelected)));
 
 			if (realList == null || realList.Count () > 1) {
-				if (GUILayout.Button ("Select")) {
+				if (GUILayout.Button (Localizer.Format("#KRASH_Button_Select"))) { // "Select"
 					Hyperedit.Extensions.ClearGuiFocus ();
 
 //					if (realList != null)
@@ -336,7 +337,7 @@ namespace KRASH
 			}
 			if (label != null || onSet != null)
 			{
-				if (onSet != null && Valid && GUILayout.Button("Set"))
+				if (onSet != null && Valid && GUILayout.Button(Localizer.Format("#KRASH_Button_Set"))) // "Set"
 				{
 					onSet(Object);
 					Hyperedit.Extensions.ClearGuiFocus();
