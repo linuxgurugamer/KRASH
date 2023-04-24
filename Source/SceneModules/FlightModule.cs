@@ -213,7 +213,7 @@ namespace KRASH
                 {
                     FlightResultsDialog.showExitControls = false;
                     FlightResultsDialog.allowClosingDialog = true;
-                    FlightResultsDialog.Display("Simulation ended!");
+                    FlightResultsDialog.Display(Localizer.Format("#KRASH_SimulationEnded")); // "Simulation ended!"
                 }
 
 
@@ -510,7 +510,7 @@ namespace KRASH
         float simY = 50;
         //		float simY = KRASH.cfg.verticalPos;
 
-        const string simTitle = "Sim Costs:";
+        private static string simTitle = Localizer.Format("#KRASH_SimulationTitle"); // "Sim Costs:"
 
         void DrawOutline(Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
         {
@@ -970,7 +970,7 @@ namespace KRASH
                 FlightResultsDialog.showExitControls = false;
                 FlightResultsDialog.allowClosingDialog = true;
 
-                FlightResultsDialog.Display("Simulation results!"); // 
+                FlightResultsDialog.Display(Localizer.Format("#KRASH_SimulationResult")); // "Simulation results!"
 
                 bool b = true;
 
