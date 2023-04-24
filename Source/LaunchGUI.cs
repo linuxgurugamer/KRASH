@@ -1013,7 +1013,7 @@ namespace KRASH
             GUILayout.BeginHorizontal();
 
             // 			if (GUILayout.Button ("Current Launch Facility", GUILayout.Width (175))) {
-            if (GUILayout.Button(FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().name))
+            if (GUILayout.Button(FlightGlobals.Bodies.Where(cb => cb.isHomeWorld).FirstOrDefault().bodyDisplayName.LocalizeRemoveGender()))
             {
                 //				orbitSelection = false;
                 if (EditorDriver.editorFacility.Equals(EditorFacility.VAB))
@@ -1163,7 +1163,7 @@ namespace KRASH
                 foreach (CelestialBody body in this.GetCelestialBodiesForDisplay(simType))
                 {
                     GUI.enabled = !(selectedBody == body);
-                    if (GUILayout.Button(body.name, GUILayout.Height(30)))
+                    if (GUILayout.Button(body.displayName.LocalizeRemoveGender(), GUILayout.Height(30)))
                     {
                         selectedBody = body;
                         setOrbit(selectedBody);
