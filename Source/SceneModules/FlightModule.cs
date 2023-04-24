@@ -213,7 +213,7 @@ namespace KRASH
                 {
                     FlightResultsDialog.showExitControls = false;
                     FlightResultsDialog.allowClosingDialog = true;
-                    FlightResultsDialog.Display(Localizer.Format("#KRASH_SimulationEnded")); // "Simulation ended!"
+                    FlightResultsDialog.Display(Localizer.GetStringByTag("#KRASH_SimulationEnded")); // "Simulation ended!"
                 }
 
 
@@ -510,7 +510,7 @@ namespace KRASH
         float simY = 50;
         //		float simY = KRASH.cfg.verticalPos;
 
-        private static string simTitle = Localizer.Format("#KRASH_SimulationTitle"); // "Sim Costs:"
+        private static string simTitle = Localizer.GetStringByTag("#KRASH_SimulationTitle"); // "Sim Costs:"
 
         void DrawOutline(Rect r, string t, int strength, GUIStyle style, Color outColor, Color inColor)
         {
@@ -807,7 +807,7 @@ namespace KRASH
 #if RP_1_131
                     _windowRect = GUILayout.Window(this.GetInstanceID() + 1, _windowRect, new GUI.WindowFunction(draw), "Game Paused", new GUILayoutOption[0]); // 
 #else
-                    _windowRect = ClickThruBlocker.GUILayoutWindow(this.GetInstanceID() + 1, _windowRect, new GUI.WindowFunction(draw), Localizer.Format("#KRASH_GamePaused"), new GUILayoutOption[0]); // "Game Paused"
+                    _windowRect = ClickThruBlocker.GUILayoutWindow(this.GetInstanceID() + 1, _windowRect, new GUI.WindowFunction(draw), Localizer.GetStringByTag("#KRASH_GamePaused"), new GUILayoutOption[0]); // "Game Paused"
 #endif
                 }
             }
@@ -817,7 +817,7 @@ namespace KRASH
         {
             if (!simTermination)
             {
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_ResumeSimulation")/*, _guiSkin.button */)) // "Resume Simulation"
+                if (GUILayout.Button(Localizer.GetStringByTag("#KRASH_Button_ResumeSimulation")/*, _guiSkin.button */)) // "Resume Simulation"
                 {
                     Log.Info("Close 1");
                     Close();
@@ -825,7 +825,7 @@ namespace KRASH
 
                 GUILayout.Space(SPACER);
             }
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_TerminateSimulation")/*, _guiSkin.button */)) // "<color=orange>Terminate Simulation</color>"
+            if (GUILayout.Button(Localizer.GetStringByTag("#KRASH_Button_TerminateSimulation")/*, _guiSkin.button */)) // "<color=orange>Terminate Simulation</color>"
             {
                 string revertTarget;
 
@@ -835,23 +835,23 @@ namespace KRASH
                         switch (KRASHShelter.lastEditor)
                         {
                             case EditorFacility.SPH:
-                                revertTarget = Localizer.Format("#KRASH_SpaceplaneHangar"); // "Spaceplane Hangar"
+                                revertTarget = Localizer.GetStringByTag("#KRASH_SpaceplaneHangar"); // "Spaceplane Hangar"
                                 break;
                             case EditorFacility.VAB:
-                                revertTarget = Localizer.Format("#KRASH_VehicleAssemblyBuilding"); // "Vehicle Assembly Building"
+                                revertTarget = Localizer.GetStringByTag("#KRASH_VehicleAssemblyBuilding"); // "Vehicle Assembly Building"
                                 break;
                             // This should never happen. If it does, just go to the SC
                             default:
-                                revertTarget = Localizer.Format("#KRASH_SpaceCenter"); // "Space Center"
+                                revertTarget = Localizer.GetStringByTag("#KRASH_SpaceCenter"); // "Space Center"
                                 KRASHShelter.lastScene = GameScenes.SPACECENTER;
                                 break;
                         }
                         break;
                     case GameScenes.SPACECENTER:
-                        revertTarget = Localizer.Format("#KRASH_SpaceCenter"); // "Space Center"
+                        revertTarget = Localizer.GetStringByTag("#KRASH_SpaceCenter"); // "Space Center"
                         break;
                     default:
-                        revertTarget = Localizer.Format("#KRASH_PreSimulation"); // "Pre-Simulation"
+                        revertTarget = Localizer.GetStringByTag("#KRASH_PreSimulation"); // "Pre-Simulation"
                         break;
                 }
                 string s = Localizer.Format("#KRASH_RevertToTarget", revertTarget) + " (" + KSPUtil.PrintTimeLong(((int)(Planetarium.GetUniversalTime() - FlightDriver.PostInitState.UniversalTime))); // "Revert to " + revertTarget
@@ -861,15 +861,15 @@ namespace KRASH
                 {
                     StartCoroutine(WaitForFlightResultsDialog());
                 });
-                options[1] = new DialogGUIButton(Localizer.Format("#KRASH_Button_Cancel"), () => // "Cancel"
+                options[1] = new DialogGUIButton(Localizer.GetStringByTag("#KRASH_Button_Cancel"), () => // "Cancel"
                 {
                     Log.Info("Close 2");
 
                     Close();
                 });
                 var multidialog = new MultiOptionDialog("krash2", 
-                Localizer.Format("#KRASH_TerminatingSimulation_Msg"), // "Terminating will set the game back to an earlier state. Are you sure you want to continue?"
-                Localizer.Format("#KRASH_TerminatingSimulation_title"), HighLogic.UISkin, 450, options); // "Terminating Simulation"
+                Localizer.GetStringByTag("#KRASH_TerminatingSimulation_Msg"), // "Terminating will set the game back to an earlier state. Are you sure you want to continue?"
+                Localizer.GetStringByTag("#KRASH_TerminatingSimulation_title"), HighLogic.UISkin, 450, options); // "Terminating Simulation"
 
                 _activePopup = PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), multidialog, false, HighLogic.UISkin, true);
                 Hide();
@@ -879,7 +879,7 @@ namespace KRASH
             if (FlightDriver.CanRevertToPostInit)
             {
 
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_RestartSimulation")/*, _guiSkin.button*/)) // "<color=orange>Restart Simulation</color>"
+                if (GUILayout.Button(Localizer.GetStringByTag("#KRASH_Button_RestartSimulation")/*, _guiSkin.button*/)) // "<color=orange>Restart Simulation</color>"
                 {
 
                     DialogGUIBase[] options = new DialogGUIBase[2];
@@ -896,7 +896,7 @@ namespace KRASH
                         // The RevertTolaunch reloads all the objects, so we destroy them here to avoid conflicts
                         KRASHShelter.instance.DestroyModules();
                     });
-                    options[1] = new DialogGUIButton(Localizer.Format("#KRASH_Button_Cancel"), () => // "Cancel"
+                    options[1] = new DialogGUIButton(Localizer.GetStringByTag("#KRASH_Button_Cancel"), () => // "Cancel"
                     {
                         Log.Info("Close 5");
 
@@ -905,8 +905,8 @@ namespace KRASH
 
 
                     var multidialog = new MultiOptionDialog("krash3", 
-                        Localizer.Format("#KRASH_RevertingSimulation_Msg"), // "Reverting will set the game back to an earlier state. Are you sure you want to continue?"
-                        Localizer.Format("#KRASH_RevertingSimulation_title"), // "Reverting Simulation"
+                        Localizer.GetStringByTag("#KRASH_RevertingSimulation_Msg"), // "Reverting will set the game back to an earlier state. Are you sure you want to continue?"
+                        Localizer.GetStringByTag("#KRASH_RevertingSimulation_title"), // "Reverting Simulation"
                                           HighLogic.UISkin, 450, options);
 
 
@@ -923,7 +923,7 @@ namespace KRASH
 
             GUILayout.Space(SPACER);
 
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Settings")/*, _guiSkin.button*/)) // "Settings"
+            if (GUILayout.Button(Localizer.GetStringByTag("#KRASH_Button_Settings")/*, _guiSkin.button*/)) // "Settings"
             {
                 Hide();
                 _miniSettings = MiniSettings.Create(Unhide);
@@ -970,7 +970,7 @@ namespace KRASH
                 FlightResultsDialog.showExitControls = false;
                 FlightResultsDialog.allowClosingDialog = true;
 
-                FlightResultsDialog.Display(Localizer.Format("#KRASH_SimulationResult")); // "Simulation results!"
+                FlightResultsDialog.Display(Localizer.GetStringByTag("#KRASH_SimulationResult")); // "Simulation results!"
 
                 bool b = true;
 

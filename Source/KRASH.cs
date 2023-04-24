@@ -492,7 +492,7 @@ namespace KRASH
 
 		public void SetSimActiveNotification ()
 		{
-			simNotification = Localizer.Format("#KRASH_SimulationActive"); // "Simulation Active"
+			simNotification = Localizer.GetStringByTag("#KRASH_SimulationActive"); // "Simulation Active"
 			Log.Info ("SetSimActiveNotification   simNotification: " + simNotification);
 		}
 
