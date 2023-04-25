@@ -322,7 +322,7 @@ namespace KRASH
                 Log.Info("cfgWindowRect: " + cfgWindowRect);
                 cfgWindowRect = GUILayout.Window(0xB00B1E6, cfgWindowRect, drawCfgWindow, "KRASH Config Window");
 #else
-                cfgWindowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, cfgWindowRect, drawCfgWindow, Localizer.Format("#KRASH_ConfigWindow_title")); // "KRASH Config Window"
+                cfgWindowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, cfgWindowRect, drawCfgWindow, LocalizationCache.ConfigWindow_title); // "KRASH Config Window"
 
 #endif
             }
@@ -485,7 +485,7 @@ namespace KRASH
             List<string> cfgs = KRASHShelter.instance.cfg.GetAvailableCfgs();
 
             GUILayout.BeginArea(new Rect(5, 50, 170, 465));
-            DrawTitle(Localizer.Format("#KRASH_SelectedCFG")); //"Selected Cfg"
+            DrawTitle(LocalizationCache.SelectedCFG); //"Selected Cfg"
             GUILayout.Space(8);
             cfgExists = false;
             sitesScrollPosition = GUILayout.BeginScrollView(sitesScrollPosition);
@@ -513,7 +513,7 @@ namespace KRASH
             GUILayout.BeginHorizontal();
             if (HighLogic.CurrentGame.Mode != Game.Modes.CAREER)
             {
-                GUILayout.Label(Localizer.Format("#KRASH_NotCareer")); // "Configs don't apply to Sandbox or Science games"
+                GUILayout.Label(LocalizationCache.NotCareer); // "Configs don't apply to Sandbox or Science games"
             }
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
@@ -522,14 +522,14 @@ namespace KRASH
             GUILayout.BeginVertical();
             GUILayout.Space(5);
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_ConfigName") + " "); // Config name: 
+            GUILayout.Label(LocalizationCache.ConfigName + " "); // Config name: 
             strConfigName = GUILayout.TextField(strConfigName, GUILayout.MinWidth(150.0F), GUILayout.MaxWidth(150.0F));
 
             if (strConfigName.Length > 0 && strConfigName[0] == '*')
             {
                 var lstyle = new GUIStyle(GUI.skin.label);
                 lstyle.normal.textColor = Color.red;
-                GUILayout.Label(Localizer.Format("#KRASH_ConfigNameNotGood"), lstyle); // "<-----> Must be renamed to save"
+                GUILayout.Label(LocalizationCache.ConfigNameNotGood, lstyle); // "<-----> Must be renamed to save"
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -539,7 +539,7 @@ namespace KRASH
             bstyle.normal.textColor = Color.yellow;
             GUILayout.FlexibleSpace();
             GUI.enabled = strConfigName.Length == 0 || (!(strConfigName[0] == '*') && strConfigName != "defaults"); ;
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Save"), bstyle, GUILayout.Width(70))) // "Save"
+            if (GUILayout.Button(LocalizationCache.Button_Save, bstyle, GUILayout.Width(70))) // "Save"
             {
                 saveCfgData(true, strConfigName);
                 configDisplayActive = !configDisplayActive;
@@ -551,7 +551,7 @@ namespace KRASH
 
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_Accept"), bstyle, GUILayout.Width(70))) // "Accept"
+                if (GUILayout.Button(LocalizationCache.Button_Accept, bstyle, GUILayout.Width(70))) // "Accept"
                 {
                     saveCfgData(false, strConfigName, true);
                     cfgWinData = false;
@@ -563,14 +563,14 @@ namespace KRASH
                 }
                 GUILayout.FlexibleSpace();
             }
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Reset"), bstyle, GUILayout.Width(70))) // "Reset"
+            if (GUILayout.Button(LocalizationCache.Button_Reset, bstyle, GUILayout.Width(70))) // "Reset"
             {
                 KRASHShelter.instance.cfg.LoadConfiguration(currentConfigName);
                 initCfgWinData();
             }
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Cancel"), bstyle, GUILayout.Width(70))) // "Cancel"
+            if (GUILayout.Button(LocalizationCache.Button_Cancel, bstyle, GUILayout.Width(70))) // "Cancel"
             {
                 configDisplayActive = !configDisplayActive;
                 EditorLock(configDisplayActive, "drawCfgWindow 6");
@@ -581,7 +581,7 @@ namespace KRASH
             }
             GUILayout.FlexibleSpace();
             GUI.enabled = strConfigName.Length == 0 || (!(strConfigName[0] == '*') && cfgExists);
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Delete"), bstyle, GUILayout.Width(70))) // "Delete"
+            if (GUILayout.Button(LocalizationCache.Button_Delete, bstyle, GUILayout.Width(70))) // "Delete"
             {
                 KRASHShelter.instance.cfg.DeleteConfiguration(strConfigName);
                 KRASHShelter.instance.cfg.LoadConfiguration("* " + HighLogic.CurrentGame.Parameters.preset.ToString());
@@ -600,59 +600,59 @@ namespace KRASH
             GUILayout.BeginArea(new Rect(185, 125, 225, 330));
             GUILayout.BeginVertical();
 
-            DrawTitle(Localizer.Format("#KRASH_CostOptions")); // "Cost Options"
+            DrawTitle(LocalizationCache.CostOptions); // "Cost Options"
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_FlatSetupCosts") + " "); // "Flat Setup Costs: "
+            GUILayout.Label(LocalizationCache.FlatSetupCosts + " "); // "Flat Setup Costs: "
             GUILayout.FlexibleSpace();
             strflatSetupCost = GUILayout.TextField(strflatSetupCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_FlatPer_minuteCosts") + " "); // "Flat Per-minute Costs: "
+            GUILayout.Label(LocalizationCache.FlatPer_minuteCosts + " "); // "Flat Per-minute Costs: "
             GUILayout.FlexibleSpace();
             strflatPerMinCost = GUILayout.TextField(strflatPerMinCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PerpartSetupCosts") + " "); // "Per-part Setup Costs: "
+            GUILayout.Label(LocalizationCache.PerpartSetupCosts + " "); // "Per-part Setup Costs: "
             GUILayout.FlexibleSpace();
             strperPartSetupCost = GUILayout.TextField(strperPartSetupCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PerpartPerminuteCosts") + " "); // "Per-part Per-minute Costs: "
+            GUILayout.Label(LocalizationCache.PerpartPerminuteCosts + " "); // "Per-part Per-minute Costs: "
             GUILayout.FlexibleSpace();
             strperPartPerMinCost = GUILayout.TextField(strperPartPerMinCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PertonSetupCosts") + " "); // "Per-ton Setup Costs: "
+            GUILayout.Label(LocalizationCache.PertonSetupCosts + " "); // "Per-ton Setup Costs: "
             GUILayout.FlexibleSpace();
             strperTonSetupCost = GUILayout.TextField(strperTonSetupCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PertonPerminuteCosts") + " "); // "Per-ton Per-minute Costs: "
+            GUILayout.Label(LocalizationCache.PertonPerminuteCosts + " "); // "Per-ton Per-minute Costs: "
             GUILayout.FlexibleSpace();
             strperTonPerMinCost = GUILayout.TextField(strperTonPerMinCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PercentageSetupCosts") + " "); // "Percentage Setup Costs: "
+            GUILayout.Label(LocalizationCache.PercentageSetupCosts + " "); // "Percentage Setup Costs: "
             GUILayout.FlexibleSpace();
             strpercentSetupCost = GUILayout.TextField(strpercentSetupCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PercentagePerminuteCosts") + " "); // "Percentage Per-minute Costs: "
+            GUILayout.Label(LocalizationCache.PercentagePerminuteCosts + " "); // "Percentage Per-minute Costs: "
             GUILayout.FlexibleSpace();
             strpercentPerMinCost = GUILayout.TextField(strpercentPerMinCost, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal(); ;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_AtmosphericMultiplier") + " "); // "Atmospheric Multiplier: "
+            GUILayout.Label(LocalizationCache.AtmosphericMultiplier + " "); // "Atmospheric Multiplier: "
             GUILayout.FlexibleSpace();
             strAtmoMultipler = GUILayout.TextField(strAtmoMultipler, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
             GUILayout.EndHorizontal();
@@ -663,38 +663,38 @@ namespace KRASH
             GUILayout.BeginArea(new Rect(425, 125, 250, 450));
             GUILayout.BeginVertical();
 
-            DrawTitle(Localizer.Format("#KRASH_TerminationOptions")); // "Termination Options (no data)"
+            DrawTitle(LocalizationCache.TerminationOptions); // "Termination Options (no data)"
 
             GUILayout.BeginHorizontal();
-            bTerminateAtSoiWithoutData = GUILayout.Toggle(bTerminateAtSoiWithoutData, Localizer.Format("#KRASH_TerminateatSoi")); // "Terminate at Soi"
+            bTerminateAtSoiWithoutData = GUILayout.Toggle(bTerminateAtSoiWithoutData, LocalizationCache.TerminateatSoi); // "Terminate at Soi"
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            bTerminateAtLandWithoutData = GUILayout.Toggle(bTerminateAtLandWithoutData, Localizer.Format("#KRASH_TerminateatLand")); // "Terminate at Land"
+            bTerminateAtLandWithoutData = GUILayout.Toggle(bTerminateAtLandWithoutData, LocalizationCache.TerminateatLand); // "Terminate at Land"
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            bTerminateAtAtmoWithoutData = GUILayout.Toggle(bTerminateAtAtmoWithoutData, Localizer.Format("#KRASH_TerminateatAtmo")); // "Terminate at Atmo"
+            bTerminateAtAtmoWithoutData = GUILayout.Toggle(bTerminateAtAtmoWithoutData, LocalizationCache.TerminateatAtmo); // "Terminate at Atmo"
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.Space(15);
-            DrawTitle(Localizer.Format("#KRASH_MiscellaneousOptionsGlobal")); // "Miscellaneous Options (global)"
+            DrawTitle(LocalizationCache.MiscellaneousOptionsGlobal); // "Miscellaneous Options (global)"
 
             GUILayout.BeginHorizontal();
-            bContinueIfNoCash = GUILayout.Toggle(bContinueIfNoCash, Localizer.Format("#KRASH_Continuesimifnocash")); // "Continue sim if no cash"
+            bContinueIfNoCash = GUILayout.Toggle(bContinueIfNoCash, LocalizationCache.Continuesimifnocash); // "Continue sim if no cash"
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            bObeyPadLimits = GUILayout.Toggle(bObeyPadLimits, Localizer.Format("#KRASH_Obeylaunchpadlimits")); // "Obey launch pad limits"
+            bObeyPadLimits = GUILayout.Toggle(bObeyPadLimits, LocalizationCache.Obeylaunchpadlimits); // "Obey launch pad limits"
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_DefaultMaxSimCost") + " "); // "Default Max Sim Cost: "
+            GUILayout.Label(LocalizationCache.DefaultMaxSimCost + " "); // "Default Max Sim Cost: "
             GUILayout.FlexibleSpace();
             strDefaultMaxAllowableSimCost = GUILayout.TextField(strDefaultMaxAllowableSimCost, GUILayout.MinWidth(60.0F), GUILayout.MaxWidth(60.0F));
             GUILayout.EndHorizontal();
@@ -711,10 +711,10 @@ namespace KRASH
 #endif
 
             GUILayout.BeginHorizontal();
-            bshowRunningSimCosts = GUILayout.Toggle(bshowRunningSimCosts, Localizer.Format("#KRASH_ShowRunningSimCosts")); // "Show Running Sim Costs"
+            bshowRunningSimCosts = GUILayout.Toggle(bshowRunningSimCosts, LocalizationCache.ShowRunningSimCosts); // "Show Running Sim Costs"
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            bshowAllInCareer = GUILayout.Toggle(bshowAllInCareer, Localizer.Format("#KRASH_Showallbodiesincareer")); // "Show all bodies in career"
+            bshowAllInCareer = GUILayout.Toggle(bshowAllInCareer, LocalizationCache.Showallbodiesincareer); // "Show all bodies in career"
 
 
             GUILayout.FlexibleSpace();
@@ -723,13 +723,13 @@ namespace KRASH
             if (bshowRunningSimCosts)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(Localizer.Format("#KRASH_HorizontalPosition") + " "); // "Horizontal Position: "
+                GUILayout.Label(LocalizationCache.HorizontalPosition + " "); // "Horizontal Position: "
                 GUILayout.FlexibleSpace();
                 strhorizontalPos = GUILayout.TextField(strhorizontalPos, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(Localizer.Format("#KRASH_VerticalPosition") + " "); // "Vertical Position: "
+                GUILayout.Label(LocalizationCache.VerticalPosition + " "); // "Vertical Position: "
                 GUILayout.FlexibleSpace();
                 strverticalPos = GUILayout.TextField(strverticalPos, GUILayout.MinWidth(50.0F), GUILayout.MaxWidth(50.0F));
                 GUILayout.EndHorizontal();
@@ -932,7 +932,7 @@ namespace KRASH
                 Log.Info("windowRect: " + windowRect);
                 windowRect = GUILayout.Window(0xB00B1E6, windowRect, drawSelectorWindow, "Launch Site Selector"); // 
 #else
-                windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, Localizer.Format("#KRASH_LaunchSiteSelector_title")); // "Launch Site Selector"
+                windowRect = ClickThruBlocker.GUIWindow(0xB00B1E6, windowRect, drawSelectorWindow, LocalizationCache.LaunchSiteSelector_title); // "Launch Site Selector"
 #endif
             }
 #if RP_1_131
@@ -1030,7 +1030,7 @@ namespace KRASH
                 }
             }
 
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_OrbitSelection"))) // "Orbit selection"
+            if (GUILayout.Button(LocalizationCache.Button_OrbitSelection)) // "Orbit selection"
             {
                 selectType = SelectionType.celestialbodies;
                 simType = SimType.ORBITING;
@@ -1039,7 +1039,7 @@ namespace KRASH
                 //altitude = newAltitude.ToString ();
             }
 
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Landed"))) // "Landed"
+            if (GUILayout.Button(LocalizationCache.Button_Landed)) // "Landed"
             {
                 selectType = SelectionType.celestialbodies;
                 simType = SimType.LANDED;
@@ -1058,7 +1058,7 @@ namespace KRASH
             if (simType != SimType.LAUNCHPAD && simType != SimType.RUNWAY)
             {
 
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_All"), GUILayout.Width(45))) // "All"
+                if (GUILayout.Button(LocalizationCache.Button_All, GUILayout.Width(45))) // "All"
                 {
                     selectType = SelectionType.celestialbodies;
                     bodiesList = getAllowableBodies(BodyTypeFilter.ALL);
@@ -1066,13 +1066,13 @@ namespace KRASH
                     //bodies = GameObject.FindObjectsOfType (typeof(CelestialBody)) as CelestialBody[]; 
                     //sites = (editorType == SiteType.Any) ? LaunchSiteManager.getLaunchSites() : LaunchSiteManager.getLaunchSites(editorType, true, "RocketPad");
                 }
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_Planets"), GUILayout.Width(60))) // "Planets"
+                if (GUILayout.Button(LocalizationCache.Button_Planets, GUILayout.Width(60))) // "Planets"
                 {
                     bodiesList = getAllowableBodies(BodyTypeFilter.PLANETS);
                     selectType = SelectionType.celestialbodies;
                     //				sites = (editorType == SiteType.Any) ? LaunchSiteManager.getLaunchSites() : LaunchSiteManager.getLaunchSites(editorType, true, "RocketPad");
                 }
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_Moons"), GUILayout.Width(60))) // "Moons"
+                if (GUILayout.Button(LocalizationCache.Button_Moons, GUILayout.Width(60))) // "Moons"
                 {
                     bodiesList = getAllowableBodies(BodyTypeFilter.MOONS);
                     selectType = SelectionType.celestialbodies;
@@ -1421,7 +1421,7 @@ namespace KRASH
                     {
                         Log.Info("Not enough money to start sim");
 
-                        startSim += "\n" + Localizer.Format("#KRASH_SimulateInfo_NoFundsToSim"); // "\nNot enough money to start sim"
+                        startSim += "\n" + LocalizationCache.SimulateInfo_NoFundsToSim; // "\nNot enough money to start sim"
                         flyable = false;
                     }
                 }
@@ -1430,7 +1430,7 @@ namespace KRASH
                 bool lockedparts = !partCheck.Test();
                 if (lockedparts)
                 {
-                    startSim += "\n" + Localizer.Format("#KRASH_SimulateInfo_LockedParts"); // "\nVessel has locked parts"
+                    startSim += "\n" + LocalizationCache.SimulateInfo_LockedParts; // "\nVessel has locked parts"
                     flyable = false;
 
                 }
@@ -1463,7 +1463,7 @@ namespace KRASH
 
                 if (!controllable)
                 {
-                    startSim += "\n" + Localizer.Format("#KRASH_SimulateInfo_VesselNotControllable"); // "\nVessel is not controllable"
+                    startSim += "\n" + LocalizationCache.SimulateInfo_VesselNotControllable; // "\nVessel is not controllable"
                     flyable = false;
                 }
 
@@ -1473,16 +1473,16 @@ namespace KRASH
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                     if (KRASHShelter.simSetupCost > KRASHShelter.LimitSimCost && KRASHShelter.LimitSimCost > 0)
                     {
-                        startSim += "\n" + Localizer.Format("#KRASH_SimulateInfo_SimCostexceedslimit"); // "\nSim cost exceeds limit"
+                        startSim += "\n" + LocalizationCache.SimulateInfo_SimCostexceedslimit; // "\nSim cost exceeds limit"
                         flyable = false;
                     }
             }
             Log.Info("flyable 3: " + flyable.ToString());
             if (flyable)
             {
-                startSim = Localizer.Format("#KRASH_Button_StartSimulation"); // "Start simulation"
+                startSim = LocalizationCache.Button_StartSimulation; // "Start simulation"
 
-                if (GUILayout.Button(Localizer.Format("#KRASH_Button_StartSimulation"), bstyle, GUILayout.Width(170.0f), GUILayout.Height(125.0f))) // "Start simulation"
+                if (GUILayout.Button(LocalizationCache.Button_StartSimulation, bstyle, GUILayout.Width(170.0f), GUILayout.Height(125.0f))) // "Start simulation"
                 {
                     Log.Info("Start simulation");
                     GUI.backgroundColor = oldColor;
@@ -1497,7 +1497,7 @@ namespace KRASH
             else
             {
 
-                GUILayout.Label(Localizer.Format("#KRASH_VesselUnlaunchableReasons")); //"Vessel Unlaunchable for following reason(s):"
+                GUILayout.Label(LocalizationCache.VesselUnlaunchableReasons); //"Vessel Unlaunchable for following reason(s):"
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
 
@@ -1518,11 +1518,11 @@ namespace KRASH
             GUIStyle fontColorCyan = new GUIStyle(GUI.skin.label);
             fontColorCyan.normal.textColor = Color.cyan;
 
-            GUILayout.Label(Localizer.Format("#KRASH_SimulationSettings"), fontColorCyan); //"Simulation Settings"
+            GUILayout.Label(LocalizationCache.SimulationSettings, fontColorCyan); //"Simulation Settings"
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_StartLocation")); // "Start location:"
+            GUILayout.Label(LocalizationCache.StartLocation); // "Start location:"
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             switch (type)
@@ -1534,10 +1534,10 @@ namespace KRASH
                     switch (simType)
                     {
                         case SimType.LAUNCHPAD:
-                            GUILayout.Box(Localizer.Format("#KRASH_Launchpad")); // "Launchpad"
+                            GUILayout.Box(LocalizationCache.Launchpad); // "Launchpad"
                             break;
                         case SimType.RUNWAY:
-                            GUILayout.Box(Localizer.Format("#KRASH_Runway")); // "Runway"
+                            GUILayout.Box(LocalizationCache.Runway); // "Runway"
                             break;
                     }
                     GUILayout.EndHorizontal();
@@ -1549,7 +1549,7 @@ namespace KRASH
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();
-                        GUILayout.Label(Localizer.Format("#KRASH_Altitude")); // "Altitude:"
+                        GUILayout.Label(LocalizationCache.Altitude); // "Altitude:"
                         GUILayout.FlexibleSpace();
                         altitude = GUILayout.TextField(altitude, GUILayout.MinWidth(90.0F), GUILayout.MaxWidth(90.0F), GUILayout.Height(18));
                         try
@@ -1573,7 +1573,7 @@ namespace KRASH
                         if (simType == SimType.LANDED)
                         {
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label(Localizer.Format("#KRASH_Latitude")); // "Latitude:"
+                            GUILayout.Label(LocalizationCache.Latitude); // "Latitude:"
                             GUILayout.FlexibleSpace();
                             latitude = GUILayout.TextField(latitude, GUILayout.MinWidth(90.0F), GUILayout.MaxWidth(90.0F), GUILayout.Height(18));
                             try
@@ -1596,7 +1596,7 @@ namespace KRASH
                             GUILayout.EndHorizontal();
 
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label(Localizer.Format("#KRASH_Longitude")); //"Longitude:"
+                            GUILayout.Label(LocalizationCache.Longitude); //"Longitude:"
                             GUILayout.FlexibleSpace();
                             longitude = GUILayout.TextField(longitude, GUILayout.MinWidth(90.0F), GUILayout.MaxWidth(90.0F), GUILayout.Height(18));
                             try
@@ -1645,7 +1645,7 @@ namespace KRASH
             //fontColorCyan.normal.textColor = Color.cyan;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_PartCount")); // "Part count:"
+            GUILayout.Label(LocalizationCache.PartCount); // "Part count:"
             GUILayout.FlexibleSpace();
             GUILayout.Label(EditorLogic.fetch.ship.parts.Count.ToString(), fontColorYellow);
             GUILayout.EndHorizontal();
@@ -1654,20 +1654,20 @@ namespace KRASH
             EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_DryMass")); // "Dry Mass:"
+            GUILayout.Label(LocalizationCache.DryMass); // "Dry Mass:"
             GUILayout.FlexibleSpace();
 
             GUILayout.Label(dryMass.ToString(), fontColorYellow);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_FuelMass")); // "Fuel Mass:"
+            GUILayout.Label(LocalizationCache.FuelMass); // "Fuel Mass:"
             GUILayout.FlexibleSpace();
             GUILayout.Label(fuelMass.ToString(), fontColorYellow);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localizer.Format("#KRASH_TotalMass")); // "Total Mass:"
+            GUILayout.Label(LocalizationCache.TotalMass); // "Total Mass:"
             GUILayout.FlexibleSpace();
             GUILayout.Label((dryMass + fuelMass).ToString(), fontColorYellow);
             GUILayout.EndHorizontal();
@@ -1676,7 +1676,7 @@ namespace KRASH
             if (KRASH.testFlightLoaded || KRASH.testLiteLoaded)
             {
                 GUILayout.BeginHorizontal();
-                KRASHShelter.instance.disableTestFlightForSim = GUILayout.Toggle(KRASHShelter.instance.disableTestFlightForSim, KRASH.testFlightLoaded ? Localizer.Format("#KRASH_Button_DisableTestFlight") : Localizer.Format("#KRASH_Button_DisableTestLite")); // "Disable TestFlight""Disable TestLite"
+                KRASHShelter.instance.disableTestFlightForSim = GUILayout.Toggle(KRASHShelter.instance.disableTestFlightForSim, KRASH.testFlightLoaded ? LocalizationCache.Button_DisableTestFlight : LocalizationCache.Button_DisableTestLite); // "Disable TestFlight""Disable TestLite"
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
@@ -1687,11 +1687,11 @@ namespace KRASH
                 Log.Info("drawRightSelectorWindow 5");
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(Localizer.Format("#KRASH_SimulationCosts"), fontColorCyan); // "Simulation Costs:"
+                GUILayout.Label(LocalizationCache.SimulationCosts, fontColorCyan); // "Simulation Costs:"
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(Localizer.Format("#KRASH_SimSetupCost")); // "Sim setup cost:"
+                GUILayout.Label(LocalizationCache.SimSetupCost); // "Sim setup cost:"
                 GUILayout.FlexibleSpace();
 
                 EditorLogic.fetch.ship.GetShipMass(out dryMass, out fuelMass);
@@ -1709,7 +1709,7 @@ namespace KRASH
                     KRASHShelter.simSetupCost = 0;
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(Localizer.Format("#KRASH_EstSimMinCost")); // "Est. Sim/min cost:"
+                GUILayout.Label(LocalizationCache.EstSimMinCost); // "Est. Sim/min cost:"
                 GUILayout.FlexibleSpace();
 
                 float estSimPerMin = HighLogic.CurrentGame.Parameters.CustomParams<KRASH_Settings>().CostAdjustment * (
@@ -1728,7 +1728,7 @@ namespace KRASH
                 {
                     estSimAtmoPerMin = (float)Math.Round(estSimPerMin * m, 1);
                     GUILayout.BeginHorizontal(GUILayout.Height(18));
-                    GUILayout.Label(Localizer.Format("#KRASH_EstAtmoSimMinCost")); // "Est. Atmo Sim/min cost:"
+                    GUILayout.Label(LocalizationCache.EstAtmoSimMinCost); // "Est. Atmo Sim/min cost:"
                     GUILayout.FlexibleSpace();
 
                     GUILayout.Label(estSimAtmoPerMin.ToString(), fontColorYellow);
@@ -1736,7 +1736,7 @@ namespace KRASH
                 }
 
                 GUILayout.BeginHorizontal();
-                limitMaxCosts = GUILayout.Toggle(limitMaxCosts, Localizer.Format("#KRASH_LimitMaxCosts")); // "Limit max costs"
+                limitMaxCosts = GUILayout.Toggle(limitMaxCosts, LocalizationCache.LimitMaxCosts); // "Limit max costs"
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 if (limitMaxCosts)
@@ -1749,7 +1749,7 @@ namespace KRASH
                             KRASHShelter.LimitSimCost = Math.Round(KRASHShelter.simSetupCost + KRASHShelter.instance.cfg.DefaultSimTime * estSimAtmoPerMin, 1);
                     }
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(Localizer.Format("#KRASH_Limit") + " "); // "Limit: "
+                    GUILayout.Label(LocalizationCache.Limit + " "); // "Limit: "
                     GUILayout.FlexibleSpace();
                     double f;
                     string s = GUILayout.TextField(KRASHShelter.LimitSimCost.ToString(), GUILayout.MinWidth(90.0F), GUILayout.MaxWidth(90.0F), GUILayout.Height(18));
@@ -1780,7 +1780,7 @@ namespace KRASH
             //bstyle.normal.background = new Texture2D(2,2);
             GUI.backgroundColor = Color.red;
 
-            if (GUILayout.Button(Localizer.Format("#KRASH_Button_Cancel"), bstyle, GUILayout.Width(170.0f), GUILayout.Height(30.0f))) // "Cancel"
+            if (GUILayout.Button(LocalizationCache.Button_Cancel, bstyle, GUILayout.Width(170.0f), GUILayout.Height(30.0f))) // "Cancel"
             {
                 GUI.backgroundColor = oldColor;
                 GUIToggle();

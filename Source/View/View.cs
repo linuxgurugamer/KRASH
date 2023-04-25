@@ -269,7 +269,7 @@ namespace KRASH
 			GUILayout.Label(prefix + (currentlySelected == null ? "<none>" : toString(currentlySelected)));
 
 			if (realList == null || realList.Count () > 1) {
-				if (GUILayout.Button (Localizer.Format("#KRASH_Button_Select"))) { // "Select"
+				if (GUILayout.Button (LocalizationCache.Button_Select)) { // "Select"
 					Hyperedit.Extensions.ClearGuiFocus ();
 
 //					if (realList != null)
@@ -337,7 +337,7 @@ namespace KRASH
 			}
 			if (label != null || onSet != null)
 			{
-				if (onSet != null && Valid && GUILayout.Button(Localizer.Format("#KRASH_Button_Set"))) // "Set"
+				if (onSet != null && Valid && GUILayout.Button(LocalizationCache.Button_Set)) // "Set"
 				{
 					onSet(Object);
 					Hyperedit.Extensions.ClearGuiFocus();
