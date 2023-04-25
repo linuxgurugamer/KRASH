@@ -100,7 +100,7 @@ namespace KRASH.Hyperedit
 
 		private void drawPauseAfterLanding ()
 		{
-			GUILayout.Label (Localizer.GetStringByTag("#KRASH_PauseAfterVesselLanded")); // "Vessel has landed.  Click the OK button to continue"
+			GUILayout.Label (Localizer.Format("#KRASH_PauseAfterVesselLanded")); // "Vessel has landed.  Click the OK button to continue"
 			if (GUILayout.Button ("OK")) {
 				FlightDriver.SetPause (false);
 				KRASHShelter.instance.SetSimActiveNotification ();
@@ -129,7 +129,7 @@ namespace KRASH.Hyperedit
 						pausebeforestarting = true;
 						FlightDriver.SetPause (true);
 						//PopupDialog.SpawnPopupDialog ("Vessel has landed", "Vessel has landed.  Click the OK button to continue", "OK", true, HighLogic.Skin);
-						var dialog = new MultiOptionDialog ("krash4", Localizer.GetStringByTag("#KRASH_PauseAfterVesselLanded"), "", HighLogic.UISkin, new DialogGUIBase[] { // "Vessel has landed.  Click the OK button to continue"
+						var dialog = new MultiOptionDialog ("krash4", Localizer.Format("#KRASH_PauseAfterVesselLanded"), "", HighLogic.UISkin, new DialogGUIBase[] { // "Vessel has landed.  Click the OK button to continue"
 							new DialogGUIButton ("OK", () => {
 								FlightDriver.SetPause (false);
 								KRASHShelter.instance.SetSimActiveNotification ();
