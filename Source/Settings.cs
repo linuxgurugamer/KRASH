@@ -21,21 +21,21 @@ namespace KRASH
         public override bool HasPresets { get { return false; } }
 
 
-        [GameParameters.CustomParameterUI("Wireframes")]
+        [GameParameters.CustomParameterUI("#KRASH_Settings_Wireframes")] // "Wireframes"
         public bool wireframes = false;
 
-        [GameParameters.CustomFloatParameterUI("Starting Orbital Altitude (atmo)", minValue = 10000.0f, maxValue = 250000.0f, 
-            toolTip = "For planets and moons with atmosphere")]
+        [GameParameters.CustomFloatParameterUI("#KRASH_Settings_defaultAtmoStartingAltitude", minValue = 10000.0f, maxValue = 250000.0f, // "Starting Orbital Altitude (atmo)"
+            toolTip = "#KRASH_Settings_defaultAtmoStartingAltitude_tooltip")] //"For planets and moons with atmosphere"
         public double defaultAtmoStartingAltitude = 75000f;
 
-        [GameParameters.CustomFloatParameterUI("Starting Orbital Altitude (no atmo)", minValue = 1000.0f, maxValue = 250000.0f,
-            toolTip = "For planets and moons without any atmosphere")]
+        [GameParameters.CustomFloatParameterUI("#KRASH_Settings_defaultNoAtmoStartingAltitude", minValue = 1000.0f, maxValue = 250000.0f, //"Starting Orbital Altitude (no atmo)"
+            toolTip = "#KRASH_Settings_defaultNoAtmoStartingAltitude_tooltip")] // "For planets and moons without any atmosphere"
         public double defaultNoAtmoStartingAltitude = 10000f;
 
 
         public float costAdjustment = 1.0f;
-        [GameParameters.CustomFloatParameterUI("Cost Adjustment (%)", minValue = 25f, maxValue = 200.0f,
-                 toolTip = "Adjusts the costs by this value ")]
+        [GameParameters.CustomFloatParameterUI("#KRASH_Settings_costAdjustment", minValue = 25f, maxValue = 200.0f, // "Cost Adjustment (%)"
+                 toolTip = "#KRASH_Settings_costAdjustment_tooltip")] // "Adjusts the costs by this value "
         public float CostAdj
         {
             get { return costAdjustment * 100; }
@@ -47,8 +47,8 @@ namespace KRASH
             set { costAdjustment = value; }
         }
 
-        [GameParameters.CustomParameterUI("Don't charge during timewarp",
-         toolTip = "If enabled, will not charge any funds while timewarping")]
+        [GameParameters.CustomParameterUI("#KRASH_Settings_noChargeDuringTimewarp", // "Don't charge during timewarp"
+         toolTip = "#KRASH_Settings_noChargeDuringTimewarp_tooltip")] // "If enabled, will not charge any funds while timewarping"
         public bool noChargeDuringTimewarp = true;
 
 
