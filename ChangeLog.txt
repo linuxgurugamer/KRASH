@@ -268,3 +268,10 @@
 0.5.33.5
 	Thanks to github user @tivec for this:
 		Change teleport to use FlightGlobals.SetShipOrbit.  This should fix the issues with Vessel jumping in orbit when time warping, and Orbit parameters are changed when going to time-warp if sim is started not from Kerbin
+
+0.5.34
+	Updated .net version
+	Thanks to github user @tinygrox for this
+		Added localization 
+		Created en-us config
+		Added zh-cn config (chinese)
