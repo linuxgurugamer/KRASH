@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using KSP.Localization;
 
 using UnityEngine;
 
@@ -491,7 +492,7 @@ namespace KRASH
 
 		public void SetSimActiveNotification ()
 		{
-			simNotification = "Simulation Active";
+			simNotification = LocalizationCache.SimulationActive; // "Simulation Active"
 			Log.Info ("SetSimActiveNotification   simNotification: " + simNotification);
 		}
 

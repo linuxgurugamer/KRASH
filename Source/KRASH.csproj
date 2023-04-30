@@ -52,6 +52,7 @@
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
     <Compile Include="InstallChecker.cs" />
+    <Compile Include="LocalizationCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneModules\EditorModule.cs" />
     <Compile Include="SceneModules\FlightModule.cs" />

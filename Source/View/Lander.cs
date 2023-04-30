@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace KRASH.Hyperedit
 {
@@ -99,7 +100,7 @@ namespace KRASH.Hyperedit
 
 		private void drawPauseAfterLanding ()
 		{
-			GUILayout.Label ("Vessel has landed.  Click the OK button to continue");
+			GUILayout.Label (LocalizationCache.PauseAfterVesselLanded); // "Vessel has landed.  Click the OK button to continue"
 			if (GUILayout.Button ("OK")) {
 				FlightDriver.SetPause (false);
 				KRASHShelter.instance.SetSimActiveNotification ();
@@ -128,7 +129,7 @@ namespace KRASH.Hyperedit
 						pausebeforestarting = true;
 						FlightDriver.SetPause (true);
 						//PopupDialog.SpawnPopupDialog ("Vessel has landed", "Vessel has landed.  Click the OK button to continue", "OK", true, HighLogic.Skin);
-						var dialog = new MultiOptionDialog ("krash4", "Vessel has landed.  Click the OK button to continue", "", HighLogic.UISkin, new DialogGUIBase[] {
+						var dialog = new MultiOptionDialog ("krash4", LocalizationCache.PauseAfterVesselLanded, "", HighLogic.UISkin, new DialogGUIBase[] { // "Vessel has landed.  Click the OK button to continue"
 							new DialogGUIButton ("OK", () => {
 								FlightDriver.SetPause (false);
 								KRASHShelter.instance.SetSimActiveNotification ();
