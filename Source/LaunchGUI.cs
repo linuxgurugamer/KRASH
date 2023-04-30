@@ -973,7 +973,7 @@ namespace KRASH
         {
             var allRegisteredBodies = FindObjectsOfType(typeof(CelestialBody)).OfType<CelestialBody>();
             var allowableBodies = allRegisteredBodies.Where(body => {
-                var parent = body.orbit != null && body.orbit.referenceBody != null ? body.orbit.referenceBody : null;
+                CelestialBody parent = body.orbit != null && body.orbit.referenceBody != null ? body.orbit.referenceBody : null;
                 var isPseudoObject = !body.isStar && (body.orbit == null || Double.IsInfinity(body.sphereOfInfluence));
                 if (isPseudoObject)
                     return false;
