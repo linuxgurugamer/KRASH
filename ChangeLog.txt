@@ -275,3 +275,8 @@
 		Added localization 
 		Created en-us config
 		Added zh-cn config (chinese)
+
+0.5.34.1
+	Updated version file to use github for new version info
+	Thanks to github user @DedMazday79 for this:
+		add ru.cfg
