@@ -280,3 +280,7 @@
 	Updated version file to use github for new version info
 	Thanks to github user @DedMazday79 for this:
 		add ru.cfg
+
+0.5.34.2
+	Thanks to github user @averageksp for this:
+		Add German Language Translation
