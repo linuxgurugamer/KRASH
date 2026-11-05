@@ -873,6 +873,51 @@ namespace KRASH
         }
 
 
+        // Rebuilds the list of launch sites from the sites the game considers open for the
+        // current editor (stock, Making History and Kerbal Konstructs all feed this list).
+        // Only rebuilds when the list changed, so it is cheap to call every frame.
+        private string sitesSignature = null;
+
+        private void RefreshSites()
+        {
+            SiteType editorSiteType = EditorDriver.editorFacility == EditorFacility.SPH ? SiteType.SPH : SiteType.VAB;
+            List<string> valid = EditorDriver.ValidLaunchSites;
+            string signature = editorSiteType + "|" + (valid == null ? "" : string.Join("|", valid.ToArray()));
+            if (signature == sitesSignature && sites.Count > 0)
+                return;
+            sitesSignature = signature;
+
+            LaunchSite previous = selectedSite;
+            sites.Clear();
+            if (valid != null)
+            {
+                foreach (string siteName in valid)
+                {
+                    if (siteName == "LaunchPad")
+                        sites.Add(launchpad);
+                    else if (siteName == "Runway")
+                        sites.Add(runway);
+                    else
+                        sites.Add(new LaunchSite(siteName, "", editorSiteType, SpaceCenter.Instance.gameObject));
+                }
+            }
+            // Always keep the stock site for the current editor as a fallback
+            LaunchSite stock = editorSiteType == SiteType.SPH ? runway : launchpad;
+            if (!sites.Contains(stock))
+                sites.Insert(0, stock);
+
+            // Keep the previous selection if it is still open, otherwise fall back to the stock site
+            if (previous != null)
+            {
+                LaunchSite match = sites.Find(x => x.name == previous.name);
+                selectedSite = match != null ? match : stock;
+                if (simType == SimType.LAUNCHPAD || simType == SimType.RUNWAY)
+                    simType = selectedSite.GetSiteType() == SiteType.SPH ? SimType.RUNWAY : SimType.LAUNCHPAD;
+            }
+            selectType = SelectionType.launchsites;
+            Log.Info("launch sites for " + editorSiteType + ": " + string.Join(", ", sites.Select(x => x.name).ToArray()));
+        }
+
         public void drawSelector()
         {
             if (!inited)
@@ -915,14 +960,7 @@ namespace KRASH
             }
             //if (sites == null)
             //	sites = new List<LaunchSite> ();
-            if (sites.Count == 0)
-            {
-                Log.Info("adding to sites");
-                // (string sName, string sAuthor, SiteType sType, GameObject sGameObject)
-                sites.Add(launchpad);
-                sites.Add(runway);
-                selectType = SelectionType.launchsites;
-            }
+            RefreshSites();
 
             // Camera.main is null when first loading a scene
 
