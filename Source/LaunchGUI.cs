@@ -918,6 +918,15 @@ namespace KRASH
             Log.Info("launch sites for " + editorSiteType + ": " + string.Join(", ", sites.Select(x => x.name).ToArray()));
         }
 
+        // Name the game shows for a site (same as the stock selector); the internal name is what is used for the launch.
+        private static string SiteDisplayName(LaunchSite site)
+        {
+            string display = null;
+            try { display = PSystemSetup.Instance.GetLaunchSiteDisplayName(site.name); }
+            catch (Exception) { }
+            return string.IsNullOrEmpty(display) ? site.name : display;
+        }
+
         public void drawSelector()
         {
             if (!inited)
@@ -1139,7 +1148,7 @@ namespace KRASH
                     // Light icons in the launchsite list only shown in career so only need horizontal for two elements for that mode
 
                     GUI.enabled = !(selectedSite == site);
-                    if (GUILayout.Button(site.name, GUILayout.Height(30)))
+                    if (GUILayout.Button(SiteDisplayName(site), GUILayout.Height(30)))
                     {
                         selectedSite = site;
 
