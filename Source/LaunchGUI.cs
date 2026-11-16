@@ -901,10 +901,14 @@ namespace KRASH
                         sites.Add(new LaunchSite(siteName, "", editorSiteType, SpaceCenter.Instance.gameObject));
                 }
             }
-            // Always keep the stock site for the current editor as a fallback
+            // LaunchPad and Runway are always offered, in both editors (as before): the editor's own
+            // site first, the other one right after it.
             LaunchSite stock = editorSiteType == SiteType.SPH ? runway : launchpad;
-            if (!sites.Contains(stock))
-                sites.Insert(0, stock);
+            LaunchSite other = editorSiteType == SiteType.SPH ? launchpad : runway;
+            sites.Remove(stock);
+            sites.Remove(other);
+            sites.Insert(0, other);
+            sites.Insert(0, stock);
 
             // Keep the previous selection if it is still open, otherwise fall back to the stock site
             if (previous != null)
