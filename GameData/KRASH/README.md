@@ -101,6 +101,48 @@ the game to the point just before you started the simulation.
 
 When the simulation is terminated, you will see the usual flight history dialog before the final revert.
 
+Simulation visuals
+
+While a simulation is running, the flight is shown as if you were watching it on a training simulator's
+CRT display. As soon as the simulation ends, the view goes back to normal. The look is built from:
+
+	Simulated frame rate:  The 3D image updates at a low frame rate (20 FPS by default).  The game,
+	                       the UI and your controls keep running at full speed
+	Motion blur:           Each simulated frame averages the real frames inside its exposure, like a
+	                       real low-frame-rate camera.  The shutter angle is adjustable
+	Render resolution:     The 3D view is shown with big, blocky pixels.  The KSP UI stays sharp
+	Scanlines:             Soft-edged CRT lines, aligned to the rendered pixel rows
+	Rolling refresh band:  The slowly rolling band you see when a camera films a CRT out of sync
+	TUFX profile:          Optional.  With TUFX (https://github.com/KSPModStewards/TUFX) installed, the
+	                       post-processing switches to the included KRASH-SimFX profile (a cyan, monochrome
+	                       "holographic training display" look), or to any TUFX profile you pick
+
+To run a simulation with the normal graphics, untick "Simulation visuals" in the simulation launch window, next
+to the Start simulation button.  The choice is kept per save, so the next simulation starts with it.
+
+All options are per save, in the stock Settings -> Difficulty Options -> KRASH screen, in the "Simulation visuals"
+and "Simulation screen effects" columns.  "Use simulation visuals" there is the same switch as in the launch
+window.  Setting the frame rate to 0, the resolution to 100% and turning off scanlines and the refresh band
+disables only the screen effects.  The TUFX profile option is only shown when TUFX is installed.
+
+New saves start from the defaults in GameData/KRASH/SimFX/Settings.cfg.  That file also holds two global switches:
+enabled (turns the simulation visuals off completely) and debugLogging.  The TUFX profile is in
+GameData/KRASH/SimFX/Profiles/KRASH-SimFX.cfg; with TUFX you can also tweak the active profile live during a
+simulation from the TUFX window, and export it from there.
+
+Nothing is saved: your TUFX profile choices and KSP's graphics settings are never changed.  Ending the
+simulation, restarting it or leaving the flight scene restores everything.
+
+Notes:
+	The lower render resolution only changes the look.  The scene is still rendered at full resolution,
+	so it does not improve performance.
+	Motion blur gets smoother the higher your real frame rate is.  Near the simulated frame rate, it
+	has little to average.
+	These features used to be the separate KRASH-SimFX mod by AlexStarlight (https://github.com/AlexSkylark).
+	If it is still installed, delete GameData/KRASH-SimFX (KRASH reminds you at the main menu); until then
+	the built-in version stays off so the effects are not applied twice.  Per-save options carry over.
+	Changes you made to its Settings.cfg or TUFX profile do not: copy them to GameData/KRASH/SimFX.
+
 When playing in career mode, there is some additional functionality:
 
 1.  Simulations now cost money (ie:  computer time = money).  The cost of the simulation

@@ -28,6 +28,7 @@ namespace KRASH
         public static string Button_StartSimulation = Localizer.Format("#KRASH_Button_StartSimulation"); // Start simulation
         public static string Button_DisableTestFlight = Localizer.Format("#KRASH_Button_DisableTestFlight"); // Start simulation
         public static string Button_DisableTestLite = Localizer.Format("#KRASH_Button_DisableTestLite"); // Disable TestLite
+        public static string Button_SimulationVisuals = Localizer.Format("#KRASH_Button_SimulationVisuals"); // Simulation visuals
         public static string Button_Select = Localizer.Format("#KRASH_Button_Select"); // Select
         public static string Button_Set= Localizer.Format("#KRASH_Button_Set"); // Set
         public static string Button_ResumeSimulation = Localizer.Format("#KRASH_Button_ResumeSimulation"); // Resume Simulation

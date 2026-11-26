@@ -1681,6 +1681,17 @@ namespace KRASH
                 GUILayout.EndHorizontal();
             }
 
+            // Simulation visuals (SimFX): the same per-save switch as in Difficulty Options > KRASH,
+            // so the next simulation starts with the last choice. Hidden when SimFX is off or replaced.
+            SimFX.SimFXGameSettings simFX = SimFX.SimFXGameSettings.Usable ? SimFX.SimFXGameSettings.Current : null;
+            if (simFX != null)
+            {
+                GUILayout.BeginHorizontal();
+                simFX.useInSimulations = GUILayout.Toggle(simFX.useInSimulations, LocalizationCache.Button_SimulationVisuals); // "Simulation visuals"
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
             {
 
