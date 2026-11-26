@@ -72,6 +72,15 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="UIClass.cs" />
     <Compile Include="wireFrame.cs" />
+    <Compile Include="SimFX\Log.cs" />
+    <Compile Include="SimFX\ReflectionUtil.cs" />
+    <Compile Include="SimFX\ScreenEffect.cs" />
+    <Compile Include="SimFX\SimFXController.cs" />
+    <Compile Include="SimFX\SimFXGameSettings.cs" />
+    <Compile Include="SimFX\SimFXOptions.cs" />
+    <Compile Include="SimFX\SimFXSettings.cs" />
+    <Compile Include="SimFX\SimFXStartup.cs" />
+    <Compile Include="SimFX\TufxBridge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
